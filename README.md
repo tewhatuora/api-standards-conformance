@@ -79,3 +79,12 @@ This configuration must be carefully reviewed prior to running the conformance t
 Example report:
 
 ![Example report](./assets/report.png "Example report")
+
+## License
+
+This work is licensed under [CC BY-NC-ND 4.0](cc-by-nc-nd). Refer to the [LICENSE](./LICENSE) file for information.
+
+[![CC BY 4.0][cc-by-nc-nd-image]](cc-by-nc-nd)
+
+[cc-by-nc-nd]: https://creativecommons.org/licenses/by-nc-nd/4.0/
+[cc-by-nc-nd-image]: https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png
