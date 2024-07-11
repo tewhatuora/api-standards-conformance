@@ -1,0 +1,37 @@
+name: Build and Lint
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: yarn
+
+    - name: Run linting
+      run: yarn lint
+
+    - name: Test
+      run: yarn test
+
+    - name: Report
+      run: yarn report
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: conformance-reports
+        path: reports/conformance_results*.html

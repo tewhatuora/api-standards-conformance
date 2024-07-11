@@ -1,0 +1,36 @@
+{
+  "name": "api-standards-conformance",
+  "author": "Middleware New Zealand",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "CC BY-NC-ND 4.0",
+  "dependencies": {
+    "@cucumber/cucumber": "^10.3.1",
+    "convict": "^6.2.4",
+    "convict-format-with-validator": "^6.2.0",
+    "cucumber-html-reporter": "^7.1.1",
+    "dotenv": "^16.4.5",
+    "fhir": "^4.12.0",
+    "jsonpath-plus": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
+  },
+  "scripts": {
+    "build": "docker build -t api-standards-conformance .",
+    "lint": "eslint . --fix",
+    "prettier": "prettier --write .",
+    "report": "node reporting/index.js",
+    "report:docker": "docker run -it -v $(pwd)/reports:/usr/src/app/reports api-standards-conformance report",
+    "run": "cucumber-js --format progress --format json:cucumber_report.json",
+    "run:report": "./run_tests.sh",
+    "test:docker": "docker run -it -v $(pwd)/config.json:/usr/src/app/config.json api-standards-conformance test",
+    "test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json"
+  },
+  "devDependencies": {
+    "eslint": ">=5.16.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-cucumber": "^2.0.0",
+    "prettier": "^3.2.5"
+  }
+}

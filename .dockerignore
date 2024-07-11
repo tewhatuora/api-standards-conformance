@@ -1,0 +1,18 @@
+.dockerignore
+Dockerfile
+
+# IDE Tools
+.github
+.vscode
+.project
+.eslintrc.js
+
+# Previous Reports
+reports
+
+# Workspace config
+config*.json
+README.md
+.gitignore
+.prettierrc
+.git
