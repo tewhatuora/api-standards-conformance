@@ -1,5 +1,3 @@
-# Te Whatu Ora API Standards Conformance Tool
-
 <a name="readme-top"></a>
 
 <!-- PROJECT LOGO -->
@@ -12,7 +10,7 @@
     </picture>
   </a>
 
-  <h3 align="center">Health New Zealand | Te Whatu Ora FHIR Implementation Guide to OpenAPI Converter</h3>
+  <h3 align="center">Health New Zealand | Te Whatu Ora API Conformance Tool</h3>
 
   <p align="center">
     This project is a conformance tool framework designed to assess an API against the Te Whatu Ora API Standards which are officially published at <a href="https://apistandards.digital.health.nz">https://apistandards.digital.health.nz</a>.
