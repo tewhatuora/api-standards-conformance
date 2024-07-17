@@ -22,9 +22,9 @@ When('a {string} request to {string} is made', async function(method, url) {
   this.setResponse(response);
 });
 
-When('a GET request is made to the FHIR API', async function() {
+When('a {string} request is made to the FHIR API', async function(method) {
   const response = await this.request(this.config.get('fhir.knownResourcePath'), {
-    method: 'GET',
+    method,
   });
 
   this.setResponse(response);
@@ -103,10 +103,6 @@ When('a POST request is made to {string} with the payload', async function(url) 
   this.setResponse(response);
 });
 
-When('a {string} request to to the API endpoint is made', function(string) {
-
-});
-
 Then('the response status should be {int}', async function(statusCode) {
   const response = await this.getResponse();
   console.log(response);
@@ -132,32 +128,6 @@ Given('the API Consumer requests a client_credentials access token', async funct
 
 Given('the API Consumer requests a client_credentials access token with scope {string}', async function(scope) {
   this.addRequestHeader('authorization', `Bearer ${this.getToken(scope) || await this.getOAuthToken(scope)}`);
-});
-
-When('a POST {string} request is made', async function(url) {
-  const response = await this.request(url, {
-    method: 'POST',
-    body: JSON.stringify(this.payload),
-  });
-
-  this.setResponse(response);
-});
-
-When('a PUT {string} request is made', async function(url) {
-  const response = await this.request(url, {
-    method: 'PUT',
-    body: JSON.stringify(this.payload),
-  });
-
-  this.setResponse(response);
-});
-
-When('a GET {string} request is made', async function(url) {
-  const response = await this.request(url, {
-    method: 'GET',
-  });
-
-  this.setResponse(response);
 });
 
 Then('the response header {string} should equal {string}', async function(headerName, expectedValue) {

@@ -204,8 +204,8 @@ This section documents the available step definitions in our test suite. These s
    - Makes a request to a specific URL with the given HTTP method.
    - Example: `When a "GET" request to "/patients" is made`
 
-2. `When a GET request is made to the FHIR API`
-   - Makes a GET request to the FHIR API's known resource path.
+2. `When a {string} request is made to the FHIR API`
+   - Makes a GET request to the a known resource path defined in the config.
 
 3. `When a request is made to every {string} endpoint in the OAS`
    - Makes requests to all endpoints in the OpenAPI Specification that match the given HTTP method.
@@ -214,18 +214,6 @@ This section documents the available step definitions in our test suite. These s
 4. `When a request is made to every {string} endpoint in the OAS requiring authorisation`
    - Makes requests to all endpoints in the OAS that require authorization and match the given HTTP method.
    - Example: `When a request is made to every "POST" endpoint in the OAS requiring authorisation`
-
-5. `When a POST {string} request is made`
-   - Makes a POST request to the specified URL with the current payload.
-   - Example: `When a POST "/patients" request is made`
-
-6. `When a PUT {string} request is made`
-   - Makes a PUT request to the specified URL with the current payload.
-   - Example: `When a PUT "/patients/123" request is made`
-
-7. `When a GET {string} request is made`
-   - Makes a GET request to the specified URL.
-   - Example: `When a GET "/patients/123" request is made`
 
 ### Response Assertion Steps
 
@@ -284,21 +272,17 @@ This section documents the available step definitions in our test suite. These s
 
 ### Request Header Steps
 
-1. `Given the request header {string} is empty`
-   - Removes the specified request header.
-   - Example: `Given the request header "Accept" is empty`
+1. `Given the request header {string} not set`
+   - Ensures that a specific request header is not set.
+   - Example: `Given the request header "Authorization" not set`
 
 2. `Given the request header {string} set to {string}`
    - Sets a specific request header to a given value.
    - Example: `Given the request header "Content-Type" set to "application/fhir+json"`
 
-3. `Given the request header {string} not set`
-   - Ensures that a specific request header is not set.
-   - Example: `Given the request header "Authorization" not set`
-
 ### Adding New Steps
 
-To add new steps, create a new file in the `steps` directory (e.g., `new_steps.js`) and define your step:
+To add new steps, create a new file in the `steps` directory (e.g., `content_steps.js`) and define your step:
 
 ```javascript
 const { Given, When, Then } = require('@cucumber/cucumber');
