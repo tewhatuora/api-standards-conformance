@@ -1,5 +1,6 @@
 const fs = require('fs');
 const yaml = require('yaml');
+const path = require('path');
 
 const parseOAS = (filePath) => {
   const fileContents = fs.readFileSync(filePath, 'utf8');
@@ -124,6 +125,20 @@ function processEndpoint(endpointUrl, context) {
   return endpointUrl;
 }
 
+function loadJsonFile(filename) {
+  const filePath = path.join(__dirname, `../../examples/payloads/${filename}`);
+
+  try {
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      throw new Error(`File not found: ${filePath}`);
+    }
+    throw new Error(`Error reading file ${filePath}: ${error.message}`);
+  }
+}
+
 /**
  * Retrieves the request body configuration for an API endpoint based on regex pattern matching against the endpoint's URL.
  * The function iterates over a configuration object containing regex patterns as keys, each associated with a specific request body.
@@ -141,8 +156,11 @@ const getBodyFromConfig = (endpointUrl, context) => {
     // Test the current regex pattern against the endpoint URL
     if (pattern.test(endpointUrl)) {
       // Return the corresponding request body configuration upon first match
-      const body = context.config.get('resources')[regex];
-      return body;
+      const jsonFile = context.config.get('resources')[regex];
+
+      const json = loadJsonFile(jsonFile);
+
+      return json;
     }
   }
 };
