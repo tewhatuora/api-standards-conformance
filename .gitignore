@@ -1,7 +1,9 @@
 node_modules
 cucumber-report.*
 cucumber_report.*
-config.json
 *.log
 reports
 .env
+
+/config.json
+/config.*.json
