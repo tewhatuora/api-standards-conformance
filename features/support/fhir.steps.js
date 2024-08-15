@@ -133,15 +133,24 @@ Given('the API Consumer requests a client_credentials access token with scope {s
 Then('the response header {string} should equal {string}', async function(headerName, expectedValue) {
   const response = this.getResponse();
   const headerValue = response.headers[headerName.toLowerCase()];
-  assert.strictEqual(headerValue, expectedValue, `Expected header "${headerName}" to be "${expectedValue}", but got "${headerValue}"`);
+  assert.strictEqual(headerValue, expectedValue, `Expected header "${headerName}" to be "${expectedValue}", but got
+   "${headerValue}"`);
 });
 
-Then('the response body should have property {string} containing {string}', async function(propertyName, expectedValue) {
-  const response = this.getResponse();
-  assert.strictEqual(response.data[propertyName], expectedValue, `Expected property "${propertyName}" to contain "${expectedValue}", but got "${response.data[propertyName]}"`);
-});
+Then('the response body should have property {string} containing {string}',
+    async function(propertyName, expectedValue) {
+      const response = this.getResponse();
+      assert.strictEqual(
+          response.data[propertyName],
+          expectedValue,
+          `Expected property "${propertyName}" to contain "${expectedValue}", but got "${response.data[propertyName]}"`,
+      );
+    });
 
 Then('the response body should have property {string}', async function(propertyName) {
   const response = this.getResponse();
-  assert(response.data.hasOwnProperty(propertyName), `Expected response body to have property "${propertyName}", but it was not found.`);
+  assert(
+      response.data.hasOwnProperty(propertyName),
+      `Expected response body to have property "${propertyName}", but it was not found.`,
+  );
 });
