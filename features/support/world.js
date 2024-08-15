@@ -105,11 +105,13 @@ setWorldConstructor(ApiStandardsWorld);
 let oasData;
 let createdIds;
 
+// eslint-disable-next-line new-cap
 BeforeAll(async () => {
   // Parse the OAS file once before all scenarios
   oasData = parseOAS(config.get('oasFile'));
 });
 
+// eslint-disable-next-line new-cap
 Before(function() {
   // Ensure each scenario can access the parsed data through the world object
   this.oasData = oasData;

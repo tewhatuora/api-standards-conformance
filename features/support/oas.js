@@ -140,11 +140,15 @@ function loadJsonFile(filename) {
 }
 
 /**
- * Retrieves the request body configuration for an API endpoint based on regex pattern matching against the endpoint's URL.
- * The function iterates over a configuration object containing regex patterns as keys, each associated with a specific request body.
- * It tests each regex pattern against the provided endpoint URL, and returns the first matching request body configuration.
+ * Retrieves the request body configuration for an API endpoint based on regex pattern matching against the
+ * endpoint's URL. The function iterates over a configuration object containing regex patterns as keys, each
+ * associated with a specific request body.
+ *
+ * It tests each regex pattern against the provided endpoint URL, and returns the first matching request
+ * body configuration.
  *
  * @param {string} endpointUrl The URL of the API endpoint for which to retrieve the body configuration.
+ * @param {Object} context The context object containing the configuration and other data needed for processing.
  * @return {Object|null} The request body
  */
 const getBodyFromConfig = (endpointUrl, context) => {
