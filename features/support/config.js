@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 const path = require('path');
 const convict = require('convict');
-const { env } = require('process');
 convict.addFormat(require('convict-format-with-validator').url);
 
 const {ENV} = process.env;
