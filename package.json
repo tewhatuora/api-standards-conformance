@@ -25,7 +25,10 @@
     "run": "cucumber-js --format progress --format json:cucumber_report.json",
     "run:report": "./run_tests.sh",
     "test:docker": "docker run -it -v $(pwd)/config.json:/usr/src/app/config.json api-standards-conformance test",
-    "test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json"
+    "test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
+    "air": "ENV=air cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
+    "nhi": "ENV=nhi cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
+    "mws": "ENV=mws cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json"
   },
   "devDependencies": {
     "eslint": ">=5.16.0",

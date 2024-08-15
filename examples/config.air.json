@@ -1,0 +1,25 @@
+{
+    "oasFile": "examples/air.yaml",
+    "baseUrl": "https://api.mock.air.digital.health.nz/s2s",
+    "headers": {
+      "accept": "application/fhir+json",
+      "userid": 1234,
+      "request-context": "eyJhbGciOiJOb25lIiwidHlwIjoiSldUIn0.eyJqdGkiOiJlODI1MDM4Yy0wYTc1LTQyMmItOWNlMS02ZTQ2ODRjOWRmZjgiLCJ1c2VySWRlbnRpZmllciI6ImRyamFuZWRvZSIsInVzZXJSb2xlIjoiUFJPViIsInNlY29uZGFyeUlkZW50aWZpZXIiOnsidXNlIjoib2ZmaWNpYWwiLCJzeXN0ZW0iOiJodHRwczovL3N0YW5kYXJkcy5kaWdpdGFsLmhlYWx0aC5uei9ucy9ocGktcGVyc29uLWlkIiwidmFsdWUiOiJaWjEyMzQifSwicHVycG9zZU9mVXNlIjpbIkVUUkVBVCIsIlBVQkhMVEgiLCJQVUJITFRIIl0sInVzZXJGdWxsTmFtZSI6IkRyLiBKYW5lIERvZSIsIm9yZ0lkZW50aWZpZXIiOiJHQUEwMDEtMSIsImZhY2lsaXR5SWRlbnRpZmllciI6IkZBQTAwMS0xIn0"
+    },
+    "logLevel": "debug",
+    "fhir": {
+      "knownResourcePath": "/metadata"
+    },
+    "oauth":  {
+      "tokenEndpoint": "https://api.ppd.auth.digital.health.nz/realms/hnz-integration/protocol/openid-connect/token",
+      "defaultScope": "system/Immunization.r system/Immunization.s"
+    },
+    "resources": {
+      "^/Immunization": "immunization.json"
+    },
+    "paramConfigs": {
+      "rid": {
+        "^/Immunization": "56490c75-799d-41c0-8d25-3fbd560f027a"
+      }
+    }
+  }

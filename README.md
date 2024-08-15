@@ -73,7 +73,12 @@ yarn install
 
 Execute the tests:
 
-The base configuration tests a public metadata endpoint using the [config.test.json](./config.test.json) file. For more information about the test configuration see [configuration](#configuration).
+The base configuration tests a public metadata endpoint using the [config.test.json](./config.test.json) file. For more information about the test configuration see [configuration](#configuration). Set your credentials as session variables (see below for using a persistent file).
+
+```
+export OAUTH_CLIENT_ID=<your-client-id>
+export OAUTH_CLIENT_SECRET=<your-client-secret>
+```
 
 `yarn test`
 
