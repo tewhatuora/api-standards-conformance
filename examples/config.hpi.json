@@ -1,6 +1,6 @@
 {
-  "oasFile": "examples/air.yaml",
-  "baseUrl": "https://api.mock.air.digital.health.nz/s2s",
+  "oasFile": "examples/hpi.yaml",
+  "baseUrl": "https://api.mock.hpi.digital.health.nz/s2s",
   "headers": {
     "accept": "application/fhir+json",
     "userid": 1234,
@@ -12,14 +12,14 @@
   },
   "oauth":  {
     "tokenEndpoint": "https://api.ppd.auth.digital.health.nz/realms/hnz-integration/protocol/openid-connect/token",
-    "defaultScope": "system/Immunization.r system/Immunization.s"
+    "defaultScope": "system/Practitioner.r system/Practitioner.s"
   },
   "resources": {
-    "^/Immunization": "immunization.json"
+    "^/Practitioner": "practitioner.json"
   },
   "paramConfigs": {
-    "rid": {
-      "^/Immunization": "56490c75-799d-41c0-8d25-3fbd560f027a"
+    "practitioner-id": {
+      "^/Practitioner": "94ZZZC"
     }
   }
 }

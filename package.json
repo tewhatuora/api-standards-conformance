@@ -28,6 +28,8 @@
     "test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
     "air": "ENV=air cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
     "nhi": "ENV=nhi cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
+    "nes": "ENV=nes cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
+    "hpi": "ENV=hpi cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
     "mws": "ENV=mws cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json"
   },
   "devDependencies": {

@@ -1,25 +1,25 @@
 {
-    "oasFile": "examples/mws.yaml",
-    "baseUrl": "https://api.mock.mws.digital.health.nz/s2s",
-    "headers": {
-      "accept": "application/fhir+json",
-      "userid": 1234,
-      "request-context": "eyJhbGciOiJOb25lIiwidHlwIjoiSldUIn0.eyJqdGkiOiJlODI1MDM4Yy0wYTc1LTQyMmItOWNlMS02ZTQ2ODRjOWRmZjgiLCJ1c2VySWRlbnRpZmllciI6ImRyamFuZWRvZSIsInVzZXJSb2xlIjoiUFJPViIsInNlY29uZGFyeUlkZW50aWZpZXIiOnsidXNlIjoib2ZmaWNpYWwiLCJzeXN0ZW0iOiJodHRwczovL3N0YW5kYXJkcy5kaWdpdGFsLmhlYWx0aC5uei9ucy9ocGktcGVyc29uLWlkIiwidmFsdWUiOiJaWjEyMzQifSwicHVycG9zZU9mVXNlIjpbIkVUUkVBVCIsIlBVQkhMVEgiLCJQVUJITFRIIl0sInVzZXJGdWxsTmFtZSI6IkRyLiBKYW5lIERvZSIsIm9yZ0lkZW50aWZpZXIiOiJHQUEwMDEtMSIsImZhY2lsaXR5SWRlbnRpZmllciI6IkZBQTAwMS0xIn0"
-    },
-    "logLevel": "debug",
-    "fhir": {
-      "knownResourcePath": "/metadata"
-    },
-    "oauth":  {
-      "tokenEndpoint": "https://api.ppd.auth.digital.health.nz/realms/hnz-integration/protocol/openid-connect/token",
-      "defaultScope": "system/AllergyIntolerance.s system/AllergyIntolerance.r"
-    },
-    "resources": {
-      "^/AllergyIntolerance": "allergyIntolerance.json"
-    },
-    "paramConfigs": {
-      "rid": {
-        "^/AllergyIntolerance": "858a307f-e04a-4a97-83ca-a9dcf42c105b"
-      }
+  "oasFile": "examples/mws.yaml",
+  "baseUrl": "https://api.mock.mws.digital.health.nz/s2s",
+  "headers": {
+    "accept": "application/fhir+json",
+    "userid": 1234,
+    "request-context": "eyJhbGciOiJOb25lIiwidHlwIjoiSldUIn0.eyJqdGkiOiJlODI1MDM4Yy0wYTc1LTQyMmItOWNlMS02ZTQ2ODRjOWRmZjgiLCJ1c2VySWRlbnRpZmllciI6ImRyamFuZWRvZSIsInVzZXJSb2xlIjoiUFJPViIsInNlY29uZGFyeUlkZW50aWZpZXIiOnsidXNlIjoib2ZmaWNpYWwiLCJzeXN0ZW0iOiJodHRwczovL3N0YW5kYXJkcy5kaWdpdGFsLmhlYWx0aC5uei9ucy9ocGktcGVyc29uLWlkIiwidmFsdWUiOiJaWjEyMzQifSwicHVycG9zZU9mVXNlIjpbIkVUUkVBVCIsIlBVQkhMVEgiLCJQVUJITFRIIl0sInVzZXJGdWxsTmFtZSI6IkRyLiBKYW5lIERvZSIsIm9yZ0lkZW50aWZpZXIiOiJHQUEwMDEtMSIsImZhY2lsaXR5SWRlbnRpZmllciI6IkZBQTAwMS0xIn0"
+  },
+  "logLevel": "debug",
+  "fhir": {
+    "knownResourcePath": "/metadata"
+  },
+  "oauth":  {
+    "tokenEndpoint": "https://api.ppd.auth.digital.health.nz/realms/hnz-integration/protocol/openid-connect/token",
+    "defaultScope": "system/AllergyIntolerance.s system/AllergyIntolerance.r"
+  },
+  "resources": {
+    "^/AllergyIntolerance": "allergyIntolerance.json"
+  },
+  "paramConfigs": {
+    "rid": {
+      "^/AllergyIntolerance": "858a307f-e04a-4a97-83ca-a9dcf42c105b"
     }
   }
+}
