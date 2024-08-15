@@ -1,10 +1,11 @@
 /* eslint-disable max-len */
 const path = require('path');
 const convict = require('convict');
+const { env } = require('process');
 convict.addFormat(require('convict-format-with-validator').url);
 
 const {ENV} = process.env;
-const CONFIG_FILENAME = ENV === 'test' ? 'config.test.json' : 'config.json';
+const CONFIG_FILENAME = ENV ? `config.${ENV}.json` : 'config.json';
 const CONFIG_PATH = path.join(__dirname, `../../${CONFIG_FILENAME}`);
 
 convict.addFormat({

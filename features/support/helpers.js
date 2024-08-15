@@ -42,6 +42,7 @@ async function getOAuthToken(scope) {
     });
 
     const responseData = await tokenResponse.json(); // assuming JSON response
+
     if (!tokenResponse.ok) {
       throw new Error(`HTTP error! status: ${tokenResponse.status}`);
     }
@@ -103,6 +104,7 @@ async function request(
   return fetch(fetchUrl, fetchOptions)
       .then(async (response) => {
         const {status, ok} = response;
+
         const responseHeaders = Object.fromEntries(response.headers.entries());
 
         const DEFAULT_RESULT = {
@@ -119,15 +121,17 @@ async function request(
         };
 
         if (String(responseHeaders['content-type']).includes('json')) {
+          const data = await response.json().catch((err) => {
+            this.logger.error('Could not parse json response', {
+              response,
+              err,
+            });
+            return null;
+          });
+          console.log(fetchUrl, status, data);
           return {
             ...DEFAULT_RESULT,
-            data: await response.json().catch((err) => {
-              this.logger.error('Could not parse json response', {
-                response,
-                err,
-              });
-              return null;
-            }),
+            data,
           };
         }
 
@@ -149,9 +153,11 @@ async function request(
           };
         }
 
+        const data = await response.text();
+
         return {
           ...DEFAULT_RESULT,
-          data: await response.text(),
+          data,
         };
       })
       .catch((err) => {
