@@ -4,7 +4,9 @@ const path = require('path');
 
 const parseOAS = (filePath) => {
   const fileContents = fs.readFileSync(filePath, 'utf8');
-  const data = yaml.parse(fileContents);
+  const data = yaml.parse(fileContents, {
+    maxAliasCount: -1, // disables the alias limit
+  });
 
   // Function to resolve references
   const resolveRef = (ref) => {

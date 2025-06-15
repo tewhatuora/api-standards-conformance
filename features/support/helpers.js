@@ -54,7 +54,7 @@ async function getOAuthToken() {
 
 async function request(
     url,
-    {method, body, headers: requestHeaders, ...options},
+    {method, body, headers: requestHeaders, query, ...options},
 ) {
   const controller = new AbortController();
   const timeout = setTimeout(() => {
@@ -97,11 +97,20 @@ async function request(
     signal: controller.signal,
   };
 
-  const fetchUrl = url.match(/^http/) ? url : `${config.get('baseUrl')}${processEndpoint(url, this)}`;
+  let fetchUrl = url.match(/^http/) ? url : `${config.get('baseUrl')}${processEndpoint(url, this)}`;
 
-  this.logger.debug('Making request', {
-    fetchUrl,
-  });
+  // Add query parameters if present
+  if (query) {
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      searchParams.append(key, value);
+    }
+    fetchUrl = `${fetchUrl}?${searchParams.toString()}`;
+  }
+
+  // this.logger.debug('Making request', {
+  //   fetchUrl,
+  // });
 
   return fetch(fetchUrl, fetchOptions)
       .then(async (response) => {

@@ -62,6 +62,40 @@ const config = convict({
   },
   oauth: {
     doc: 'OAuth configuration',
+    format: 'anyObject',
+    default: {},
+    tokenEndpoint: {
+      doc: 'OAuth token endpoint URL',
+      format: 'url',
+      default: null,
+      env: 'OAUTH_URL',
+    },
+    defaultScope: {
+      doc: 'Default OAuth scope',
+      format: String,
+      default: '',
+    },
+    clientId: {
+      doc: 'OAuth client ID',
+      format: String,
+      default: '',
+      env: 'OAUTH_CLIENT_ID',
+    },
+    clientSecret: {
+      doc: 'OAuth client secret',
+      format: String,
+      default: '',
+      env: 'OAUTH_CLIENT_SECRET',
+      sensitive: true,
+    },
+  },
+  oasFile: {
+    doc: 'Path to the OpenAPI/Swagger file',
+    format: String,
+    default: 'resources/sdhr.yml',
+  },
+  queryParams: {
+    doc: 'Query parameters for requests',
     format: Object,
     default: {},
   },
