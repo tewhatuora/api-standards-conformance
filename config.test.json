@@ -32,6 +32,6 @@
       "^/Encounter": "https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZKC7284",
       "^/Observation": "https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZKC7284",
       "^/AllergyIntolerance": "https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZKC7284"
-    },
+    }
   }
 }
