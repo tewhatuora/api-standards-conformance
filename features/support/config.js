@@ -7,6 +7,18 @@ const {ENV} = process.env;
 const CONFIG_FILENAME = ENV === 'test' ? 'config.test.json' : 'config.json';
 const CONFIG_PATH = path.join(__dirname, `../../${CONFIG_FILENAME}`);
 
+convict.addFormat({
+  name: 'anyObject',
+  validate: function(val) {
+    if (typeof val !== 'object' || Array.isArray(val) || val === null) {
+      throw new Error('must be of type Object');
+    }
+  },
+  coerce: function(val) {
+    return val;
+  },
+});
+
 const config = convict({
   baseUrl: {
     doc: 'The base URL of the server under test',
@@ -38,10 +50,27 @@ const config = convict({
       default: '/metadata',
     },
   },
+  resources: {
+    doc: 'The resources to test',
+    format: Object,
+    default: {},
+  },
+  paramConfigs: {
+    doc: 'A mapping of parameters to values',
+    format: Object,
+    default: {},
+  },
+  oauth: {
+    doc: 'OAuth configuration',
+    format: Object,
+    default: {},
+  },
 })
     .loadFile(CONFIG_PATH)
-    .validate({allowed: 'strict'});
+    .validate({allowed: 'warn'});
 
 console.log(`Loaded configuration from ${CONFIG_PATH}`);
+
+console.log(process.env['OAUTH_URL']);
 
 module.exports = config;

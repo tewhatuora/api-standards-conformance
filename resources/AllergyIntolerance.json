@@ -1,0 +1,47 @@
+{
+  "resourceType" : "AllergyIntolerance",
+  "id" : "c41f3cc3-2746-43f1-901d-f82c04c9eddc",
+  "meta" : {
+    "lastUpdated" : "2024-01-26T10:03:26+13:00",
+    "source" : "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
+    "profile" : ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRAllergyIntolerance"]
+  },
+  "text" : {
+    "status" : "generated",
+    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p class=\"res-header-id\"><b>Generated Narrative: AllergyIntolerance AllergyIntoleranceExample</b></p><a name=\"AllergyIntoleranceExample\"> </a><a name=\"hcAllergyIntoleranceExample\"> </a><a name=\"AllergyIntoleranceExample-en-US\"> </a><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Last updated: 2024-01-26 10:03:26+1300; </p><p style=\"margin-bottom: 0px\">Information Source: <a href=\"https://simplifier.net/resolve?scope=fhir.org.nz.ig.base@3.0.0&amp;canonical=https://api.hip.digital.health.nz/fhir/Location/F38006-B\">https://api.hip.digital.health.nz/fhir/Location/F38006-B</a></p><p style=\"margin-bottom: 0px\">Profile: <a href=\"StructureDefinition-SDHRAllergyIntolerance.html\">SDHRAllergyIntolerance</a></p></div><p><b>clinicalStatus</b>: <span title=\"Codes:{http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical active}\">Active</span></p><p><b>verificationStatus</b>: <span title=\"Codes:{http://terminology.hl7.org/CodeSystem/allergyintolerance-verification confirmed}\">Confirmed</span></p><p><b>type</b>: Allergy</p><p><b>category</b>: Medication</p><p><b>code</b>: <span title=\"Codes:{http://mims.co.nz m00286}\">Penicillins</span></p><p><b>patient</b>: <a href=\"https://simplifier.net/resolve?scope=fhir.org.nz.ig.base@3.0.0&amp;canonical=https://api.hip.digital.health.nz/fhir/Patient/ZMW0002\">Carrey Carrington</a></p><p><b>recorder</b>: <a href=\"https://simplifier.net/resolve?scope=fhir.org.nz.ig.base@3.0.0&amp;canonical=https://api.hip.digital.health.nz/fhir/Practitioner/91ZZXN\">DR Julian Subatoi Bashir</a></p></div>"
+  },
+  "clinicalStatus" : {
+    "coding" : [{
+      "system" : "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+      "code" : "active",
+      "display" : "Active"
+    }]
+  },
+  "verificationStatus" : {
+    "coding" : [{
+      "system" : "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+      "code" : "confirmed",
+      "display" : "Confirmed"
+    }]
+  },
+  "type" : "allergy",
+  "category" : ["medication"],
+  "code" : {
+    "coding" : [{
+      "system" : "http://mims.co.nz",
+      "code" : "m00286",
+      "display" : "Penicillins",
+      "userSelected" : true
+    }]
+  },
+  "patient" : {
+    "reference" : "https://api.hip.digital.health.nz/fhir/Patient/ZMW0002",
+    "type" : "Patient",
+    "display" : "Carrey Carrington"
+  },
+  "recorder" : {
+    "reference" : "https://api.hip.digital.health.nz/fhir/Practitioner/91ZZXN",
+    "type" : "Practitioner",
+    "display" : "DR Julian Subatoi Bashir"
+  }
+}
