@@ -9,7 +9,11 @@ fi
 
 if [ -d "/opt/steps" ]; then
     echo "[$scriptName] Found custom /opt/steps/, merging with existing steps in /usr/src/app/support/"
-    cp -afv /opt/steps/. /usr/src/app/support
+    cp -afv /opt/steps/. /usr/src/app/features/support
+    echo "[$scriptName] Contents of /usr/src/app/support after merge:"
+    ls -l /usr/src/app/features/support
+    echo "Contents of /usr/src/app/features/support (detailed):"
+    find /usr/src/app/features/support -type f -exec ls -l {} +
 fi
 
 # Load environment variables
@@ -24,6 +28,12 @@ fi
 if [ -f "/opt/config.json" ]; then
   echo "Copying config.json to /usr/src/app/config.json"
   cp /opt/config.json /usr/src/app/config.json
+fi
+
+# Copy the mounted oas file to the root of the project
+if [ -f "/opt/oas.yml" ]; then
+  echo "Copying oas.yml to /usr/src/app/oas.yml"
+  cp /opt/oas.yml /usr/src/app/oas.yml
 fi
 
 # Run tests with config

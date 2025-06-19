@@ -1,8 +1,9 @@
-require('dotenv').config(); const {setWorldConstructor, World} = require('@cucumber/cucumber');
+require('dotenv').config();
+const {setWorldConstructor, World, Before, BeforeAll} = require('@cucumber/cucumber');
 const {v4} = require('uuid');
 const {getModuleLogger, request, getOAuthToken} = require('./helpers');
 const config = require('./config');
-
+const {parseOAS} = require('./oas');
 
 class ApiStandardsWorld extends World {
   constructor(options) {
@@ -25,7 +26,6 @@ class ApiStandardsWorld extends World {
     // Requests
     this.requestHeaders = {};
   }
-
   setResponse(response) {
     this.response = response;
     this.responseHistory.push(response);
@@ -37,6 +37,13 @@ class ApiStandardsWorld extends World {
     return this.response;
   }
 
+  setResponses(responses) {
+    this.responses = responses;
+  }
+
+  getResponses() {
+    return this.responses;
+  }
   setToken(token) {
     this.token = token;
   }
@@ -52,6 +59,32 @@ class ApiStandardsWorld extends World {
   getRequestHeaders() {
     return this.requestHeaders;
   }
+
+  removeRequestHeader(name, value) {
+    delete this.requestHeaders[name];
+  }
+
+  setResourceIds(ids) {
+    this.resourceIds = ids;
+  }
+
+  getResourceIds() {
+    return this.resourceIds;
+  }
 }
 
 setWorldConstructor(ApiStandardsWorld);
+
+
+let oasData;
+// eslint-disable-next-line new-cap
+BeforeAll(async () => {
+  // Parse the OAS file once before all scenarios
+  oasData = parseOAS();
+});
+
+// eslint-disable-next-line new-cap
+Before(function() {
+  // Ensure each scenario can access the parsed data through the world object
+  this.oasData = oasData;
+});
