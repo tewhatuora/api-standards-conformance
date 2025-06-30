@@ -36,6 +36,15 @@ if [ -f "/opt/oas.yml" ]; then
   cp /opt/oas.yml /usr/src/app/oas.yml
 fi
 
+# Copy the mounted payloads file sto the root of the project
+if [ -d "/opt/payloads" ]; then
+  echo "[$scriptName] Copying payloads from /opt/payloads to /usr/src/app/payloads/"
+  mkdir -p /usr/src/app/payloads
+  cp -afv /opt/payloads/. /usr/src/app/payloads/
+  echo "[$scriptName] Contents of /usr/src/app/payloads after copy:"
+  find /usr/src/app/payloads -type f -exec ls -l {} +
+fi
+
 # Run tests with config
 echo "[$scriptName] yarn cucumber-js ${@} --format progress --format json:cucumber_report.json"
 eval "yarn cucumber-js ${@} --format progress --format json:cucumber_report.json"

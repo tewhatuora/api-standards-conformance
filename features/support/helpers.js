@@ -5,7 +5,7 @@ const config = require('./config');
 
 const fhir = new Fhir();
 
-const DEFAULT_TIMEOUT = 30000;
+const DEFAULT_TIMEOUT = 100000;
 
 function lowercaseKeys(obj) {
   const result = {};

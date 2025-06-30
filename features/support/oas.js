@@ -138,7 +138,7 @@ function processEndpoint(endpointUrl, context) {
 }
 
 function loadJsonFile(filename) {
-  const filePath = path.join(__dirname, `../../resources/${filename}`);
+  const filePath = path.join(__dirname, `../../payloads/${filename}`);
 
   try {
     const fileContent = fs.readFileSync(filePath, 'utf8');
