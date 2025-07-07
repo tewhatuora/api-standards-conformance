@@ -52,12 +52,5 @@ exitCode=$?
 
 # Run your reporting script
 echo "[$scriptName] node reporting/index.js"
+echo "[$scriptName] testing"
 node reporting/index.js
-
-# Save report to the mounted volume
-cp /usr/src/app/report.html /usr/src/app/report.html
-
-if [ $exitCode -ne 0 ]; then
-    echo "[$scriptName] returning $exitCode."
-    exit $exitCode
-fi

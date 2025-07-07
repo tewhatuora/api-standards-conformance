@@ -26,7 +26,7 @@ async function getOAuthToken() {
     client_id: process.env['OAUTH_CLIENT_ID'],
     client_secret: process.env['OAUTH_CLIENT_SECRET'],
     grant_type: 'client_credentials',
-    scope: 'system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus system/Consent.crus',
+    scope: process.env['OAUTH_SCOPE'],
   };
 
   // Prepare the body of the POST request
@@ -70,9 +70,9 @@ async function request(
   this.addRequestHeader('content-type', 'application/json');
 
   // // Add a bearer token if creds are present, unless instructed not to
-  // if (config.get('oauth.tokenEndpoint') && options.skipAuth !== true) {
-  //   this.addRequestHeader('authorization', `Bearer ${this.getToken() || await this.getOAuthToken()}`);
-  // }
+  if (config.get('oauth.tokenEndpoint') && options.skipAuth !== true) {
+    this.addRequestHeader('authorization', `Bearer ${this.getToken() || await this.getOAuthToken()}`);
+  }
 
   // Add an API key if present, unless instructed not to
   if (process.env['API_KEY'] && options.skipApiKey !== true) {
@@ -80,7 +80,7 @@ async function request(
   }
 
   // Add request context if present, unless instructed not to
-  this.addRequestHeader('request-context', 'eyJ1c2VySWRlbnRpZmllciI6IkFBQkJDQyIsInVzZXJSb2xlIjoiUFJPViIsInNlY29uZGFyeUlkZW50aWZpZXIiOnsidXNlIjoiYWRtaW4iLCJzeXN0ZW0iOiJodHRwczovL3N0YW5kYXJkcy5kaWdpdGFsLmhlYWx0aC5uei5ucy9ocGktcGVyc29uLWlkIiwidmFsdWUiOiIxMjM0NTY3OCJ9LCJwdXJwb3NlT2ZVc2UiOlsiVFJFQVQiLCJQVUJITFRIIl0sInVzZXJGdWxsTmFtZSI6IkRyLiBKYW5lIERvZSIsIm9yZ0lkZW50aWZpZXIiOiJPMTIzNDUiLCJmYWNpbGl0eUlkZW50aWZpZXIiOiJGMTIzNDUifQ==');
+  this.addRequestHeader('request-context', process.env['REQUEST_CONTEXT']);
 
   const headers = lowercaseKeys({
     ...requestHeaders,

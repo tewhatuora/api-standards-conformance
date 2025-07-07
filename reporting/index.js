@@ -45,7 +45,7 @@ async function main() {
     brandTitle: 'Te Whatu Ora API Standards',
     theme: 'bootstrap',
     jsonFile: 'cucumber_report.json',
-    output: `reports/conformance_results_${Date.now()}.html`,
+    output: `reports/report.html`,
     metadata: {
       'STANDARDS_NOT_IMPLEMENTED': standardsNotImplemented,
       'GENERATED_AT': new Date().toISOString(),
