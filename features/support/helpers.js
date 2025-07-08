@@ -26,7 +26,7 @@ async function getOAuthToken() {
     client_id: process.env['OAUTH_CLIENT_ID'],
     client_secret: process.env['OAUTH_CLIENT_SECRET'],
     grant_type: 'client_credentials',
-    scope: process.env['OAUTH_SCOPE'],
+    scope: config.get('oauth.defaultScope'),
   };
 
   // Prepare the body of the POST request
