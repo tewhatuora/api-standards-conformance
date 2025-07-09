@@ -1,7 +1,11 @@
 {
-  "baseUrl": "https://fhir.api-dev.digital.health.nz/R4",
+  "baseUrl": "https://hapi.fhir.org/baseR4",
   "headers": {
     "accept": "application/fhir+json"
+  },
+  "oauth": {
+    "defaultScope": "test",
+    "tokenEndpoint": ""
   },
   "customHeaders": {},
   "logLevel": "debug",

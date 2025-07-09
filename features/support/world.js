@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {setWorldConstructor, World, Before, BeforeAll} = require('@cucumber/cucumber');
+const {setWorldConstructor, World, Before} = require('@cucumber/cucumber');
 const {v4} = require('uuid');
 const {getModuleLogger, request, getOAuthToken} = require('./helpers');
 const config = require('./config');
@@ -75,13 +75,13 @@ class ApiStandardsWorld extends World {
 
 setWorldConstructor(ApiStandardsWorld);
 
-
 let oasData;
-// eslint-disable-next-line new-cap
-BeforeAll(async () => {
-  // Parse the OAS file once before all scenarios
+
+try {
   oasData = parseOAS();
-});
+} catch {
+  console.warn('Warning: failed to parse OAS data. Ensure the OAS file is valid and accessible.');
+}
 
 // eslint-disable-next-line new-cap
 Before(function() {
