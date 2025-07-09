@@ -30,8 +30,3 @@ jobs:
 
     - name: Report
       run: yarn report
-
-    - uses: actions/upload-artifact@v4
-      with:
-        name: conformance-reports
-        path: reports/conformance_results*.html
