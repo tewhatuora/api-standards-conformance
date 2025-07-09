@@ -7,10 +7,10 @@ const STANDARDS_JSON_ENDPOINT = 'https://apistandards.digital.health.nz/assets/a
 
 function getStandards() {
   return fetch(STANDARDS_JSON_ENDPOINT)
-    .then((response) => response.json())
-    .then((data) => {
-      return data;
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
 }
 
 async function main() {

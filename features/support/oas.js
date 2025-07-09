@@ -92,7 +92,8 @@ const parseOAS = () => {
  * If a regex pattern matches, the corresponding replacement value is used. This allows for dynamic and flexible
  * endpoint processing that adapts to various API structures and requirements.
  *
- * @param {string} endpointUrl The API endpoint template, which may include placeholders like "/ResourceType/{rid}/details/{otherId}"
+ * @param {string} endpointUrl The API endpoint template, which may include placeholders
+ * like "/ResourceType/{rid}/details/{otherId}"
  * @param {Object} context The context object containing the configuration and other data needed for processing
  * @return {string} The processed endpoint with all matched placeholders replaced by their respective values
  *                  from the configuration. If no valid replacement is found for a placeholder, it remains unchanged

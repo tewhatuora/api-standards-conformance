@@ -37,7 +37,8 @@ function assertStatusCode(response, expectedStatusCode) {
   assert.equal(
       response.status,
       expectedStatusCode,
-      `${response.config.fetchUrl}: Expected status code ${expectedStatusCode}, but got ${response.status} ${JSON.stringify(response.data)} instead`,
+      `${response.config.fetchUrl}: Expected status code ${expectedStatusCode}, ` +
+      `but got ${response.status} ${JSON.stringify(response.data)} instead`,
   );
 }
 
