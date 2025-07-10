@@ -3,18 +3,8 @@ const yaml = require('yaml');
 const path = require('path');
 
 const parseOAS = () => {
-  console.log('Current working directory:', process.cwd());
-  console.log('Current dir contents:', fs.readdirSync(process.cwd()));
-
-  // Try reading without encoding first
-  const rawContents = fs.readFileSync('oas.yml');
-  console.log('Raw file contents (Buffer):', rawContents);
-  console.log('Raw file length:', rawContents.length);
-
   const fileContents = fs.readFileSync('oas.yml', 'utf8');
-  console.log('fileContents', fileContents);
   const data = yaml.parse(fileContents);
-  console.log('yamlData', data);
 
   // Function to resolve references
   const resolveRef = (ref) => {
