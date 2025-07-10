@@ -1,10 +1,11 @@
 const {createLogger, format, transports} = require('winston');
+const {processEndpoint} = require('./oas');
 const Fhir = require('fhir').Fhir;
 const config = require('./config');
 
 const fhir = new Fhir();
 
-const DEFAULT_TIMEOUT = 30000;
+const DEFAULT_TIMEOUT = 100000;
 
 function lowercaseKeys(obj) {
   const result = {};
@@ -25,7 +26,7 @@ async function getOAuthToken() {
     client_id: process.env['OAUTH_CLIENT_ID'],
     client_secret: process.env['OAUTH_CLIENT_SECRET'],
     grant_type: 'client_credentials',
-    scope: 'scope/cinc',
+    scope: config.get('oauth.defaultScope'),
   };
 
   // Prepare the body of the POST request
@@ -43,7 +44,7 @@ async function getOAuthToken() {
     if (!tokenResponse.ok) {
       throw new Error(`HTTP error! status: ${tokenResponse.status}`);
     }
-    this.setToken(responseData.access_token);
+    if (this.setToken) this.setToken(responseData.access_token);
     return responseData.access_token;
   } catch (error) {
     console.error('Error in sending data:', error);
@@ -68,17 +69,18 @@ async function request(
 
   this.addRequestHeader('content-type', 'application/json');
 
-  // Add a bearer token if creds are present, unless instructed not to
-  if (process.env['OAUTH_URL'] && options.skipAuth !== true) {
+  // // Add a bearer token if creds are present, unless instructed not to
+  if (config.get('oauth.tokenEndpoint') && options.skipAuth !== true) {
     this.addRequestHeader('authorization', `Bearer ${this.getToken() || await this.getOAuthToken()}`);
   }
 
   // Add an API key if present, unless instructed not to
   if (process.env['API_KEY'] && options.skipApiKey !== true) {
     this.addRequestHeader('x-api-key', process.env['API_KEY']);
-    // If API key is present, request-context should also be
-    this.addRequestHeader('request-context', process.env['REQUEST_CONTEXT']);
   }
+
+  // Add request context if present, unless instructed not to
+  this.addRequestHeader('request-context', process.env['REQUEST_CONTEXT']);
 
   const headers = lowercaseKeys({
     ...requestHeaders,
@@ -94,14 +96,14 @@ async function request(
     signal: controller.signal,
   };
 
-  const fetchUrl = url.match(/^http/) ? url : `${config.get('baseUrl')}${url}`;
+  const fetchUrl = url.match(/^http/) ? url : `${config.get('baseUrl')}${processEndpoint(url, this)}`;
 
-  this.logger.debug('Making request', {
-    fetchUrl,
-    method,
-    headers,
-    body,
-  });
+  if (options.debug) {
+    this.logger.debug('Making request', {
+      fetchUrl,
+      headers,
+    });
+  }
 
   return fetch(fetchUrl, fetchOptions)
       .then(async (response) => {
@@ -160,7 +162,11 @@ async function request(
         this.logger.error('Error making http request', {
           url,
           fetchOptions,
-          err,
+          errorMessage: err?.message,
+          errorName: err?.name,
+          errorStack: err?.stack,
+          errorToString: err?.toString?.(),
+          errorJSON: JSON.stringify(err, Object.getOwnPropertyNames(err)),
         });
         throw err;
       })

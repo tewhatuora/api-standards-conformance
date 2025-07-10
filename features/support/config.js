@@ -40,7 +40,7 @@ const config = convict({
   },
 })
     .loadFile(CONFIG_PATH)
-    .validate({allowed: 'strict'});
+    .validate({allowed: 'none'});
 
 console.log(`Loaded configuration from ${CONFIG_PATH}`);
 
