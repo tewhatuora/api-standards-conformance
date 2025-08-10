@@ -52,6 +52,10 @@ class ApiStandardsWorld extends World {
   getRequestHeaders() {
     return this.requestHeaders;
   }
+
+  removeRequestHeader(name) {
+    this.requestHeaders[name] = '__DELETE__';
+  }
 }
 
 setWorldConstructor(ApiStandardsWorld);

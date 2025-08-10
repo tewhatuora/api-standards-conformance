@@ -1,0 +1,62 @@
+{
+    "id": "6496ad2b-69b4-4e70-bcfa-4eb072174864",
+    "serviceType": {
+    "coding": [
+        {
+        "system": "http://terminology.hl7.org/CodeSystem/service-type",
+        "code": "124",
+        "display": "General Practice"
+        }
+    ]
+    },
+    "identifier": [
+    {
+        "system": "https://standards.digital.health.nz/ns/health-record-key-id",
+        "value": "f4121d2e-61aa-4222-83ae-b36d26bbbe62"
+    }
+    ],
+    "period": {
+    "start": "2024-03-26T10:13:26+13:00"
+    },
+    "subject": {
+    "reference": "https://api.hip.digital.health.nz/fhir/Patient/ZKC7284",
+    "display": "Carrey Carrington",
+    "type": "Patient"
+    },
+    "participant": [
+    {
+        "individual": {
+        "identifier": {
+            "system": "https://standards.digital.health.nz/ns/hpi-person-id",
+            "value": "91ZABY"
+        },
+        "display": "Dr Andrea Welby",
+        "type": "Practitioner"
+        },
+        "type": [
+        {
+            "coding": [
+            {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                "code": "PPRF",
+                "display": "primary performer"
+            }
+            ]
+        }
+        ]
+    }
+    ],
+    "meta": {
+        "source": "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
+        "profile": [
+        "https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHREncounter"
+        ]
+    },
+    "class": {
+    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+    "code": "GENRL",
+    "display": "General"
+    },
+    "resourceType": "Encounter",
+    "status": "finished"
+}
