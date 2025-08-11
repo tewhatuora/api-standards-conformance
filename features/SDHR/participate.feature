@@ -6,7 +6,7 @@ Feature: Participate operation
     Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
-      | ZMW6001 | G00001-G   | false                  | sdhr-hnz-opt-out | HNZ opt out       | null         | null            |
+      | ZMW6001 | G00001-G   | false                  | null             | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
@@ -27,7 +27,7 @@ Feature: Participate operation
     Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
-      | ZMW6003 | FZZ999-B   | false                  | sdhr-facility-opt-out | Facility opt out       | null         | null            |
+      | ZMW6003 | FZZ999-B   | false                  | null             | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
@@ -47,7 +47,7 @@ Feature: Participate operation
     Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
-      | ZMW6001 | G00001-G   | true                   | sdhr-hnz-opt-in  | HNZ opt in        | null         | null            |
+      | ZMW6001 | G00001-G   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
@@ -65,7 +65,7 @@ Feature: Participate operation
     Given a patient "ZMW6002" notifies "their facility FZZ999-B" of participation "opt-in"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
-      | ZMW6002 | FZZ999-B   | true                   | sdhr-facility-opt-in  | Facility opt in        | null         | null            |
+      | ZMW6002 | FZZ999-B   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
@@ -83,7 +83,7 @@ Feature: Participate operation
     Given a patient "ZMW6003" notifies "their facility FZZ999-C" of participation "opt-in"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
-      | ZMW6003 | FZZ999-C   | true                   | sdhr-facility-opt-in  | Facility opt in        | null         | null            |
+      | ZMW6003 | FZZ999-C   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
@@ -125,7 +125,7 @@ Feature: Participate operation
     Given a patient "ZMW6004" notifies "FZZ999-D" of participation "opt-in"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
-      | ZMW6004 | FZZ999-D   | true                   | sdhr-facility-opt-in  | Facility opt in        | null         | null            |
+      | ZMW6004 | FZZ999-D   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
@@ -141,7 +141,7 @@ Feature: Participate operation
     Given a patient "ZMW6004" notifies "HNZ" of participation "opt-off"
     Then the API consumer invokes the "$hnz-participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
-      | ZMW6004 | G00001-G   | false                  | sdhr-hnz-opt-out | HNZ opt out       | null         | null            |
+      | ZMW6004 | G00001-G   | false                  | null | null       | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
@@ -155,14 +155,14 @@ Feature: Participate operation
     # Operation is idempotent so previous call in Scenario 2 should be all good however this is confirming
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
-      | ZMW6002 | FZZ999-B   | true                   | sdhr-facility-opt-out  | Facility opt out        | null         | null            |
+      | ZMW6002 | FZZ999-B   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
     Given a patient "ZMW6002" notifies "their facility FZZ999-C" of participation "opt-in"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
-      | ZMW6002 | FZZ999-C   | false                  | sdhr-facility-opt-in | Facility opt in       | null         | null            |
+      | ZMW6002 | FZZ999-C   | false                  | null | null       | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
@@ -208,7 +208,7 @@ Feature: Participate operation
     Given a patient "ZMW6003" notifies "their facility FZZ999-C" of participation "opt-in"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
-      | ZMW6003 | FZZ999-C   | true                   | sdhr-facility-opt-in  | Facility opt in        | null         | null            |
+      | ZMW6003 | FZZ999-C   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "code" containing "sdhr-operation-success"
