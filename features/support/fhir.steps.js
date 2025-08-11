@@ -64,6 +64,7 @@ When('a POST request is made to {string} with the payload', async function(url) 
     method: 'POST',
     body: JSON.stringify(this.payload),
   });
+  console.log(response.data);
   this.setResponse(response);
 });
 
@@ -132,6 +133,18 @@ Then('the response body should have property {string} containing {string}',
           expectedValue,
           `Expected property at path "${jsonPath}" to be "${expectedValue}", but got "${actualValue}"`,
       );
+    });
+
+Then('the search response body should have entry with property {string} containing {string}',
+    async function(jsonPath, expectedValue) {
+      const response = this.getResponse();
+      const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
+      const entries = JSONPath({path: '$.entry[*]', json: response.data, wrap: false});
+      const found = entries.some((entry) => {
+        const value = JSONPath({path, json: entry.resource, wrap: false});
+        return String(value) === expectedValue;
+      });
+      assert(found, `Expected to find an entry with property "${jsonPath}" containing "${expectedValue}"`);
     });
 
 Then('the response body should have property {string}', async function(propertyName) {

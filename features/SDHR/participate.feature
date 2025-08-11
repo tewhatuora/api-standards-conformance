@@ -34,15 +34,18 @@ Feature: Participate operation
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     # Should not be able to create any resource for this patient
     And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
-    Given a valid Condition payload for NHI "ZMW6001" at facility "FZZ999-B" with local ID "null"
+    Given a valid Condition payload for NHI "ZMW6002" at facility "FZZ999-B" with local ID "null"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied-facility"
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6002"
-    Then the response status code should be 403
-    And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"
+    Then the response status code should be 200
+    And the response body should have property "resourceType" containing "Bundle"
+    And the response body should have property "type" containing "searchset"
+    And the response bundle should contain more than 0 entries
+    And the search response body should have entry with property "resourceType" containing "OperationOutcome"
+    And the search response body should have entry with property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"
 
   Scenario: 3. Patient ZMW6001 opts in to SDHR participation using HNZ channel
     Given a patient "ZMW6001" notifies "HNZ" of participation "opt-in"
@@ -63,6 +66,7 @@ Feature: Participate operation
     And the response body should have property "resourceType" containing "Bundle"
     And the response body should have property "type" containing "searchset"
     And the response bundle should contain more than 0 entries
+    And the search response body should have entry with property "resourceType" containing "Condition"
 
   Scenario: 4. Patient ZMW6002 opts in to SDHR participation at their enroled practice FZZ999-B
     Given a patient "ZMW6002" notifies "their facility FZZ999-B" of participation "opt-in"
