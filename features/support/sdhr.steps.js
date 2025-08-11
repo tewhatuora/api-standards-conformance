@@ -19,7 +19,7 @@ const setupStandardConditionResource = (nhi, metaSecurity, facilityId, localReso
     payload.meta.security = [metaSecurity];
   }
   if (facilityId) {
-    payload.meta.source = `https://api.hip.digital.health.nz/fhir/nhi/v1/Location/${facilityId}`;
+    payload.meta.source = `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`;
   }
   if (localResourceId) {
     payload.identifier[0].value = localResourceId;

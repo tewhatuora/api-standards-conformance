@@ -1,8 +1,6 @@
 {
   "resourceType" : "Condition",
-  "id" : "77db7b4a-753a-4e69-93d8-8e002094aa0e",
   "meta" : {
-    "lastUpdated" : "2024-01-26T10:03:26+13:00",
     "source" : "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
     "profile" : ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRCondition"]
   },
