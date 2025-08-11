@@ -20,13 +20,13 @@ function lowercaseKeys(obj) {
 }
 
 // Function to request OAuth token
-async function getOAuthToken() {
+async function getOAuthToken(scope) {
   const tokenEndpoint = config.get('oauth.tokenEndpoint');//process.env['OAUTH_URL'];
   const clientCredentials = {
     client_id: config.get('oauth.clientId'), //process.env['OAUTH_CLIENT_ID'],
     client_secret: config.get('oauth.clientSecret'),// process.env['OAUTH_CLIENT_SECRET'],
     grant_type: 'client_credentials',
-    scope: config.get('oauth.defaultScope'),//'system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus system/Consent.crus',
+    scope: scope || config.get('oauth.defaultScope'),//'system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus system/Consent.crus',
   };
 
   // Prepare the body of the POST request
@@ -98,6 +98,8 @@ async function request(
   };
 
   const fetchUrl = url.match(/^http/) ? url : `${config.get('baseUrl')}${processEndpoint(url, this)}`;
+
+  //console.log(`Making request to ${fetchUrl} with method ${method} and headers:`, headers);
 
   if (options.debug) {
     this.logger.debug('Making request', {

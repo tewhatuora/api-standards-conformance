@@ -257,6 +257,7 @@ Then('the API consumer invokes the {string} opertaion with:', async function (op
   const localResourceId = data.localResourceId;
 
   await invokeParticipateOperation(operationName, nhi, facilityId, participationIndicator, reasonCode, reasonCodeDisplay, resourceType, localResourceId).call(this);
+  console.log(`Response from invoking ${operationName} operation:`, JSON.stringify(this.getResponse().data, null, 2));
   assert.ok(
     this.getResponse().status === 200,
     `Expected response status 200, but got ${this.getResponse().status}`
@@ -327,9 +328,9 @@ const invokeParticipateOperation = (operationName, nhi, facilityId, participatio
 
   const payload = setupParticipateParametersResource(nhi, facilityId, participationIndicator, reasonCode, reasonCodeDisplay, resourceType, localResourceId);
 
-  console.log(`Invoking ${operationName} operation with payload:`, JSON.stringify(payload, null, 2));
+  console.log(`Invoking ${operationName} operation`); // with payload:`, JSON.stringify(payload, null, 2));
 
-  const response = await this.request(`/${operationName}}`, {
+  const response = await this.request(`/${operationName}`, {
     method: 'POST',
     body: JSON.stringify(payload),
   });
