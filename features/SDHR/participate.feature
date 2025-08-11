@@ -57,7 +57,7 @@ Feature: Participate operation
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
-    Given a valid Condition payload for NHI "ZMW6001" at facility "G00001-G" with local ID "null"
+    Given a valid Condition payload for NHI "ZMW6001" at facility "FZZ999-Z" with local ID "null"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 201
     And the response body should have property "resourceType" containing "Condition"
