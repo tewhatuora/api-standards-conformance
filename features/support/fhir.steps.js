@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const config = require('./config');
 
 Then('the response status code should be {int}', async function(status) {
-  //console.log('Response:', JSON.stringify(this.getResponse().data));
+  // console.log('Response:', JSON.stringify(this.getResponse().data));
   assert.strictEqual(this.getResponse().status, status);
 });
 
@@ -86,7 +86,7 @@ When('a {string} request is made to the FHIR API', async function(method) {
 
 Then('the response status should be {int}', async function(statusCode) {
   const response = await this.getResponse();
-  //console.log(response);
+  // console.log(response);
   assert.equal(response.status, statusCode, `Expected status code ${statusCode}, but got ${response.status}`);
 });
 
@@ -140,7 +140,7 @@ Then('the search response body should have entry with property {string} containi
       const response = this.getResponse();
       const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
       const entries = JSONPath({path: '$.entry[*]', json: response.data, wrap: false});
-      const found = entries.some((entry) => {
+      const found = entries?.some((entry) => {
         const value = JSONPath({path, json: entry.resource, wrap: false});
         return String(value) === expectedValue;
       });
