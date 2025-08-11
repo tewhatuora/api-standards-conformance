@@ -3,7 +3,8 @@ const { Given, Then } = require('@cucumber/cucumber');
 const { randomUUID } = require('crypto');
 const path = require('path');
 const fs = require('fs');
-
+const { setDefaultTimeout } = require('@cucumber/cucumber');
+setDefaultTimeout(10 * 1000);
 
 const TEST_NHI = 'ZMW0002';
 const TEST_CONDITION_ID = '63e3c5c7-c938-4cf8-8815-900fc5781d8e';
@@ -66,7 +67,7 @@ const setupParticipateParametersResource = (operationName, nhi, facilityId, part
       {
         'name': 'facilityId',
         'valueReference': {
-          'reference': `https://api.hip.digital.health.nz/fhir/nhi/v1/Location/${facilityId}`,
+          'reference': `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`,
         },
       }
     ]
@@ -90,7 +91,7 @@ const setupParticipateParametersResource = (operationName, nhi, facilityId, part
     if (participationIndicator != 'null') {
       payload.parameter.push({
         'name': operationName === '$hnz-participate' ? 'hnzParticipationIndicator' : 'participationIndicator',
-        'valueCode': participationIndicator,
+        'valueBoolean': Boolean(participationIndicator),
       });
     }
     if (resourceType != 'null') {
@@ -268,8 +269,9 @@ const setupParticipateParametersResource = (operationName, nhi, facilityId, part
       `Expected response status 200, but got ${this.getResponse().status}`
     );
     const response = this.getResponse();
+    //const outcomeCode = response.data.issue[0].details.coding[0].code;
     assert.strictEqual(response.data.resourceType, 'OperationOutcome', 'Expected response resourceType to be "OperationOutcome"');
-    assert.strictEqual(response.data.code, 'sdhr-operation-success', 'Expected response code to be "sdhr-operation-success"');
+    assert.strictEqual(response.data.issue[0].details.coding[0].code, "sdhr-operation-success", 'Expected response code to be "sdhr-operation-success"');
   });
 
   const setupConsentForNHI = (nhi, action) => async function () {

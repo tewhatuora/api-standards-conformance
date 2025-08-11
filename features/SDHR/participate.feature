@@ -9,18 +9,19 @@ Feature: Participate operation
       | ZMW6001 | G00001-G   | false                  | null             | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     Given a valid Condition payload for NHI "ZMW6001" at facility "G00001-G" with local ID "null"
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a POST request is made to "/Condition" with the payload
     # Should not be able to create any resource for this patient
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-participation-status-denied"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"
     # Should not be able to get any resource for this patient
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6001"
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-participation-status-denied"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"
 
   Scenario: 2. Patient ZMW6002 opts out of SDHR participation at their enroled practice FZZ999-B
     Given a patient "ZMW6002" notifies "their facility FZZ999-B" of participation "opt-off"
@@ -30,17 +31,18 @@ Feature: Participate operation
       | ZMW6003 | FZZ999-B   | false                  | null             | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     # Should not be able to create any resource for this patient
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     Given a valid Condition payload for NHI "ZMW6001" at facility "FZZ999-B" with local ID "null"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-participation-status-denied-facility"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied-facility"
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6002"
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-participation-status-denied"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"
 
   Scenario: 3. Patient ZMW6001 opts in to SDHR participation using HNZ channel
     Given a patient "ZMW6001" notifies "HNZ" of participation "opt-in"
@@ -50,7 +52,8 @@ Feature: Participate operation
       | ZMW6001 | G00001-G   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     Given a valid Condition payload for NHI "ZMW6001" at facility "G00001-G" with local ID "null"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 201
@@ -63,12 +66,14 @@ Feature: Participate operation
 
   Scenario: 4. Patient ZMW6002 opts in to SDHR participation at their enroled practice FZZ999-B
     Given a patient "ZMW6002" notifies "their facility FZZ999-B" of participation "opt-in"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6002 | FZZ999-B   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     Given a valid Condition payload for NHI "ZMW6002" at facility "FZZ999-B" with local ID "null"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 201
@@ -81,13 +86,15 @@ Feature: Participate operation
 
   Scenario: 5. Patient ZMW6003 opts in to SDHR participation at their enroled practice FZZ999-C then marks a record as withheld
     Given a patient "ZMW6003" notifies "their facility FZZ999-C" of participation "opt-in"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6003 | FZZ999-C   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     Given a valid Condition payload for NHI "ZMW6003" at facility "FZZ999-C" with local ID "FZZ999-C-local-withheld-record"
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 201
     And the response body should have property "resourceType" containing "Condition"
@@ -98,18 +105,20 @@ Feature: Participate operation
     And the response body should have property "type" containing "searchset"
     And the response bundle should contain more than 0 entries
     Given a health practitioner sets "Condition" record "FZZ999-C-local-withheld-record" record to "RESTRICTED"
+    And the API Consumer requests a new client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient          | facilityId       | participationIndicator | reasonCode           | reasonCodeDisplay | resourceType  | localResourceId                    |
       | ZMW6003          | FZZ999-C         | null                   | sdhr-record-withheld | Record withheld   | Condition     | FZZ999-C-local-withheld-record     |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+    Given the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6003&&_source=https://api.hip.digital.health.nz/fhir/Location/FZZ999-C&identifier=FZZ999-C-local-withheld-record"
     Then the response status code should be 200
     And the response body should have property "type" containing "searchset"
     And the response body should have property "resourceType" containing "Bundle"
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-records-withheld-at-source"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-records-withheld-at-source"
     # Create and retrieve an unrestricted record
     Given a valid Condition payload for NHI "ZMW6003" at facility "FZZ999-C" with local ID "randomIdentifier"
     When a POST request is made to "/Condition" with the payload
@@ -123,13 +132,15 @@ Feature: Participate operation
 
   Scenario: 6. Patient ZMW6004 opts in to SDHR participation at their enroled practice FZZ999-D and opts out at HNZ
     Given a patient "ZMW6004" notifies "FZZ999-D" of participation "opt-in"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6004 | FZZ999-D   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     Given a valid Condition payload for NHI "ZMW6004" at facility "FZZ999-D" with local ID "null"
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 201
     And the response body should have property "resourceType" containing "Condition"
@@ -139,34 +150,38 @@ Feature: Participate operation
     And the response body should have property "type" containing "searchset"
     And the response bundle should contain more than 0 entries
     Given a patient "ZMW6004" notifies "HNZ" of participation "opt-off"
+    Given the API Consumer requests a new client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
-      | ZMW6004 | G00001-G   | false                  | null | null       | null         | null            |
+      | ZMW6004 | G00001-G   | false                  | null             | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6004"
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-participation-status-denied"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"
 
   Scenario: 7. Patient ZMW6002 opts out of SDHR participation at practice FZZ999-B and opts in at practice FZZ999-C
     Given a patient "ZMW6002" notifies "their facility FZZ999-B" of participation "opt-out"
     # Operation is idempotent so previous call in Scenario 2 should be all good however this is confirming
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6002 | FZZ999-B   | true                   | null  | null        | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     Given a patient "ZMW6002" notifies "their facility FZZ999-C" of participation "opt-in"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6002 | FZZ999-C   | false                  | null | null       | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     Given a valid Condition payload for NHI "ZMW6002" at facility "FZZ999-C" with local ID "null"
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 201
     And the response body should have property "resourceType" containing "Condition"
@@ -177,7 +192,7 @@ Feature: Participate operation
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-participation-status-denied-facility"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied-facility"
     # Patient has a Condition resource at FZZ999-C so should be able to retrieve it
     # As the patient has opted out at FZZ999-B, the response should not contain any resources from that facility and should contain an OperationOutcome indicating withheld records
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6002"
@@ -188,30 +203,32 @@ Feature: Participate operation
     And the response body should have property "resourceType" containing "Condition"
     And the response body should have property "source" containing "https://api.hip.digital.health.nz/fhir/Location/FZZ999-C"
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-records-withheld-at-source"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-records-withheld-at-source"
     # There should be no records for facility FZZ999-B
     And the response body should not have property "source" containing "https://api.hip.digital.health.nz/fhir/Location/FZZ999-B"
 
   Scenario: 8. Patients participation preferences are unknown
     Given a patient "ZMW6005" has not notified "FZZ999-C" of participation preferences
     Given a valid Condition payload for NHI "ZMW6005" at facility "FZZ999-C" with local ID "null"
+    And the API Consumer requests a client_credentials access token with scope "system/Condition.crus"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-participation-unknown"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-unknown"
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6005"
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-participation-unknown"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-unknown"
 
   Scenario: 9. Patients previously withheld record is released
     Given a patient "ZMW6003" notifies "their facility FZZ999-C" of participation "opt-in"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" opertaion with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
-      | ZMW6003 | FZZ999-C   | true                   | null  | null        | null         | null            |
+      | ZMW6003 | FZZ999-C   | true                   | null                  | null                   | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
     #Release a previously withheld record - see Scenario 5
     Given a health practitioner sets "Condition" record "FZZ999-C-local-withheld-record" record to "UNRESTRICTED"
     Then the API consumer invokes the "$participate" opertaion with:
@@ -219,7 +236,8 @@ Feature: Participate operation
       | ZMW6003          | FZZ999-C         | null                   | sdhr-record-released | Record released   | Condition     | FZZ999-C-local-withheld-record     |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
-    And the response body should have property "code" containing "sdhr-operation-success"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+    Given the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6003&&_source=https://api.hip.digital.health.nz/fhir/Location/FZZ999-C&identifier=FZZ999-C-local-withheld-record"
     Then the response status code should be 200
     And the response body should have property "type" containing "searchset"

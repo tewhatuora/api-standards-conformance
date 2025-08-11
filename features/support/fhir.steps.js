@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const {Given, When, Then} = require('@cucumber/cucumber');
+const {JSONPath} = require('jsonpath-plus');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
 
@@ -63,7 +64,6 @@ When('a POST request is made to {string} with the payload', async function(url) 
     method: 'POST',
     body: JSON.stringify(this.payload),
   });
-
   this.setResponse(response);
 });
 
@@ -110,6 +110,10 @@ Given('the API Consumer requests a client_credentials access token with scope {s
   this.addRequestHeader('authorization', `Bearer ${this.getToken(scope) || await this.getOAuthToken(scope)}`);
 });
 
+Given('the API Consumer requests a new client_credentials access token with scope {string}', async function(scope) {
+  this.addRequestHeader('authorization', `Bearer ${await this.getOAuthToken(scope)}`);
+});
+
 Then('the response header {string} should equal {string}', async function(headerName, expectedValue) {
   const response = this.getResponse();
   const headerValue = response.headers[headerName.toLowerCase()];
@@ -118,19 +122,24 @@ Then('the response header {string} should equal {string}', async function(header
 });
 
 Then('the response body should have property {string} containing {string}',
-    async function(propertyName, expectedValue) {
+    async function(jsonPath, expectedValue) {
       const response = this.getResponse();
+      const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
+      const actualValue = JSONPath({path, json: response.data, wrap: false});
+      console.log(response.data);
       assert.strictEqual(
-          response.data[propertyName],
+          String(actualValue),
           expectedValue,
-          `Expected property "${propertyName}" to contain "${expectedValue}", but got "${response.data[propertyName]}"`,
+          `Expected property at path "${jsonPath}" to be "${expectedValue}", but got "${actualValue}"`,
       );
     });
 
 Then('the response body should have property {string}', async function(propertyName) {
   const response = this.getResponse();
+  const path = `$.${propertyName}`;
+  const result = JSONPath({path, json: response.data});
   assert(
-      response.data.hasOwnProperty(propertyName),
+      result.length > 0,
       `Expected response body to have property "${propertyName}", but it was not found.`,
   );
 });
