@@ -147,6 +147,20 @@ Then('the search response body should have entry with property {string} containi
       assert(found, `Expected to find an entry with property "${jsonPath}" containing "${expectedValue}"`);
     });
 
+
+Then('the search response body should not have any entry with property {string} containing {string}',
+    async function(jsonPath, expectedValue) {
+      const response = this.getResponse();
+      const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
+      const entries = JSONPath({path: '$.entry[*]', json: response.data, wrap: false});
+      const found = entries?.some((entry) => {
+        const value = JSONPath({path, json: entry.resource, wrap: false});
+        return String(value) === expectedValue;
+      });
+      assert(!found, `Expected not to find any entry with property "${jsonPath}" containing "${expectedValue}"`);
+    });
+
+
 Then('the response body should have property {string}', async function(propertyName) {
   const response = this.getResponse();
   const path = `$.${propertyName}`;
