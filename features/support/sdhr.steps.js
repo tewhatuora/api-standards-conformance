@@ -1,12 +1,10 @@
 const assert = require('node:assert/strict');
 const {Given, Then} = require('@cucumber/cucumber');
-const {randomUUID} = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const {setDefaultTimeout} = require('@cucumber/cucumber');
-setDefaultTimeout(10 * 1000);
+setDefaultTimeout(30 * 1000);
 
-const TEST_NHI = 'ZMW0002';
 const TEST_CONDITION_ID = '63e3c5c7-c938-4cf8-8815-900fc5781d8e';
 
 const setupStandardConditionResource = (
@@ -107,7 +105,7 @@ const setupParticipateParametersResource = (
 
 Given(
     'a standard Condition resource for NHI {string} exists',
-    {timeout: 10000},
+    {timeout: 30000},
     async function(nhi) {
     // Add a bearer token if creds are present, unless instructed not to
       this.addRequestHeader(
@@ -121,7 +119,7 @@ Given(
       });
 
       // Wait for the resource to be indexed and available
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       this.setResponse(response);
       if (
         response.status !== 201 ||
@@ -138,7 +136,7 @@ Given(
 
 Given(
     'a Condition resource for NHI {string} with no meta.security tags exists',
-    {timeout: 10000},
+    {timeout: 30000},
     async function(nhi) {
     // Add a bearer token if creds are present, unless instructed not to
       this.addRequestHeader(
@@ -152,7 +150,7 @@ Given(
       });
 
       // Wait for the resource to be indexed and available
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       this.setResponse(response);
       if (
         response.status !== 201 ||
@@ -168,7 +166,7 @@ Given(
 );
 Given(
     /^a Condition resource for NHI "(?<nhi>\w+)" with meta\.security tag (?<security>{.+}) exists$/,
-    {timeout: 10000},
+    {timeout: 30000},
     async function(nhi, security) {
       const parsedTag = JSON.parse(security);
 
@@ -181,7 +179,7 @@ Given(
       this.setResponse(response);
 
       // Wait for the resource to be indexed and available
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
     },
 );
 
@@ -309,6 +307,7 @@ Then(
 
 Then(
     'the API consumer invokes the {string} operation with:',
+    {timeout: 30000},
     async function(operation, dataTable) {
       const operationName = operation.toLowerCase();
       const data = dataTable.hashes()[0];
@@ -330,10 +329,7 @@ Then(
           resourceType,
           localResourceId,
       ).call(this);
-      console.log(
-          `Response from invoking ${operationName} operation:`,
-          JSON.stringify(this.getResponse().data, null, 2),
-      );
+
       assert.ok(
           this.getResponse().status === 200,
           `Expected response status 200, but got ${this.getResponse().status}`,
@@ -437,14 +433,16 @@ const invokeParticipateOperation = (
         localResourceId,
     );
 
-    console.log(`Invoking ${operationName} operation with payload:`, JSON.stringify(payload, null, 2)); // );
+    console.log(`Invoking ${operationName} operation`); // with payload:`, JSON.stringify(payload, null, 2));
 
     const response = await this.request(`/${operationName}`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
 
+    console.log(JSON.stringify(response.data, null, 2));
+
     // Wait for the resource to be indexed and available
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     this.setResponse(response);
   };

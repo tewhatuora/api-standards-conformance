@@ -64,7 +64,6 @@ When('a POST request is made to {string} with the payload', async function(url) 
     method: 'POST',
     body: JSON.stringify(this.payload),
   });
-  console.log(response.data);
   this.setResponse(response);
 });
 
@@ -127,7 +126,6 @@ Then('the response body should have property {string} containing {string}',
       const response = this.getResponse();
       const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
       const actualValue = JSONPath({path, json: response.data, wrap: false});
-      console.log(response.data);
       assert.strictEqual(
           String(actualValue),
           expectedValue,

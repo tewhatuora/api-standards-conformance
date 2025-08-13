@@ -7,10 +7,10 @@ const STANDARDS_JSON_ENDPOINT = 'https://apistandards.digital.health.nz/assets/a
 
 function getStandards() {
   return fetch(STANDARDS_JSON_ENDPOINT)
-    .then((response) => response.json())
-    .then((data) => {
-      return data;
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
 }
 
 async function main() {
@@ -44,6 +44,7 @@ async function main() {
     name: 'Conformance results',
     brandTitle: 'Te Whatu Ora API Standards',
     theme: 'bootstrap',
+    columnLayout: 1,
     jsonFile: 'cucumber_report.json',
     output: `reports/conformance_results_${Date.now()}.html`,
     metadata: {
