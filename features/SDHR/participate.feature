@@ -260,9 +260,25 @@ Feature: Participate operation
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
-    Then the API consumer invokes the "$hnz-participate" operation with:
+    Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6006 | FZZ999-C   | true                  | null             | null              | null         | null            |
+    Then the response status code should be 200
+    And the response body should have property "resourceType" containing "OperationOutcome"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+
+  Scenario: 11. The hnz-participate operation is idempotent
+    Given a patient "ZMW6006" notifies "HNZ" of participation "opt-in"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    Then the API consumer invokes the "$hnz-participate" operation with:
+      | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
+      | ZMW6007 | null   | true                  | null             | null              | null         | null            |
+    Then the response status code should be 200
+    And the response body should have property "resourceType" containing "OperationOutcome"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+    Then the API consumer invokes the "$hnz-participate" operation with:
+      | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
+      | ZMW6007 | null   | true                  | null             | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
