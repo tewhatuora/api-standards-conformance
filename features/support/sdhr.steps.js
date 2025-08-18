@@ -440,7 +440,7 @@ const invokeParticipateOperation = (
       body: JSON.stringify(payload),
     });
 
-    console.log(JSON.stringify(response.data, null, 2));
+    // console.log(JSON.stringify(response.data, null, 2));
 
     // Wait for the resource to be indexed and available
     await new Promise((resolve) => setTimeout(resolve, 5000));
