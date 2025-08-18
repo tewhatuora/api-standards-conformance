@@ -140,6 +140,6 @@ Scenario: Update condition status
   Then the response status code should be 200
 ```
 
-See [Features](./features) for more examples
+See [Features](../../features) for more examples
 
 
