@@ -25,7 +25,7 @@ Feature: SDHR PMS Requirements
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "Condition"
     And the response body should have property id containing the saved ID
-        # API COnsumer updates the resource.
+    # API COnsumer updates the resource.
     When the response body is updated with:
       | propertyName                      | value     |
       | clinicalStatus.coding[0].code     | active    |

@@ -230,18 +230,7 @@ Then('the response body should have property {string}', async function (property
   );
 });
 
-Given(
-  'When an API Consumer updates the payload with the property {string} set to {string}',
-  async function (propertyName, value) {
-    const payload = this.getResponse().data;
-    const path = propertyName.replace(/\[(\d+)\]/g, '.$1');
-    set(payload, path, value);
-    this.payload = payload;
-    return this.payload;
-  }
-)
-
-Given(
+Then(
   'the API Consumer saves the response id',
   async function () {
     const response = this.getResponse();
