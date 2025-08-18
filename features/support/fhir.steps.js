@@ -7,7 +7,7 @@ const config = require('./config');
 const { set } = require('lodash');
 
 Then('the response status code should be {int}', async function (status) {
-  console.log('Response:', JSON.stringify(this.getResponse().data));
+  //console.log('Response:', JSON.stringify(this.getResponse().data));
   assert.strictEqual(this.getResponse().status, status);
 });
 
