@@ -8,7 +8,7 @@ const capabilityStatementUrl = (config.has && config.has('capabilityStatementUrl
     : '/metadata';
 
 When('the FHIR CapabilityStatement is retrieved', async function () {
-    const response = await this.request(capabilityStatementUrl, { method: 'GET' });  //fs.readFileSync('./features/SDHR/CapabilityStatement-SDHRCapabliityStatement.json', 'utf8');
+    const response = await this.request(capabilityStatementUrl, { method: 'GET' });
     assert.equal(response.status, 200, 'CapabilityStatement fetch failed');
     // console.log('CapabilityStatement response:', response);
     this.setResponse(response);
@@ -83,7 +83,7 @@ Then('all CapabilityStatement search parameters should be testable', async funct
                     continue;
                 }
                 const url = `/${res.type}?${sp.name}=${encodeURIComponent(fixture.value)}`;
-                console.log(`Testing optional parameter "${sp.name}" with URL: ${url}`);
+                // console.log(`Testing optional parameter "${sp.name}" with URL: ${url}`);
                 const response = await this.request(url, { method: 'GET' });
                 assert.equal(response.status, 200, `Expected 200 for ${url}`);
                 assert.equal(response.data.resourceType, 'Bundle', `Expected Bundle for ${url}`);
@@ -105,7 +105,7 @@ Then('all CapabilityStatement search parameters should be testable', async funct
             }
             const optQuery = `${mandatoryQueryParts.join('&')}&${sp.name}=${encodeURIComponent(fixture.value)}`;
             url = `/${res.type}?${optQuery}`;
-            console.log(`Testing optional parameter "${sp.name}" with URL: ${url}`);
+            // console.log(`Testing optional parameter "${sp.name}" with URL: ${url}`);
             response = await this.request(url, { method: 'GET' });
 
             assert.equal(response.status, 200, `Expected 200 for ${url}`);
