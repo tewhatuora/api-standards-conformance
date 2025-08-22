@@ -26,12 +26,12 @@ module.exports = {
   ],
 
   'rules': {
-    'cucumber/async-then': 2,
+    'cucumber/async-then': 1,
     'cucumber/expression-type': 2,
     'cucumber/no-restricted-tags': [2, 'wip', 'broken', 'foo'],
     'cucumber/no-arrow-functions': 2,
     'require-jsdoc': 'off',
-    'new-cap': ['error', {'capIsNewExceptions': ['Given', 'Then', 'When']}],
+    'new-cap': ['error', {'capIsNewExceptions': ['Given', 'Then', 'When', 'JSONPath']}],
     'max-len': ['error', {'code': 240}],
   },
 };
