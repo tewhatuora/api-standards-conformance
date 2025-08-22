@@ -5,7 +5,7 @@ convict.addFormat(require('convict-format-with-validator').url);
 
 const {ENV} = process.env;
 console.log(`Environment: ${ENV}`);
-//const CONFIG_FILENAME = ENV === 'test' ? 'config.test.json' : 'config.json';
+// const CONFIG_FILENAME = ENV === 'test' ? 'config.test.json' : 'config.json';
 const CONFIG_FILENAME = ENV ? 'config.'+ENV+'.json' : 'config.json';
 console.log(`Using configuration file: ${CONFIG_FILENAME}`);
 const CONFIG_PATH = path.join(__dirname, `../../${CONFIG_FILENAME}`);

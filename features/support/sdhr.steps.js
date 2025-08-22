@@ -165,7 +165,7 @@ Given(
     },
 );
 Given(
-    /^a Condition resource for NHI "(?<nhi>\w+)" with meta\.security tag (?<security>{.+}) exists$/,
+    'a Condition resource for NHI {string} with meta.security tag exists',
     {timeout: 30000},
     async function(nhi, security) {
       const parsedTag = JSON.parse(security);
@@ -220,7 +220,7 @@ Then('the response bundle should contain 1 entry', async function() {
 });
 
 Then(
-    /^the response bundle should include a meta\.security tag (.+)$/,
+    'the response bundle should include a meta.security tag',
     async function(security) {
       const response = this.getResponse();
       const tags = response.data?.meta?.security ?? [];

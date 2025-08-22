@@ -21,12 +21,12 @@ function lowercaseKeys(obj) {
 
 // Function to request OAuth token
 async function getOAuthToken(scope) {
-  const tokenEndpoint = config.get('oauth.tokenEndpoint');//process.env['OAUTH_URL'];
+  const tokenEndpoint = config.get('oauth.tokenEndpoint');// process.env['OAUTH_URL'];
   const clientCredentials = {
-    client_id: config.get('oauth.clientId'), //process.env['OAUTH_CLIENT_ID'],
-    client_secret: config.get('oauth.clientSecret'),// process.env['OAUTH_CLIENT_SECRET'],
+    client_id: config.get('oauth.clientId'), // process.env['OAUTH_CLIENT_ID'],
+    client_secret: config.get('oauth.clientSecret'), // process.env['OAUTH_CLIENT_SECRET'],
     grant_type: 'client_credentials',
-    scope: scope || config.get('oauth.defaultScope'),//'system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus system/Consent.crus',
+    scope: scope || config.get('oauth.defaultScope'), // 'system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus system/Consent.crus',
   };
 
   // Prepare the body of the POST request
@@ -41,7 +41,7 @@ async function getOAuthToken(scope) {
       body: searchParams,
     });
     const responseData = await tokenResponse.json(); // assuming JSON response
-    //console.log('OAuth token response:', responseData);
+    // console.log('OAuth token response:', responseData);
     if (!tokenResponse.ok) {
       throw new Error(`HTTP error! status: ${tokenResponse.status}`);
     }
@@ -81,6 +81,7 @@ async function request(
   }
 
   // Add request context if present, unless instructed not to
+  // eslint-disable-next-line
   this.addRequestHeader('request-context', 'eyJ1c2VySWRlbnRpZmllciI6IkFBQkJDQyIsInVzZXJSb2xlIjoiUFJPViIsInNlY29uZGFyeUlkZW50aWZpZXIiOnsidXNlIjoiYWRtaW4iLCJzeXN0ZW0iOiJodHRwczovL3N0YW5kYXJkcy5kaWdpdGFsLmhlYWx0aC5uei5ucy9ocGktcGVyc29uLWlkIiwidmFsdWUiOiIxMjM0NTY3OCJ9LCJwdXJwb3NlT2ZVc2UiOlsiVFJFQVQiLCJQVUJITFRIIl0sInVzZXJGdWxsTmFtZSI6IkRyLiBKYW5lIERvZSIsIm9yZ0lkZW50aWZpZXIiOiJPMTIzNDUiLCJmYWNpbGl0eUlkZW50aWZpZXIiOiJGMTIzNDUifQ==');
 
   const headers = lowercaseKeys({
