@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { setDefaultTimeout } = require('@cucumber/cucumber');
 setDefaultTimeout(30 * 1000);
-const fhirpath = require('fhirpath');
+const { evaluate, r4Model } = require('fhirpath');
 
 const TEST_CONDITION_ID = '63e3c5c7-c938-4cf8-8815-900fc5781d8e';
 
@@ -19,6 +19,72 @@ const setupStandardConditionResource = (
   const payload = JSON.parse(fileContent);
   payload.subject.reference = `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
   // payload.id = TEST_NHI;
+  if (metaSecurity) {
+    payload.meta.security = [metaSecurity];
+  }
+  if (facilityId) {
+    payload.meta.source = `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`;
+  }
+  if (localResourceId) {
+    payload.identifier[0].value = localResourceId;
+  }
+  return payload;
+};
+
+const setupStandardAllergyIntoleranceResource = (
+  nhi,
+  metaSecurity,
+  facilityId,
+  localResourceId,
+) => {
+  const filePath = path.join(__dirname, `../../payloads/AllergyIntolerance.json`);
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const payload = JSON.parse(fileContent);
+  payload.patient.reference = `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
+  if (metaSecurity) {
+    payload.meta.security = [metaSecurity];
+  }
+  if (facilityId) {
+    payload.meta.source = `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`;
+  }
+  if (localResourceId) {
+    payload.identifier[0].value = localResourceId;
+  }
+  return payload;
+};
+
+const setupStandardEncounterResource = (
+  nhi,
+  metaSecurity,
+  facilityId,
+  localResourceId,
+) => {
+  const filePath = path.join(__dirname, `../../payloads/Encounter.json`);
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const payload = JSON.parse(fileContent);
+  payload.subject.reference = `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
+  if (metaSecurity) {
+    payload.meta.security = [metaSecurity];
+  }
+  if (facilityId) {
+    payload.meta.source = `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`;
+  }
+  if (localResourceId) {
+    payload.identifier[0].value = localResourceId;
+  }
+  return payload;
+};
+
+const setupStandardObservationResource = (
+  nhi,
+  metaSecurity,
+  facilityId,
+  localResourceId,
+) => {
+  const filePath = path.join(__dirname, `../../payloads/Observation.json`);
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const payload = JSON.parse(fileContent);
+  payload.subject.reference = `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
   if (metaSecurity) {
     payload.meta.security = [metaSecurity];
   }
@@ -187,13 +253,40 @@ Given(
 Given(
   'a valid {string} payload for NHI {string} at facility {string} with local ID {string}',
   function (resourceType, nhi, facilityId, localResourceId) {
-    this.payload = setupStandardConditionResource(
-      nhi,
-      null,
-      facilityId,
-      localResourceId,
-    );
-  },
+    switch (resourceType.toLowerCase()) {
+      case 'condition':
+        this.payload = setupStandardConditionResource(
+          nhi,
+          null,
+          facilityId,
+          localResourceId,
+        );
+        break;
+      case 'allergyintolerance':
+        this.payload = setupStandardAllergyIntoleranceResource(
+          nhi,
+          facilityId,
+          localResourceId,
+        );
+        break;
+      case 'encounter':
+        this.payload = setupStandardEncounterResource(
+          nhi,
+          facilityId,
+          localResourceId,
+        );
+        break;
+      case 'observation':
+        this.payload = setupStandardObservationResource(
+          nhi,
+          facilityId,
+          localResourceId,
+        );
+        break;
+      default:
+        throw new Error(`Unsupported resource type: ${resourceType}`);
+    };
+  }
 );
 
 Then(
@@ -435,14 +528,15 @@ const invokeParticipateOperation = (
       localResourceId,
     );
 
-    console.log(`Invoking ${operationName} operation with payload:`, JSON.stringify(payload, null, 2));
+    // console.log(`Invoking ${operationName} operation with payload:`, JSON.stringify(payload, null, 2));
+    console.log(`Invoking ${operationName}`);;
 
     const response = await this.request(`/${operationName}`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
 
-    console.log(JSON.stringify(response.data, null, 2));
+    // console.log(JSON.stringify(response.data, null, 2));
 
     // Wait for the resource to be indexed and available
     await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -464,18 +558,23 @@ Given("the profile {string}", async function (url) {
     .flatMap(e => e.constraint || [])
     .map(c => ({ key: c.key, expr: c.expression, human: c.human }));
 
-  console.log("Mandatory properties:", this.mandatoryElements);
-  console.log("Constraints:", this.constraints);
+  console.log("Mandatory properties for profile:", url, this.mandatoryElements);
+  this.attach(
+    `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+      <strong>Mandatory properties for profile:</strong> ${url}<br>
+      <pre>${JSON.stringify(this.mandatoryElements, null, 2)}</pre>
+    </div>`,
+    'text/html'
+  );
+  console.log("Constraints count:", this.constraints.length);
 });
 
-// let variations = [];
-
 When("I create payload variations violating each constraint", function () {
-  variations = this.constraints.map(c => {
+  constraintVariations = this.constraints.map(c => {
     const clone = JSON.parse(JSON.stringify(this.payload));
 
     // Try to break the constraint expression
-    const result = fhirpath.evaluate(this.payload, c.expr, {}, fhirpath.r4Model);
+    const result = evaluate(this.payload, c.expr, {}, r4Model);
     if (result && result.length > 0 && result.every(x => x === true)) {
       // crude: drop the first field in the expression
       const firstField = c.expr.split(/[ .]/)[0];
@@ -493,17 +592,23 @@ When("I create payload variations violating each constraint", function () {
   });
 });
 
-When("each variation is POSTed to {string}", async function (url) {
-  for (const v of variations) {
-    this.payload = v.resource;   // swap in the broken payload
-    await this.runStep(`a POST request is made to "${url}" with the payload`);
-    const resp = this.getResponse();
-    v.status = resp.status;
+When("each constraint variation is POSTed to {string}", async function (url) {
+  for (const v of constraintVariations) {
+    this.payload = v.resource;
+    this.addRequestHeader(
+      'authorization',
+      `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+    );
+    const response = await this.request(url, {
+      method: 'POST',
+      body: JSON.stringify(v.resource),
+    });
+    v.status = response.status;
     v.outcome = response.data;
   }
 });
 
-Then("each variation should fail with OperationOutcome", function () {
+Then("each constraint variation should fail with OperationOutcome", function () {
   for (const v of variations) {
     assert(
       v.status >= 400,
@@ -545,35 +650,59 @@ When("each mandatory-variation is POSTed to {string}", async function (url) {
     });
     v.status = response.status;
     v.outcome = response.data;
-    console.log(`Response data for ${v.property}:`, JSON.stringify(v.outcome, null, 2));
+    // console.log(`Response data for ${v.property}:`, JSON.stringify(v.outcome, null, 2));
   }
 });
 
-Then("each mandatory variation should fail with OperationOutcome", function () {
+Then("each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid", function () {
   for (const v of this.mandatoryVariations) {
-    console.log(`Checking mandatory variation for property: ${v.property}`);
+    console.log(`Checking OperationOutcome response when missing property: ${v.property}`);
+    console.log(evaluate(v.outcome, 'issue.code or issue.details.coding.code'));
+    this.attach(
+      `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+        <strong>Missing property:</strong> ${v.property}<br>
+        <strong>HTTP Response Status:</strong> ${v.status}<br>
+        <pre>Outccome: ${JSON.stringify(v.outcome, null, 2)}</pre>
+      </div>`,
+      'text/html'
+    )
     assert.ok(v.status >= 400, `Expected failure for mandatory property ${v.property}, got ${v.status}`);
     assert(
       v.outcome.resourceType === "OperationOutcome",
       `Expected OperationOutcome when removing ${v.property}, but got ${JSON.stringify(v.outcome)}`
     );
-    // assert(
-    //   v.outcome.isssue[0].details.coding[0].code === "BAD_REQUEST",
-    //   `Expected code BAD_REQUEST when removing ${v.property}, but got ${JSON.stringify(v.outcome)}`
-    // );
-    // assert(
-    //   v.outcome.issue[0].diagnostics.includes(`${v.property}`),
-    //   `Expected diagnostics to include "Missing required element ${v.property}", but got ${JSON.stringify(v.outcome.issue[0].diagnostics)}`
-    // );
+    assert(
+      evaluate(v.outcome, 'issue.code').includes('invalid'),
+      `Expected issue code "invalid" when removing ${v.property}, but got ${JSON.stringify(v.outcome.issue.map(i => i.code))}`
+    )
   }
 });
 
 function deletePropertyByPath(obj, path) {
   const parts = path.split('.');
   let target = obj;
+
   for (let i = 0; i < parts.length - 1; i++) {
-    if (!target[parts[i]]) return;
-    target = target[parts[i]];
+    if (Array.isArray(target[parts[i]])) {
+      // Traverse each element in the array
+      target = target[parts[i]].map(el => el);
+    } else if (target[parts[i]] !== undefined) {
+      target = target[parts[i]];
+    } else {
+      return;
+    }
   }
-  delete target[parts[parts.length - 1]];
+
+  const last = parts[parts.length - 1];
+
+  if (Array.isArray(target)) {
+    // Delete property from each object in the array
+    target.forEach(el => {
+      if (el && typeof el === 'object') {
+        delete el[last];
+      }
+    });
+  } else if (target && typeof target === 'object') {
+    delete target[last];
+  }
 }

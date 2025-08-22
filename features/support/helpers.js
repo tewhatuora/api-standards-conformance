@@ -99,8 +99,8 @@ async function request(
 
   const fetchUrl = url.match(/^http/) ? url : `${config.get('baseUrl')}${processEndpoint(url, this)}`;
 
-  console.log(`Making request to ${fetchUrl} with method ${method} and headers:`, headers);
-  console.log(`Request body:`, body);
+  console.log(`Making request to ${fetchUrl} with method ${method}`);// and headers:`, headers);
+  // console.log(`Request body:`, body);
 
   if (options.debug) {
     this.logger.debug('Making request', {
