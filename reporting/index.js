@@ -44,6 +44,7 @@ async function main() {
     name: 'Conformance results',
     brandTitle: 'Te Whatu Ora API Standards',
     theme: 'bootstrap',
+    columnLayout: 1,
     jsonFile: 'cucumber_report.json',
     output: `reports/report.html`,
     metadata: {

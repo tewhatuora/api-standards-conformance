@@ -20,13 +20,13 @@ function lowercaseKeys(obj) {
 }
 
 // Function to request OAuth token
-async function getOAuthToken() {
-  const tokenEndpoint = process.env['OAUTH_URL'];
+async function getOAuthToken(scope) {
+  const tokenEndpoint = config.get('oauth.tokenEndpoint');// process.env['OAUTH_URL'];
   const clientCredentials = {
-    client_id: process.env['OAUTH_CLIENT_ID'],
-    client_secret: process.env['OAUTH_CLIENT_SECRET'],
+    client_id: config.get('oauth.clientId'), // process.env['OAUTH_CLIENT_ID'],
+    client_secret: config.get('oauth.clientSecret'), // process.env['OAUTH_CLIENT_SECRET'],
     grant_type: 'client_credentials',
-    scope: config.get('oauth.defaultScope'),
+    scope: scope || config.get('oauth.defaultScope'), // 'system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus system/Consent.crus',
   };
 
   // Prepare the body of the POST request
@@ -41,6 +41,7 @@ async function getOAuthToken() {
       body: searchParams,
     });
     const responseData = await tokenResponse.json(); // assuming JSON response
+    // console.log('OAuth token response:', responseData);
     if (!tokenResponse.ok) {
       throw new Error(`HTTP error! status: ${tokenResponse.status}`);
     }
@@ -70,9 +71,9 @@ async function request(
   this.addRequestHeader('content-type', 'application/json');
 
   // // Add a bearer token if creds are present, unless instructed not to
-  if (config.get('oauth.tokenEndpoint') && options.skipAuth !== true) {
-    this.addRequestHeader('authorization', `Bearer ${this.getToken() || await this.getOAuthToken()}`);
-  }
+  // if (config.get('oauth.tokenEndpoint') && options.skipAuth !== true) {
+  //   this.addRequestHeader('authorization', `Bearer ${this.getToken() || await this.getOAuthToken()}`);
+  // }
 
   // Add an API key if present, unless instructed not to
   if (process.env['API_KEY'] && options.skipApiKey !== true) {
@@ -80,7 +81,8 @@ async function request(
   }
 
   // Add request context if present, unless instructed not to
-  this.addRequestHeader('request-context', process.env['REQUEST_CONTEXT']);
+  // eslint-disable-next-line
+  this.addRequestHeader('request-context', 'eyJ1c2VySWRlbnRpZmllciI6IkFBQkJDQyIsInVzZXJSb2xlIjoiUFJPViIsInNlY29uZGFyeUlkZW50aWZpZXIiOnsidXNlIjoiYWRtaW4iLCJzeXN0ZW0iOiJodHRwczovL3N0YW5kYXJkcy5kaWdpdGFsLmhlYWx0aC5uei5ucy9ocGktcGVyc29uLWlkIiwidmFsdWUiOiIxMjM0NTY3OCJ9LCJwdXJwb3NlT2ZVc2UiOlsiVFJFQVQiLCJQVUJITFRIIl0sInVzZXJGdWxsTmFtZSI6IkRyLiBKYW5lIERvZSIsIm9yZ0lkZW50aWZpZXIiOiJPMTIzNDUiLCJmYWNpbGl0eUlkZW50aWZpZXIiOiJGMTIzNDUifQ==');
 
   const headers = lowercaseKeys({
     ...requestHeaders,
@@ -98,6 +100,15 @@ async function request(
 
   const fetchUrl = url.match(/^http/) ? url : `${config.get('baseUrl')}${processEndpoint(url, this)}`;
 
+  // console.log(`Making request to ${fetchUrl} with method ${method} and headers:`, headers);
+  // console.log(`Request body:`, body);
+
+  if (options.debug) {
+    this.logger.debug('Making request', {
+      fetchUrl,
+      headers,
+    });
+  }
   if (options.debug) {
     this.logger.debug('Making request', {
       fetchUrl,
@@ -162,6 +173,11 @@ async function request(
         this.logger.error('Error making http request', {
           url,
           fetchOptions,
+          errorMessage: err?.message,
+          errorName: err?.name,
+          errorStack: err?.stack,
+          errorToString: err?.toString?.(),
+          errorJSON: JSON.stringify(err, Object.getOwnPropertyNames(err)),
           errorMessage: err?.message,
           errorName: err?.name,
           errorStack: err?.stack,

@@ -60,16 +60,8 @@ class ApiStandardsWorld extends World {
     return this.requestHeaders;
   }
 
-  removeRequestHeader(name, value) {
-    delete this.requestHeaders[name];
-  }
-
-  setResourceIds(ids) {
-    this.resourceIds = ids;
-  }
-
-  getResourceIds() {
-    return this.resourceIds;
+  removeRequestHeader(name) {
+    this.requestHeaders[name] = '__DELETE__';
   }
 }
 
