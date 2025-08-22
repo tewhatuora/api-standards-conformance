@@ -134,11 +134,12 @@ Feature: Participate operation
 
   Scenario: 6. Patient ZMW6004 opts in to SDHR participation at their enrolled practice FZZ999-D and opts out at HNZ
     # Opt-in at HNZ to remove any existing opt-out if any.
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Given the API consumer invokes the "$hnz-participate" operation with:
     | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
     | ZMW6004 | null   | true                  | null             | null              | null         | null            |
     Given a patient "ZMW6004" notifies "FZZ999-D" of participation "opt-in"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a new client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6004 | FZZ999-D   | true                   | null  | null        | null         | null            |
