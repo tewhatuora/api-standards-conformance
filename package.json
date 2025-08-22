@@ -11,6 +11,7 @@
     "cucumber-html-reporter": "^7.1.1",
     "dotenv": "^16.4.5",
     "fhir": "^4.12.0",
+    "fhirpath": "^4.5.1",
     "jsonpath-plus": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "uuid": "^9.0.1",
@@ -26,6 +27,8 @@
     "run:report": "./run_tests.sh",
     "test:docker": "docker run -it -v $(pwd)/config.json:/usr/src/app/config.json api-standards-conformance test",
     "test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json report",
+    "test:local": "ENV=local cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
+    "test:test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
     "test:mock": "ENV=mock cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json"
   },
   "devDependencies": {

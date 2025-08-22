@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const {Given, When, Then} = require('@cucumber/cucumber');
-const {jsonPath} = require('jsonpath-plus');
+const {JSONPath} = require('jsonpath-plus');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
 // const {set} = require('./helpers');
@@ -89,7 +89,7 @@ When(
         throw new Error('No saved ID found. Please ensure the response has been saved before making a PUT request.');
       }
       url = `${url}/${this.savedId}`;
-      console.log('Making PUT request with Payload:', JSON.stringify(this.payload, null, 2));
+      // console.log('Making PUT request with Payload:', JSON.stringify(this.payload, null, 2));
       const response = await this.request(url, {
         method: 'PUT',
         body: JSON.stringify(this.payload),
@@ -189,11 +189,11 @@ Then('the response body should have property {string} containing {string}',
     async function(jsonPath, expectedValue) {
       const response = this.getResponse();
       const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
-      const actualValue = jsonPath({path, json: response.data, wrap: false});
+      const actualValue = JSONPath({path, json: response.data, wrap: false});
       assert.strictEqual(
           String(actualValue),
           expectedValue,
-          `Expected property at path "${jsonPath}" to be "${expectedValue}", but got "${actualValue}"`,
+          `Expected property at path "${JSONPath}" to be "${expectedValue}", but got "${actualValue}"`,
       );
     });
 
@@ -201,9 +201,9 @@ Then('the search response body should have entry with property {string} containi
     async function(jsonPath, expectedValue) {
       const response = this.getResponse();
       const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
-      const entries = jsonPath({path: '$.entry[*]', json: response.data, wrap: false});
+      const entries = JSONPath({path: '$.entry[*]', json: response.data, wrap: false});
       const found = entries?.some((entry) => {
-        const value = jsonPath({path, json: entry.resource, wrap: false});
+        const value = JSONPath({path, json: entry.resource, wrap: false});
         return String(value) === expectedValue;
       });
       assert(found, `Expected to find an entry with property "${jsonPath}" containing "${expectedValue}" - response data: ${JSON.stringify(response.data, null, 2)}`);
@@ -214,19 +214,18 @@ Then('the search response body should not have any entry with property {string} 
     async function(jsonPath, expectedValue) {
       const response = this.getResponse();
       const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
-      const entries = jsonPath({path: '$.entry[*]', json: response.data, wrap: false});
+      const entries = JSONPath({path: '$.entry[*]', json: response.data, wrap: false});
       const found = entries?.some((entry) => {
-        const value = jsonPath({path, json: entry.resource, wrap: false});
+        const value = JSONPath({path, json: entry.resource, wrap: false});
         return String(value) === expectedValue;
       });
       assert(!found, `Expected not to find any entry with property "${jsonPath}" containing "${expectedValue}"`);
     });
 
-
 Then('the response body should have property {string}', async function(propertyName) {
   const response = this.getResponse();
   const path = `$.${propertyName}`;
-  const result = jsonPath({path, json: response.data});
+  const result = JSONPath({path, json: response.data});
   assert(
       result.length > 0,
       `Expected response body to have property "${propertyName}", but it was not found.`,

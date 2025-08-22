@@ -1,9 +1,10 @@
 const assert = require('node:assert/strict');
-const {Given, Then} = require('@cucumber/cucumber');
+const {Given, When, Then} = require('@cucumber/cucumber');
 const path = require('path');
 const fs = require('fs');
 const {setDefaultTimeout} = require('@cucumber/cucumber');
 setDefaultTimeout(30 * 1000);
+const {evaluate, r4Model} = require('fhirpath');
 
 const TEST_CONDITION_ID = '63e3c5c7-c938-4cf8-8815-900fc5781d8e';
 
@@ -18,6 +19,72 @@ const setupStandardConditionResource = (
   const payload = JSON.parse(fileContent);
   payload.subject.reference = `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
   // payload.id = TEST_NHI;
+  if (metaSecurity) {
+    payload.meta.security = [metaSecurity];
+  }
+  if (facilityId) {
+    payload.meta.source = `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`;
+  }
+  if (localResourceId) {
+    payload.identifier[0].value = localResourceId;
+  }
+  return payload;
+};
+
+const setupStandardAllergyIntoleranceResource = (
+    nhi,
+    metaSecurity,
+    facilityId,
+    localResourceId,
+) => {
+  const filePath = path.join(__dirname, `../../payloads/AllergyIntolerance.json`);
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const payload = JSON.parse(fileContent);
+  payload.patient.reference = `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
+  if (metaSecurity) {
+    payload.meta.security = [metaSecurity];
+  }
+  if (facilityId) {
+    payload.meta.source = `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`;
+  }
+  if (localResourceId) {
+    payload.identifier[0].value = localResourceId;
+  }
+  return payload;
+};
+
+const setupStandardEncounterResource = (
+    nhi,
+    metaSecurity,
+    facilityId,
+    localResourceId,
+) => {
+  const filePath = path.join(__dirname, `../../payloads/Encounter.json`);
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const payload = JSON.parse(fileContent);
+  payload.subject.reference = `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
+  if (metaSecurity) {
+    payload.meta.security = [metaSecurity];
+  }
+  if (facilityId) {
+    payload.meta.source = `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`;
+  }
+  if (localResourceId) {
+    payload.identifier[0].value = localResourceId;
+  }
+  return payload;
+};
+
+const setupStandardObservationResource = (
+    nhi,
+    metaSecurity,
+    facilityId,
+    localResourceId,
+) => {
+  const filePath = path.join(__dirname, `../../payloads/Observation.json`);
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const payload = JSON.parse(fileContent);
+  payload.subject.reference = `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
   if (metaSecurity) {
     payload.meta.security = [metaSecurity];
   }
@@ -184,14 +251,41 @@ Given(
 );
 
 Given(
-    'a valid Condition payload for NHI {string} at facility {string} with local ID {string}',
-    function(nhi, facilityId, localResourceId) {
-      this.payload = setupStandardConditionResource(
-          nhi,
-          null,
-          facilityId,
-          localResourceId,
-      );
+    'a valid {string} payload for NHI {string} at facility {string} with local ID {string}',
+    function(resourceType, nhi, facilityId, localResourceId) {
+      switch (resourceType.toLowerCase()) {
+        case 'condition':
+          this.payload = setupStandardConditionResource(
+              nhi,
+              null,
+              facilityId,
+              localResourceId,
+          );
+          break;
+        case 'allergyintolerance':
+          this.payload = setupStandardAllergyIntoleranceResource(
+              nhi,
+              facilityId,
+              localResourceId,
+          );
+          break;
+        case 'encounter':
+          this.payload = setupStandardEncounterResource(
+              nhi,
+              facilityId,
+              localResourceId,
+          );
+          break;
+        case 'observation':
+          this.payload = setupStandardObservationResource(
+              nhi,
+              facilityId,
+              localResourceId,
+          );
+          break;
+        default:
+          throw new Error(`Unsupported resource type: ${resourceType}`);
+      };
     },
 );
 
@@ -299,7 +393,7 @@ Then(
       const response = this.getResponse();
       assert(
           !response.data.hasOwnProperty(propertyName) ||
-        response.data[propertyName] !== expectedValue,
+      response.data[propertyName] !== expectedValue,
           `Expected response body not to have property "${propertyName}" containing "${expectedValue}", but it was found.`,
       );
     },
@@ -348,6 +442,7 @@ Then(
       );
     },
 );
+
 
 const setupConsentForNHI = (nhi, action) =>
   async function() {
@@ -433,7 +528,8 @@ const invokeParticipateOperation = (
         localResourceId,
     );
 
-    console.log(`Invoking ${operationName} operation`); // with payload:`, JSON.stringify(payload, null, 2));
+    // console.log(`Invoking ${operationName} operation with payload:`, JSON.stringify(payload, null, 2));
+    console.log(`Invoking ${operationName}`); ;
 
     const response = await this.request(`/${operationName}`, {
       method: 'POST',
@@ -446,3 +542,167 @@ const invokeParticipateOperation = (
     await new Promise((resolve) => setTimeout(resolve, 5000));
     this.setResponse(response);
   };
+
+// Start profile compliance steps
+
+Given('the profile {string}', async function(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch profile: ${res.statusText}`);
+  profileDef = await res.json();
+
+  this.mandatoryElements = profileDef.snapshot.element
+      .filter((e) => e.min >= 1 && e.path.includes('.'))
+      .map((e) => e.path.replace(/^AllergyIntolerance\./, ''));
+
+  this.constraints = profileDef.snapshot.element
+      .flatMap((e) => e.constraint || [])
+      .map((c) => ({key: c.key, expr: c.expression, human: c.human}));
+
+  console.log('Mandatory properties for profile:', url, this.mandatoryElements);
+  this.attach(
+      `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+      <strong>Mandatory properties for profile:</strong> ${url}<br>
+      <pre>${JSON.stringify(this.mandatoryElements, null, 2)}</pre>
+    </div>`,
+      'text/html',
+  );
+  console.log('Constraints count:', this.constraints.length);
+});
+
+When('I create payload variations violating each constraint', function() {
+  constraintVariations = this.constraints.map((c) => {
+    const clone = JSON.parse(JSON.stringify(this.payload));
+
+    // Try to break the constraint expression
+    const result = evaluate(this.payload, c.expr, {}, r4Model);
+    if (result && result.length > 0 && result.every((x) => x === true)) {
+      // crude: drop the first field in the expression
+      const firstField = c.expr.split(/[ .]/)[0];
+      if (firstField && clone[firstField]) {
+        delete clone[firstField];
+      }
+    }
+
+    return {
+      key: c.key,
+      expr: c.expr,
+      human: c.human,
+      resource: clone,
+    };
+  });
+});
+
+When('each constraint variation is POSTed to {string}', async function(url) {
+  for (const v of constraintVariations) {
+    this.payload = v.resource;
+    this.addRequestHeader(
+        'authorization',
+        `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+    );
+    const response = await this.request(url, {
+      method: 'POST',
+      body: JSON.stringify(v.resource),
+    });
+    v.status = response.status;
+    v.outcome = response.data;
+  }
+});
+
+Then('each constraint variation should fail with OperationOutcome', function() {
+  for (const v of variations) {
+    assert(
+        v.status >= 400,
+        `Expected failure for constraint ${v.key} (${v.human}), got ${v.status}`,
+    );
+    assert(
+        v.outcome.resourceType === 'OperationOutcome',
+        `Expected OperationOutcome for constraint ${v.key} (${v.human}), but got ${JSON.stringify(v.outcome)}`,
+    );
+  }
+});
+
+When('I remove each mandatory property from the payload', function() {
+  this.mandatoryVariations = this.mandatoryElements.map((p) => {
+    const clone = JSON.parse(JSON.stringify(this.payload));
+    const parts = p.split('.');
+    let target = clone;
+
+    for (let i = 0; i < parts.length - 1; i++) {
+      if (!target[parts[i]]) return {property: parts.slice(1).join('.'), resource: clone};
+      target = target[parts[i]];
+    }
+    delete target[parts[parts.length - 1]];
+
+    return {property: p, resource: clone};
+  });
+});
+
+When('each mandatory-variation is POSTed to {string}', async function(url) {
+  for (const v of this.mandatoryVariations) {
+    deletePropertyByPath(v.resource, v.property);
+    this.addRequestHeader(
+        'authorization',
+        `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+    );
+    const response = await this.request(url, {
+      method: 'POST',
+      body: JSON.stringify(v.resource),
+    });
+    v.status = response.status;
+    v.outcome = response.data;
+    // console.log(`Response data for ${v.property}:`, JSON.stringify(v.outcome, null, 2));
+  }
+});
+
+Then('each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid', function() {
+  for (const v of this.mandatoryVariations) {
+    console.log(`Checking OperationOutcome response when missing property: ${v.property}`);
+    console.log(evaluate(v.outcome, 'issue.code or issue.details.coding.code'));
+    this.attach(
+        `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+        <strong>Missing property:</strong> ${v.property}<br>
+        <strong>HTTP Response Status:</strong> ${v.status}<br>
+        <pre>Outccome: ${JSON.stringify(v.outcome, null, 2)}</pre>
+      </div>`,
+        'text/html',
+    );
+    assert.ok(v.status >= 400, `Expected failure for mandatory property ${v.property}, got ${v.status}`);
+    assert(
+        v.outcome.resourceType === 'OperationOutcome',
+        `Expected OperationOutcome when removing ${v.property}, but got ${JSON.stringify(v.outcome)}`,
+    );
+    assert(
+        evaluate(v.outcome, 'issue.code').includes('invalid'),
+        `Expected issue code "invalid" when removing ${v.property}, but got ${JSON.stringify(v.outcome.issue.map((i) => i.code))}`,
+    );
+  }
+});
+
+function deletePropertyByPath(obj, path) {
+  const parts = path.split('.');
+  let target = obj;
+
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (Array.isArray(target[parts[i]])) {
+      // Traverse each element in the array
+      target = target[parts[i]].map((el) => el);
+    } else if (target[parts[i]] !== undefined) {
+      target = target[parts[i]];
+    } else {
+      return;
+    }
+  }
+
+  const last = parts[parts.length - 1];
+
+  if (Array.isArray(target)) {
+    // Delete property from each object in the array
+    target.forEach((el) => {
+      if (el && typeof el === 'object') {
+        delete el[last];
+      }
+    });
+  } else if (target && typeof target === 'object') {
+    delete target[last];
+  }
+}
