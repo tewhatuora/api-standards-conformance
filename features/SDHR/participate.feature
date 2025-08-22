@@ -186,7 +186,7 @@ Feature: Participate operation
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
-    Given a valid Condition payload for NHI "ZMW6007" at facility "FZZ999-B" with local ID "null"
+    Given a valid "Condition" payload for NHI "ZMW6007" at facility "FZZ999-B" with local ID "null"
     And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 201
@@ -194,7 +194,7 @@ Feature: Participate operation
     When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6007"
     Then the response status code should be 200
     # Patient has opted out at FZZ999-B so should not be able to create a resource
-    Given a valid Condition payload for NHI "ZMW6007" at facility "FZZ999-C" with local ID "null"
+    Given a valid "Condition" payload for NHI "ZMW6007" at facility "FZZ999-C" with local ID "null"
     When a POST request is made to "/Condition" with the payload
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
