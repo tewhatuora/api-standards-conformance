@@ -121,7 +121,7 @@ function processEndpoint(endpointUrl, context) {
     }
   }
 
-  //console.log(`Original endpoint URL: ${endpointUrl}`);
+  // console.log(`Original endpoint URL: ${endpointUrl}`);
   if (newEndpointUrl) console.log(`Processed endpoint URL: ${newEndpointUrl}`);
 
   return newEndpointUrl || endpointUrl; // Return the processed URL or the original if no replacements were made

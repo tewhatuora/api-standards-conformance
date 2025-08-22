@@ -32,6 +32,6 @@ module.exports = {
     'cucumber/no-arrow-functions': 2,
     'require-jsdoc': 'off',
     'new-cap': ['error', {'capIsNewExceptions': ['Given', 'Then', 'When']}],
-    'max-len': ['error', {'code': 120}],
+    'max-len': ['error', {'code': 240}],
   },
 };

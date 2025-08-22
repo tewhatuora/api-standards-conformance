@@ -4,6 +4,10 @@
   "headers": {
     "accept": "application/fhir+json"
   },
+  "oauth": {
+    "defaultScope": "test",
+    "tokenEndpoint": ""
+  },
   "customHeaders": {},
   "logLevel": "debug",
   "oauth":  {
