@@ -5,7 +5,7 @@ const config = require('./config');
 
 const fhir = new Fhir();
 
-const DEFAULT_TIMEOUT = 30000;
+const DEFAULT_TIMEOUT = 100000;
 
 function lowercaseKeys(obj) {
   const result = {};
@@ -108,6 +108,12 @@ async function request(
       headers,
     });
   }
+  if (options.debug) {
+    this.logger.debug('Making request', {
+      fetchUrl,
+      headers,
+    });
+  }
 
   return fetch(fetchUrl, fetchOptions)
       .then(async (response) => {
@@ -166,6 +172,11 @@ async function request(
         this.logger.error('Error making http request', {
           url,
           fetchOptions,
+          errorMessage: err?.message,
+          errorName: err?.name,
+          errorStack: err?.stack,
+          errorToString: err?.toString?.(),
+          errorJSON: JSON.stringify(err, Object.getOwnPropertyNames(err)),
           errorMessage: err?.message,
           errorName: err?.name,
           errorStack: err?.stack,

@@ -149,6 +149,7 @@ When('a {string} request is made to the FHIR API', async function(method) {
 Then('the response status should be {int}', async function(statusCode) {
   const response = await this.getResponse();
   // console.log(response);
+  // console.log(response);
   assert.equal(response.status, statusCode, `Expected status code ${statusCode}, but got ${response.status}`);
 });
 
