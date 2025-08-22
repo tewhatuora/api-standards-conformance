@@ -4,5 +4,6 @@ cucumber_report.*
 config.json
 *.log
 reports
-.env
+.env*
 config.*.json
+.DS_Store*
