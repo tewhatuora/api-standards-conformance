@@ -265,6 +265,7 @@ Given(
         case 'allergyintolerance':
           this.payload = setupStandardAllergyIntoleranceResource(
               nhi,
+              null,
               facilityId,
               localResourceId,
           );
@@ -272,6 +273,7 @@ Given(
         case 'encounter':
           this.payload = setupStandardEncounterResource(
               nhi,
+              null,
               facilityId,
               localResourceId,
           );
@@ -279,6 +281,7 @@ Given(
         case 'observation':
           this.payload = setupStandardObservationResource(
               nhi,
+              null,
               facilityId,
               localResourceId,
           );
@@ -693,16 +696,63 @@ function deletePropertyByPath(obj, path) {
     }
   }
 
-  const last = parts[parts.length - 1];
+  let last = parts[parts.length - 1];
 
-  if (Array.isArray(target)) {
-    // Delete property from each object in the array
-    target.forEach((el) => {
-      if (el && typeof el === 'object') {
-        delete el[last];
-      }
-    });
-  } else if (target && typeof target === 'object') {
-    delete target[last];
+  // Handle FHIR choice elements (e.g. effective[x], value[x])
+  const choiceMatch = last.match(/^(\w+)\[x\]$/);
+  if (choiceMatch) {
+    const base = choiceMatch[1];
+    if (Array.isArray(target)) {
+      target.forEach((el) => {
+        if (el && typeof el === 'object') {
+          Object.keys(el)
+            .filter((k) => k.startsWith(base) && k.length > base.length)
+            .forEach((k) => delete el[k]);
+        }
+      });
+    } else if (target && typeof target === 'object') {
+      Object.keys(target)
+        .filter((k) => k.startsWith(base) && k.length > base.length)
+        .forEach((k) => delete target[k]);
+    }
+  } else {
+    if (Array.isArray(target)) {
+      target.forEach((el) => {
+        if (el && typeof el === 'object') {
+          delete el[last];
+        }
+      });
+    } else if (target && typeof target === 'object') {
+      delete target[last];
+    }
   }
 }
+
+// function deletePropertyByPath(obj, path) {
+//   const parts = path.split('.');
+//   let target = obj;
+
+//   for (let i = 0; i < parts.length - 1; i++) {
+//     if (Array.isArray(target[parts[i]])) {
+//       // Traverse each element in the array
+//       target = target[parts[i]].map((el) => el);
+//     } else if (target[parts[i]] !== undefined) {
+//       target = target[parts[i]];
+//     } else {
+//       return;
+//     }
+//   }
+
+//   const last = parts[parts.length - 1];
+
+//   if (Array.isArray(target)) {
+//     // Delete property from each object in the array
+//     target.forEach((el) => {
+//       if (el && typeof el === 'object') {
+//         delete el[last];
+//       }
+//     });
+//   } else if (target && typeof target === 'object') {
+//     delete target[last];
+//   }
+// }

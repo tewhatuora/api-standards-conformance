@@ -46,7 +46,7 @@ Feature: Validate resources against SDHR profile
     And each mandatory-variation is POSTed to "/Encounter"
     Then each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid
 
-  Scenario: All mandatory Observation properties are enforced. This tests that all mandatory properties for the Encounter resource are enforced. It uses the profile published in the IG to determine which properties are mandatory and then mkes a request to the API with a payload that is missing the mandatory parameter.
+  Scenario: All mandatory Observation properties are enforced. This tests that all mandatory properties for the OPbservation resource are enforced. It uses the profile published in the IG to determine which properties are mandatory and then mkes a request to the API with a payload that is missing the mandatory parameter.
     Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRObservation.json"
     Given a valid "Observation" payload for NHI "ZMW6602" at facility "FZZ999-Z" with local ID "null"
     When I remove each mandatory property from the payload
