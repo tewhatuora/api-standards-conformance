@@ -53,12 +53,12 @@ Feature: Validate resources against SDHR profile
     And each mandatory-variation is POSTed to "/Observation"
     Then each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid
 
-  # Scenario: All Condition profile constraints are enforced
-  #   Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRCondition.json"
-  #   Given a valid "Condition" payload for NHI "ZMW6601" at facility "FZZ999-Z" with local ID "null"
-  #   When I create payload variations violating each constraint
-  #   And each constraint variation is POSTed to "/Condition"
-  #   Then each constraint variation should fail with OperationOutcome
+  Scenario: All Condition profile constraints are enforced
+    Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRCondition.json"
+    Given a valid "Condition" payload for NHI "ZMW6601" at facility "FZZ999-Z" with local ID "null"
+    When I create payload variations violating each constraint
+    And each constraint variation is POSTed to "/Condition"
+    Then each constraint variation should fail with OperationOutcome
 
 
 #   Scenario Outline: Missing mandatory property is rejected
