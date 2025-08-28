@@ -659,7 +659,7 @@ When('each constraint variation is POSTed to {string}', async function(url) {
     });
     v.status = response.status;
     v.outcome = response.data;
-    console.log(`Response data for constraint ${v.key} (${v.human}):`, JSON.stringify(v.outcome, null, 2));
+    // console.log(`Response data for constraint ${v.key} (${v.human}):`, JSON.stringify(v.outcome, null, 2));
   }
 });
 
