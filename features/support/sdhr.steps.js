@@ -550,9 +550,12 @@ const invokeParticipateOperation = (
 // Start profile compliance steps
 
 Given('the profile {string}', async function(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch profile: ${res.statusText}`);
-  profileDef = await res.json();
+  // const res = await fetch(url);
+  const res = await this.request(url, {
+    method: 'GET',
+  });
+  // if (!res.ok) throw new Error(`Failed to fetch profile: ${res.statusText}`);
+  profileDef = res.data;
 
   // this.mandatoryElements = profileDef.snapshot.element
   //   .filter((e) => e.min >= 1 && e.path.includes('.'))
