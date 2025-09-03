@@ -1,6 +1,5 @@
 @sdhr @fhir
 Feature: FHIR Standards Capability Statement
-
   Scenario: Server supports all advertised searches
     # Note that the below search parameters have been defined to meet existing API requirements.
     # You can add additional search parameters as needed but do not remove any from this list.

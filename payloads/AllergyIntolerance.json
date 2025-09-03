@@ -3,7 +3,7 @@
   "id" : "c41f3cc3-2746-43f1-901d-f82c04c9eddc",
   "meta" : {
     "lastUpdated" : "2024-01-26T10:03:26+13:00",
-    "source" : "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
+    "source" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-B",
     "profile" : ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRAllergyIntolerance"]
   },
   "identifier" : [{
@@ -36,12 +36,12 @@
     }]
   },
   "patient" : {
-    "reference" : "https://api.hip.digital.health.nz/fhir/Patient/ZMW0002",
+    "reference" : "https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW0002",
     "type" : "Patient",
     "display" : "Carrey Carrington"
   },
   "recorder" : {
-    "reference" : "https://api.hip.digital.health.nz/fhir/Practitioner/91ZZXN",
+    "reference" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Practitioner/91ZZXN",
     "type" : "Practitioner",
     "display" : "DR Julian Subatoi Bashir"
   }

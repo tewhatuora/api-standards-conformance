@@ -26,12 +26,9 @@
     "participant": [
         {
             "individual": {
-                "identifier": {
-                    "system": "https://standards.digital.health.nz/ns/hpi-person-id",
-                    "value": "91ZABY"
-                },
-                "display": "Dr Andrea Welby",
-                "type": "Practitioner"
+                "reference": "https://api.hip.digital.health.nz/fhir/hpi/v1/Practitioner/91ZABY",
+                "type": "Practitioner",
+                "display": "Dr Andrea Welby"
             },
             "type": [
                 {

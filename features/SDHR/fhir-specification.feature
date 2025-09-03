@@ -6,7 +6,7 @@ Feature: Validate resources against SDHR profile
     And the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode | reasonCodeDisplay | resourceType | localResourceId |
-      | ZMW6602 | null       | true                  | null       | null              | null         | null            |
+      | ZMW6602 | null       | true                   | null       | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
@@ -55,31 +55,38 @@ Feature: Validate resources against SDHR profile
 
   Scenario: All Condition profile constraints are enforced
     Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRCondition.json"
-    Given a valid "Condition" payload for NHI "ZMW6601" at facility "FZZ999-Z" with local ID "null"
+    Given a valid "Condition" payload for NHI "ZMW6602" at facility "FZZ999-Z" with local ID "null"
     When I create payload variations violating each constraint
     And each constraint variation is POSTed to "/Condition"
     Then each constraint variation should fail with OperationOutcome
 
+  Scenario: All AllergyIntolerance profile constraints are enforced
+    Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRAllergyIntolerance.json"
+    Given a valid "AllergyIntolerance" payload for NHI "ZMW6602" at facility "FZZ999-Z" with local ID "null"
+    When I create payload variations violating each constraint
+    And each constraint variation is POSTed to "/AllergyIntolerance"
+    Then each constraint variation should fail with OperationOutcome
 
-#   Scenario Outline: Missing mandatory property is rejected
-#     Given a valid "Condition" payload for NHI "ZMW6601" at facility "FZZ999-Z" with local ID "null"
-#     When I remove mandatory property "<property>"
-#     And I POST the payload to "AllergyIntolerance"
-#     Then the response body should have property "resourceType" containing "OperationOutcome"
+  Scenario: All Observation profile constraints are enforced
+    Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRObservation.json"
+    Given a valid "Observation" payload for NHI "ZMW6602" at facility "FZZ999-Z" with local ID "null"
+    When I create payload variations violating each constraint
+    And each constraint variation is POSTed to "/Observation"
+    Then each constraint variation should fail with OperationOutcome
 
-#     Examples:
-#       | property       |
-#       | clinicalStatus |
-#       | code           |
-#       | patient        |
+  Scenario: All Encounter profile constraints are enforced
+    Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHREncounter.json"
+    Given a valid "Encounter" payload for NHI "ZMW6602" at facility "FZZ999-Z" with local ID "null"
+    When I create payload variations violating each constraint
+    And each constraint variation is POSTed to "/Encounter"
+    Then each constraint variation should fail with OperationOutcome
 
-#   Scenario Outline: Constraint violation is rejected
-#     Given a valid AllergyIntolerance payload for NHI "ZMW6001" at facility "G00001-G" with local ID "null"
-#     When I violate constraint "<constraintKey>"
-#     And I POST the payload to "AllergyIntolerance"
-#     Then the response body should have property "resourceType" containing "OperationOutcome"
-
-#     Examples:
-#       | constraintKey |
-#       | inv-1         |
-#       | inv-2         |
+  #@not-implemented
+  Scenario: Valid batch request with mixed resources is accepted. This scenario will test that a valid batch request containing a mix of Condition, Observation, AllergyIntolerance and Encounter resources can be processed successfully.
+    Given a batch bundle payload containing "Condition Observation AllergyIntolerance Encounter" resources is created for NHI "ZMW6602" at facility "FZZ999-Z" with local ID "null"
+    When the API Consumer requests a new client_credentials access token with scope "system/Condition.crus system/Observation.crus system/AllergyIntolerance.crus system/Encounter.crus"
+    And a POST request is made to "/" with the payload
+    Then the response status code should be 200
+    And the response body should have property "resourceType" containing "Bundle"
+    And the response body should have property "type" containing "batch-response"
+    #And each entry in the response body should have property "response.status" containing either "201 Created" or "200 OK"
