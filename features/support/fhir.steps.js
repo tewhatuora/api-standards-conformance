@@ -73,7 +73,7 @@ Then('the response headers contain {string} key', async function(header) {
 });
 
 When('a POST request is made to {string} with the payload', async function(url) {
-  console.log('Payload:', JSON.stringify(this.payload, null, 2));
+  // console.log('Payload:', JSON.stringify(this.payload, null, 2));
   const response = await this.request(url, {
     method: 'POST',
     body: JSON.stringify(this.payload),

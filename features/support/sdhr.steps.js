@@ -552,7 +552,7 @@ When('each constraint variation is POSTed to {string}', async function (url) {
     // Only test constraints with severity 'error' and skip 'warning' or 'information'
     // SDHR does not support contained resources, so skip those constraints too
     // Skip the `meta.source` constraint as it is impossible to hit due to participation check occuring first
-    if (v.severity === 'error' && !v.expr.startsWith('contained.') && v.key !== 'hpi-location-url-format' && v.key !== 'nhi-url-format') {
+    if (v.severity === 'error' && !v.expr.startsWith('contained.')) { //&& v.key !== 'hpi-location-url-format' && v.key !== 'nhi-url-format') {
       this.payload = v.resource;
       this.addRequestHeader(
         'authorization',
