@@ -81,7 +81,6 @@ Feature: Validate resources against SDHR profile
     And each constraint variation is POSTed to "/Encounter"
     Then each constraint variation should fail with OperationOutcome
 
-  #@not-implemented
   Scenario: Valid batch request with mixed resources is accepted. This scenario will test that a valid batch request containing a mix of Condition, Observation, AllergyIntolerance and Encounter resources can be processed successfully.
     Given a batch bundle payload containing "Condition Observation AllergyIntolerance Encounter" resources is created for NHI "ZMW6602" at facility "FZZ999-Z" with local ID "null"
     When the API Consumer requests a new client_credentials access token with scope "system/Condition.crus system/Observation.crus system/AllergyIntolerance.crus system/Encounter.crus"

@@ -719,7 +719,7 @@ Given('a batch bundle payload containing {string} resources is created for NHI {
   }
 });
 
-function deletePropertyByPath(obj, path) {
+function  deletePropertyByPath(obj, path) {
   const parts = path.split('.');
   let target = obj;
 
@@ -814,7 +814,7 @@ function violateConstraint(clone, constraint) {
   // Set verificationStatus to 'entered-in-error' and clinicalStatus to active to violate constraint
   // if (/verificationStatus\.coding\.where\(system='[^']+' and code = 'entered-in-error'\)\.empty\(\) or clinicalStatus\.empty\(\)/.test(expr)) {
   if (/verificationStatus\.coding\.where\(system='[^']+' and code='entered-in-error'\)\.empty\(\) or clinicalStatus\.empty\(\)/.test(expr)) {
-    clone.verificationStatus;
+    // clone.verificationStatus;
     clone.verificationStatus = {
       coding: [{
         system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',

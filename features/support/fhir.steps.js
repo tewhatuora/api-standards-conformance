@@ -8,7 +8,8 @@ const {set} = require('lodash');
 
 Then('the response status code should be {int}', async function(status) {
   // console.log('Response:', JSON.stringify(this.getResponse().data));
-  assert.strictEqual(this.getResponse().status, status);
+  assert.strictEqual(this.getResponse().status, status,
+      `Expected status code ${status}, but got ${this.getResponse().status}, response body: ${JSON.stringify(this.getResponse().data)}`);
 });
 
 Then(
@@ -78,7 +79,7 @@ When('a POST request is made to {string} with the payload', async function(url) 
     body: JSON.stringify(this.payload),
   });
   this.setResponse(response);
-  console.log('Response:', JSON.stringify(this.getResponse().data, null, 2));
+  // console.log('Response:', JSON.stringify(this.getResponse().data, null, 2));
   // Wait for indexing
   await new Promise((resolve) => setTimeout(resolve, 5000));
 });

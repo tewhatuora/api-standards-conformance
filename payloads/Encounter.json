@@ -44,7 +44,7 @@
         }
     ],
     "meta": {
-        "source": "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
+        "source": "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/FZZ999-Z",
         "profile": [
             "https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHREncounter"
         ]
@@ -55,5 +55,79 @@
         "display": "General"
     },
     "resourceType": "Encounter",
-    "status": "finished"
+    "status": "finished",
+    "statusHistory": [
+        {
+            "status": "in-progress",
+            "period": {
+                "start": "2024-03-26T10:13:26+13:00",
+                "end": "2024-03-26T10:18:26+13:00"
+            }
+        },
+        {
+            "status": "finished",
+            "period": {
+                "start": "2024-03-26T10:18:26+13:00"
+            }
+        }
+    ],
+    "classHistory": [
+        {
+            "class": {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": "EMER",
+                "display": "Emergency"
+            },
+            "period": {
+                "start": "2024-03-26T10:13:26+13:00",
+                "end": "2024-03-26T10:15:26+13:00"
+            }
+        },
+        {
+            "class": {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": "GENRL",
+                "display": "General"
+            },
+            "period": {
+                "start": "2024-03-26T10:15:26+13:00",
+                "end": "2024-03-26T10:18:26+13:00"
+            }
+        },
+        {
+            "class": {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": "GENRL",
+                "display": "General"
+            },
+            "period": {
+                "start": "2024-03-26T10:18:26+13:00"
+            }
+        }
+    ],
+    "diagnosis": [
+        {
+            "condition": {
+                "reference": "https://api.sdhr.digital.health.nz/s2s/Condition/8d3f4f5e-6b1e-4c7a-9a4e-6c8b8e2f4e5d",
+                "display": "Hypertension"
+            }
+        }
+    ],
+    "location": [
+        {
+            "location": {
+                "identifier": {
+                    "system": "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/FZZ999-Z",
+                    "value": "F38006-B"
+                },
+                "display": "MediClinic General Practice",
+                "type": "Location"
+            },
+            "status": "completed",
+            "period": {
+                "start": "2024-03-26T10:13:26+13:00",
+                "end": "2024-03-26T10:18:26+13:00"
+            }
+        }
+    ]
 }

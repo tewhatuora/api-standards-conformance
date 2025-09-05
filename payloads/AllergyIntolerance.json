@@ -29,7 +29,7 @@
   "category" : ["medication"],
   "code" : {
     "coding" : [{
-      "system" : "http://mims.co.nz",
+      "system" : "https://standards.digital.health.nz/fhir/ValueSet/nzf-nzmt",
       "code" : "m00286",
       "display" : "Penicillins",
       "userSelected" : true
@@ -44,5 +44,23 @@
     "reference" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Practitioner/91ZZXN",
     "type" : "Practitioner",
     "display" : "DR Julian Subatoi Bashir"
-  }
+  },
+  "reaction": [
+    {
+      "manifestation": [
+        {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "64144002",
+              "display": "Pruritic rash"
+            }
+          ]
+        }
+      ],
+      "description": "Patient developed a rash after taking penicillin.",
+      "onset": "2023-11-26T10:03:26+13:00",
+      "severity": "moderate"
+    }
+  ]
 }
