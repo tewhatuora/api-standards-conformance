@@ -1,18 +1,18 @@
 const assert = require('node:assert/strict');
-const {Given, When, Then} = require('@cucumber/cucumber');
+const { Given, When, Then } = require('@cucumber/cucumber');
 const path = require('path');
 const fs = require('fs');
-const {setDefaultTimeout} = require('@cucumber/cucumber');
+const { setDefaultTimeout } = require('@cucumber/cucumber');
 setDefaultTimeout(30 * 1000);
-const {evaluate, r4Model} = require('fhirpath');
+const { evaluate, r4Model } = require('fhirpath');
 
 const TEST_CONDITION_ID = '63e3c5c7-c938-4cf8-8815-900fc5781d8e';
 
 const setupStandardConditionResource = (
-    nhi,
-    metaSecurity,
-    facilityId,
-    localResourceId,
+  nhi,
+  metaSecurity,
+  facilityId,
+  localResourceId,
 ) => {
   const filePath = path.join(__dirname, `../../payloads/Condition.json`);
   const fileContent = fs.readFileSync(filePath, 'utf8');
@@ -32,10 +32,10 @@ const setupStandardConditionResource = (
 };
 
 const setupStandardAllergyIntoleranceResource = (
-    nhi,
-    metaSecurity,
-    facilityId,
-    localResourceId,
+  nhi,
+  metaSecurity,
+  facilityId,
+  localResourceId,
 ) => {
   const filePath = path.join(__dirname, `../../payloads/AllergyIntolerance.json`);
   const fileContent = fs.readFileSync(filePath, 'utf8');
@@ -54,10 +54,10 @@ const setupStandardAllergyIntoleranceResource = (
 };
 
 const setupStandardEncounterResource = (
-    nhi,
-    metaSecurity,
-    facilityId,
-    localResourceId,
+  nhi,
+  metaSecurity,
+  facilityId,
+  localResourceId,
 ) => {
   const filePath = path.join(__dirname, `../../payloads/Encounter.json`);
   const fileContent = fs.readFileSync(filePath, 'utf8');
@@ -76,10 +76,10 @@ const setupStandardEncounterResource = (
 };
 
 const setupStandardObservationResource = (
-    nhi,
-    metaSecurity,
-    facilityId,
-    localResourceId,
+  nhi,
+  metaSecurity,
+  facilityId,
+  localResourceId,
 ) => {
   const filePath = path.join(__dirname, `../../payloads/Observation.json`);
   const fileContent = fs.readFileSync(filePath, 'utf8');
@@ -98,14 +98,14 @@ const setupStandardObservationResource = (
 };
 
 const setupParticipateParametersResource = (
-    operationName,
-    nhi,
-    facilityId,
-    participationIndicator,
-    reasonCode,
-    reasonCodeDisplay,
-    resourceType,
-    localResourceId,
+  operationName,
+  nhi,
+  facilityId,
+  participationIndicator,
+  reasonCode,
+  reasonCodeDisplay,
+  resourceType,
+  localResourceId,
 ) => {
   const payload = {
     resourceType: 'Parameters',
@@ -122,12 +122,12 @@ const setupParticipateParametersResource = (
 
   if (operationName !== '$hnz-participate' && facilityId != 'null') {
     payload.parameter.push(
-        {
-          name: 'facilityId',
-          valueReference: {
-            reference: `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`,
-          },
-        });
+      {
+        name: 'facilityId',
+        valueReference: {
+          reference: `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`,
+        },
+      });
   }
 
   if (reasonCode != 'null') {
@@ -171,303 +171,303 @@ const setupParticipateParametersResource = (
 };
 
 Given(
-    'a standard Condition resource for NHI {string} exists',
-    {timeout: 30000},
-    async function(nhi) {
+  'a standard Condition resource for NHI {string} exists',
+  { timeout: 30000 },
+  async function (nhi) {
     // Add a bearer token if creds are present, unless instructed not to
-      this.addRequestHeader(
-          'authorization',
-          `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
-      );
-      const payload = setupStandardConditionResource(nhi, null);
-      const response = await this.request(`/Condition`, {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+    this.addRequestHeader(
+      'authorization',
+      `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+    );
+    const payload = setupStandardConditionResource(nhi, null);
+    const response = await this.request(`/Condition`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
 
-      // Wait for the resource to be indexed and available
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      this.setResponse(response);
-      if (
-        response.status !== 201 ||
+    // Wait for the resource to be indexed and available
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    this.setResponse(response);
+    if (
+      response.status !== 201 ||
       (response.status == 200 && response.data.isssue)
-      ) {
-        throw new Error(
-            `Failed to create Condition resource: ${response.status} - ${JSON.stringify(response.data)}`,
-        );
-      } else {
-        console.log('Condition resource created Condition/' + response.data.id);
-      }
-    },
+    ) {
+      throw new Error(
+        `Failed to create Condition resource: ${response.status} - ${JSON.stringify(response.data)}`,
+      );
+    } else {
+      console.log('Condition resource created Condition/' + response.data.id);
+    }
+  },
 );
 
 Given(
-    'a Condition resource for NHI {string} with no meta.security tags exists',
-    {timeout: 30000},
-    async function(nhi) {
+  'a Condition resource for NHI {string} with no meta.security tags exists',
+  { timeout: 30000 },
+  async function (nhi) {
     // Add a bearer token if creds are present, unless instructed not to
-      this.addRequestHeader(
-          'authorization',
-          `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
-      );
-      const payload = setupStandardConditionResource(nhi, null);
-      const response = await this.request(`/Condition/${TEST_CONDITION_ID}`, {
-        method: 'PUT',
-        body: JSON.stringify(payload),
-      });
+    this.addRequestHeader(
+      'authorization',
+      `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+    );
+    const payload = setupStandardConditionResource(nhi, null);
+    const response = await this.request(`/Condition/${TEST_CONDITION_ID}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    });
 
-      // Wait for the resource to be indexed and available
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      this.setResponse(response);
-      if (
-        response.status !== 201 ||
+    // Wait for the resource to be indexed and available
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    this.setResponse(response);
+    if (
+      response.status !== 201 ||
       (response.status == 200 && response.data.isssue)
-      ) {
-        throw new Error(
-            `Failed to create Condition resource: ${response.status} - ${JSON.stringify(response.data)}`,
+    ) {
+      throw new Error(
+        `Failed to create Condition resource: ${response.status} - ${JSON.stringify(response.data)}`,
+      );
+    } else {
+      console.log('Condition resource created /Condition/' + response.data.id);
+    }
+  },
+);
+Given(
+  'a Condition resource for NHI {string} with meta.security tag exists',
+  { timeout: 30000 },
+  async function (nhi, security) {
+    const parsedTag = JSON.parse(security);
+
+    const payload = setupStandardConditionResource(nhi, parsedTag);
+    const response = await this.request(`/Condition/${TEST_CONDITION_ID}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    });
+
+    this.setResponse(response);
+
+    // Wait for the resource to be indexed and available
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  },
+);
+
+Given(
+  'a valid {string} payload for NHI {string} at facility {string} with local ID {string}',
+  function (resourceType, nhi, facilityId, localResourceId) {
+    switch (resourceType.toLowerCase()) {
+      case 'condition':
+        this.payload = setupStandardConditionResource(
+          nhi,
+          null,
+          facilityId,
+          localResourceId,
         );
-      } else {
-        console.log('Condition resource created /Condition/' + response.data.id);
-      }
-    },
-);
-Given(
-    'a Condition resource for NHI {string} with meta.security tag exists',
-    {timeout: 30000},
-    async function(nhi, security) {
-      const parsedTag = JSON.parse(security);
-
-      const payload = setupStandardConditionResource(nhi, parsedTag);
-      const response = await this.request(`/Condition/${TEST_CONDITION_ID}`, {
-        method: 'PUT',
-        body: JSON.stringify(payload),
-      });
-
-      this.setResponse(response);
-
-      // Wait for the resource to be indexed and available
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-    },
-);
-
-Given(
-    'a valid {string} payload for NHI {string} at facility {string} with local ID {string}',
-    function(resourceType, nhi, facilityId, localResourceId) {
-      switch (resourceType.toLowerCase()) {
-        case 'condition':
-          this.payload = setupStandardConditionResource(
-              nhi,
-              null,
-              facilityId,
-              localResourceId,
-          );
-          break;
-        case 'allergyintolerance':
-          this.payload = setupStandardAllergyIntoleranceResource(
-              nhi,
-              null,
-              facilityId,
-              localResourceId,
-          );
-          break;
-        case 'encounter':
-          this.payload = setupStandardEncounterResource(
-              nhi,
-              null,
-              facilityId,
-              localResourceId,
-          );
-          break;
-        case 'observation':
-          this.payload = setupStandardObservationResource(
-              nhi,
-              null,
-              facilityId,
-              localResourceId,
-          );
-          break;
-        default:
-          throw new Error(`Unsupported resource type: ${resourceType}`);
-      };
-    },
+        break;
+      case 'allergyintolerance':
+        this.payload = setupStandardAllergyIntoleranceResource(
+          nhi,
+          null,
+          facilityId,
+          localResourceId,
+        );
+        break;
+      case 'encounter':
+        this.payload = setupStandardEncounterResource(
+          nhi,
+          null,
+          facilityId,
+          localResourceId,
+        );
+        break;
+      case 'observation':
+        this.payload = setupStandardObservationResource(
+          nhi,
+          null,
+          facilityId,
+          localResourceId,
+        );
+        break;
+      default:
+        throw new Error(`Unsupported resource type: ${resourceType}`);
+    };
+  },
 );
 
 Then(
-    'the response bundle should contain {int} entries',
-    async function(entries) {
-      const response = this.getResponse();
-      assert.strictEqual(response.data.entry.length, entries);
-    },
+  'the response bundle should contain {int} entries',
+  async function (entries) {
+    const response = this.getResponse();
+    assert.strictEqual(response.data.entry.length, entries);
+  },
 );
 
 Then(
-    'the response bundle should contain more than 0 entries',
-    async function() {
-      const response = this.getResponse();
-      assert.ok(
-          Array.isArray(response.data.entry) && response.data.entry.length > 0,
-          `Expected more than 0 entries, but got ${response.data.entry?.length ?? 'undefined'}`,
-      );
-    },
+  'the response bundle should contain more than 0 entries',
+  async function () {
+    const response = this.getResponse();
+    assert.ok(
+      Array.isArray(response.data.entry) && response.data.entry.length > 0,
+      `Expected more than 0 entries, but got ${response.data.entry?.length ?? 'undefined'}`,
+    );
+  },
 );
 
-Then('the response bundle should contain 1 entry', async function() {
+Then('the response bundle should contain 1 entry', async function () {
   const response = this.getResponse();
   assert.strictEqual(response.data.entry.length, 1);
 });
 
 Then(
-    'the response bundle should include a meta.security tag',
-    async function(security) {
-      const response = this.getResponse();
-      const tags = response.data?.meta?.security ?? [];
-      const parsedTag = JSON.parse(security);
-      const {code, system} = parsedTag;
-      const match = tags.find(
-          (tag) => tag.code === code && tag.system === system,
-      );
-      assert(
-          match,
-          `Expected a meta.security tag with code "${code}" and system "${system}", but none was found`,
-      );
-    },
+  'the response bundle should include a meta.security tag',
+  async function (security) {
+    const response = this.getResponse();
+    const tags = response.data?.meta?.security ?? [];
+    const parsedTag = JSON.parse(security);
+    const { code, system } = parsedTag;
+    const match = tags.find(
+      (tag) => tag.code === code && tag.system === system,
+    );
+    assert(
+      match,
+      `Expected a meta.security tag with code "${code}" and system "${system}", but none was found`,
+    );
+  },
 );
 
 Then(
-    'the OperationOutcome should contain the message {string}',
-    async function(message) {
-      const response = this.getResponse();
-      const operationOutcome = response.data;
-      assert.strictEqual(operationOutcome.resourceType, 'OperationOutcome');
-      assert.strictEqual(operationOutcome.issue[0].diagnostics, message);
-    },
+  'the OperationOutcome should contain the message {string}',
+  async function (message) {
+    const response = this.getResponse();
+    const operationOutcome = response.data;
+    assert.strictEqual(operationOutcome.resourceType, 'OperationOutcome');
+    assert.strictEqual(operationOutcome.issue[0].diagnostics, message);
+  },
 );
 
 Given(
-    'a health sector user {string} elects to participate in sdhr',
-    async function(nhi) {
+  'a health sector user {string} elects to participate in sdhr',
+  async function (nhi) {
     // Essentially a no-op step to allow the step to pass - in this case there is no action to take.
-      return true;
-    },
+    return true;
+  },
 );
 
 Given(
-    'a health sector user {string} elects not to participate in sdhr by contacting their practice',
-    async function(nhi) {
+  'a health sector user {string} elects not to participate in sdhr by contacting their practice',
+  async function (nhi) {
     // Essentially a no-op step to allow the step to pass - in this case there is no action to take.
-      return true;
-    },
+    return true;
+  },
 );
 
 Given(
-    'a patient {string} notifies {string} of participation {string}',
-    async function(nhi, facilityId, participationIndicator) {
+  'a patient {string} notifies {string} of participation {string}',
+  async function (nhi, facilityId, participationIndicator) {
     // Placeholder
-      return true;
-    },
+    return true;
+  },
 );
 
 Given(
-    'a patient {string} has not notified {string} of participation preferences',
-    async function(nhi, facilityId) {
+  'a patient {string} has not notified {string} of participation preferences',
+  async function (nhi, facilityId) {
     // Placeholder for a patient who has not notified any facility of participation preferences
-      return true;
-    },
+    return true;
+  },
 );
 
 Given(
-    'a health practitioner sets {string} record {string} record to {string}',
-    async function(resourceType, localResourceId, participationIndicator) {
+  'a health practitioner sets {string} record {string} record to {string}',
+  async function (resourceType, localResourceId, participationIndicator) {
     // Placeholder for setting a record to a specific participation indicator
-      return true;
-    },
+    return true;
+  },
 );
 
 Then(
-    'the response body should not have property {string} containing {string}',
-    async function(propertyName, expectedValue) {
-      const response = this.getResponse();
-      assert(
-          !response.data.hasOwnProperty(propertyName) ||
+  'the response body should not have property {string} containing {string}',
+  async function (propertyName, expectedValue) {
+    const response = this.getResponse();
+    assert(
+      !response.data.hasOwnProperty(propertyName) ||
       response.data[propertyName] !== expectedValue,
-          `Expected response body not to have property "${propertyName}" containing "${expectedValue}", but it was found.`,
-      );
-    },
+      `Expected response body not to have property "${propertyName}" containing "${expectedValue}", but it was found.`,
+    );
+  },
 );
 
 Then(
-    'the API consumer invokes the {string} operation with:',
-    {timeout: 30000},
-    async function(operation, dataTable) {
-      const operationName = operation.toLowerCase();
-      const data = dataTable.hashes()[0];
-      const nhi = data.patient;
-      const facilityId = data.facilityId;
-      const participationIndicator = data.participationIndicator;
-      const reasonCode = data.reasonCode;
-      const reasonCodeDisplay = data.reasonCodeDisplay;
-      const resourceType = data.resourceType;
-      const localResourceId = data.localResourceId;
+  'the API consumer invokes the {string} operation with:',
+  { timeout: 30000 },
+  async function (operation, dataTable) {
+    const operationName = operation.toLowerCase();
+    const data = dataTable.hashes()[0];
+    const nhi = data.patient;
+    const facilityId = data.facilityId;
+    const participationIndicator = data.participationIndicator;
+    const reasonCode = data.reasonCode;
+    const reasonCodeDisplay = data.reasonCodeDisplay;
+    const resourceType = data.resourceType;
+    const localResourceId = data.localResourceId;
 
-      await invokeParticipateOperation(
-          operationName,
-          nhi,
-          facilityId,
-          participationIndicator,
-          reasonCode,
-          reasonCodeDisplay,
-          resourceType,
-          localResourceId,
-      ).call(this);
+    await invokeParticipateOperation(
+      operationName,
+      nhi,
+      facilityId,
+      participationIndicator,
+      reasonCode,
+      reasonCodeDisplay,
+      resourceType,
+      localResourceId,
+    ).call(this);
 
-      assert.ok(
-          this.getResponse().status === 200,
-          `Expected response status 200, but got ${this.getResponse().status}`,
-      );
-      const response = this.getResponse();
-      // const outcomeCode = response.data.issue[0].details.coding[0].code;
-      assert.strictEqual(
-          response.data.resourceType,
-          'OperationOutcome',
-          'Expected response resourceType to be "OperationOutcome"',
-      );
-      assert.strictEqual(
-          response.data.issue[0].details.coding[0].code,
-          'sdhr-operation-success',
-          'Expected response code to be "sdhr-operation-success"',
-      );
-    },
+    assert.ok(
+      this.getResponse().status === 200,
+      `Expected response status 200, but got ${this.getResponse().status}`,
+    );
+    const response = this.getResponse();
+    // const outcomeCode = response.data.issue[0].details.coding[0].code;
+    assert.strictEqual(
+      response.data.resourceType,
+      'OperationOutcome',
+      'Expected response resourceType to be "OperationOutcome"',
+    );
+    assert.strictEqual(
+      response.data.issue[0].details.coding[0].code,
+      'sdhr-operation-success',
+      'Expected response code to be "sdhr-operation-success"',
+    );
+  },
 );
 
 const invokeParticipateOperation = (
-    operationName,
-    nhi,
-    facilityId,
-    participationIndicator,
-    reasonCode,
-    reasonCodeDisplay,
-    resourceType,
-    localResourceId,
+  operationName,
+  nhi,
+  facilityId,
+  participationIndicator,
+  reasonCode,
+  reasonCodeDisplay,
+  resourceType,
+  localResourceId,
 ) =>
-  async function() {
+  async function () {
     this.addRequestHeader(
-        'authorization',
-        `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+      'authorization',
+      `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
     );
 
     const payload = setupParticipateParametersResource(
-        operationName,
-        nhi,
-        facilityId,
-        participationIndicator,
-        reasonCode,
-        reasonCodeDisplay,
-        resourceType,
-        localResourceId,
+      operationName,
+      nhi,
+      facilityId,
+      participationIndicator,
+      reasonCode,
+      reasonCodeDisplay,
+      resourceType,
+      localResourceId,
     );
 
     // console.log(`Invoking ${operationName} operation with payload:`, JSON.stringify(payload, null, 2));
-    console.log(`Invoking ${operationName}`); ;
+    console.log(`Invoking ${operationName}`);;
 
     const response = await this.request(`/${operationName}`, {
       method: 'POST',
@@ -483,7 +483,7 @@ const invokeParticipateOperation = (
 
 // Start profile compliance steps
 
-Given('the profile {string}', async function(url) {
+Given('the profile {string}', async function (url) {
   // const res = await fetch(url);
   const res = await this.request(url, {
     method: 'GET',
@@ -491,35 +491,35 @@ Given('the profile {string}', async function(url) {
   profileDef = res.data;
 
   this.mandatoryElements = profileDef.snapshot.element
-      .filter((e) => e.min >= 1 && e.path.includes('.'))
-      .map((e) => e.path.replace(new RegExp(`^${profileDef.type}\\.`), ''));
+    .filter((e) => e.min >= 1 && e.path.includes('.'))
+    .map((e) => e.path.replace(new RegExp(`^${profileDef.type}\\.`), ''));
 
   this.constraints = profileDef.snapshot.element.flatMap((e) =>
     (e.constraint ?? [])
-        .map((c) => ({
-          key: c.key,
-          expr: c.expression,
-          human: c.human,
-          path: e.path ?? e.id,
-          min: e.min ?? 0,
-          severity: c.severity,
-        })),
+      .map((c) => ({
+        key: c.key,
+        expr: c.expression,
+        human: c.human,
+        path: e.path ?? e.id,
+        min: e.min ?? 0,
+        severity: c.severity,
+      })),
   );
 
   console.log('Mandatory properties for profile:', url, this.mandatoryElements);
   this.attach(
-      `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+    `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
       <strong>Mandatory properties for profile:</strong> ${url}<br>
       <pre>${JSON.stringify(this.mandatoryElements, null, 2)}</pre>
       <pre>${JSON.stringify(this.constraints, null, 2)}</pre>
     </div>`,
-      'text/html',
+    'text/html',
   );
   console.log('Constraints count:', this.constraints.length);
   // console.log('Constraints:', this.constraints);
 });
 
-When('I create payload variations violating each constraint', function() {
+When('I create payload variations violating each constraint', function () {
   constraintVariations = this.constraints.map((c) => {
     const clone = JSON.parse(JSON.stringify(this.payload));
     // const pathInInstance = c.path.replace(/^([A-Z][A-Za-z]+)\./, '');
@@ -528,7 +528,7 @@ When('I create payload variations violating each constraint', function() {
     const violated = violateConstraint(clone, c);
 
     // Evaluate the returned payload to see if it actually violates the constraint
-    const result = evaluate(violated[0], c.expr, {model: r4Model});
+    const result = evaluate(violated[0], c.expr, { model: r4Model });
     if (result.length === 0 || result[0] === false) {
       console.warn(`⚠️ Constraint not violated by variation: ${c.key} (${c.human}) - expression: ${c.expr} at path ${c.path}`);
     } else {
@@ -546,7 +546,7 @@ When('I create payload variations violating each constraint', function() {
   });
 });
 
-When('each constraint variation is POSTed to {string}', async function(url) {
+When('each constraint variation is POSTed to {string}', async function (url) {
   this.skippedCount = 0;
   for (const v of constraintVariations) {
     // Only test constraints with severity 'error' and skip 'warning' or 'information'
@@ -555,8 +555,8 @@ When('each constraint variation is POSTed to {string}', async function(url) {
     if (v.severity === 'error' && !v.expr.startsWith('contained.') && v.key !== 'hpi-location-url-format' && v.key !== 'nhi-url-format') {
       this.payload = v.resource;
       this.addRequestHeader(
-          'authorization',
-          `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+        'authorization',
+        `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
       );
       const response = await this.request(url, {
         method: 'POST',
@@ -568,60 +568,60 @@ When('each constraint variation is POSTed to {string}', async function(url) {
     } else {
       this.skippedCount++;
       console.log(`Skipping constraint ${v.key} (${v.human}) with severity ${v.severity}`);
-      v.outcome = {resourceType: 'OperationOutcome', issue: [{severity: v.severity, code: 'invalid'}], note: [{text: `Skipped constraint ${v.key} (${v.human}) with severity ${v.severity}`}]};
+      v.outcome = { resourceType: 'OperationOutcome', issue: [{ severity: v.severity, code: 'invalid' }], note: [{ text: `Skipped constraint ${v.key} (${v.human}) with severity ${v.severity}` }] };
       v.status = 400;
     }
   }
 });
 
-Then('each constraint variation should fail with OperationOutcome', async function() {
+Then('each constraint variation should fail with OperationOutcome', async function () {
   this.attach(
-      `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+    `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
       <strong>Total constraints evaluated:</strong> ${constraintVariations.length}<br>
       <strong>Skipped constraints:</strong> ${this.skippedCount}<br>
       <pre>Note that constaints will be skipped if they are global and relate to an unsupported property - e.g. contained</pre>
     </div>`,
-      'text/html',
+    'text/html',
   );
   for (const v of constraintVariations) {
     this.attach(
-        `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+      `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
         <strong>Constraint:</strong> ${v.key} ${v.human} ${v.path}<br>
         <strong>HTTP Response Status:</strong> ${v.status}<br>
         <pre>Payload: ${JSON.stringify(v.resource, null, 2)}</pre>
         <pre>Outccome: ${JSON.stringify(v.outcome, null, 2)}</pre>
       </div>`,
-        'text/html',
+      'text/html',
     );
     assert(
-        v.status >= 400,
-        `Expected failure for constraint ${v.key} (${v.human}), got ${v.status}`,
+      v.status >= 400,
+      `Expected failure for constraint ${v.key} (${v.human}), got ${v.status}`,
     );
     assert(
-        v.outcome.resourceType === 'OperationOutcome',
-        `Expected OperationOutcome for constraint ${v.key} (${v.human}), but got ${JSON.stringify(v.outcome)}`,
+      v.outcome.resourceType === 'OperationOutcome',
+      `Expected OperationOutcome for constraint ${v.key} (${v.human}), but got ${JSON.stringify(v.outcome)}`,
     );
     assert(
-        Array.isArray(v.outcome.issue) && v.outcome.issue.some((i) => i.code === 'invalid'),
-        `Expected issue code "invalid" for constraint ${v.key} (${v.human}), but got ${JSON.stringify((v.outcome.issue || []).map((i) => i.code))}`,
+      Array.isArray(v.outcome.issue) && v.outcome.issue.some((i) => i.code === 'invalid'),
+      `Expected issue code "invalid" for constraint ${v.key} (${v.human}), but got ${JSON.stringify((v.outcome.issue || []).map((i) => i.code))}`,
     );
   }
 });
 
-When('I remove each mandatory property from the payload', async function() {
+When('I remove each mandatory property from the payload', async function () {
   this.mandatoryVariations = this.mandatoryElements.map((p) => {
     const clone = JSON.parse(JSON.stringify(this.payload));
     deletePropertyByPath(clone, p);
-    return {property: p, resource: clone};
+    return { property: p, resource: clone };
   });
 });
 
-When('each mandatory-variation is POSTed to {string}', async function(url) {
+When('each mandatory-variation is POSTed to {string}', async function (url) {
   for (const v of this.mandatoryVariations) {
     // deletePropertyByPath(v.resource, v.property);
     this.addRequestHeader(
-        'authorization',
-        `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+      'authorization',
+      `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
     );
     const response = await this.request(url, {
       method: 'POST',
@@ -633,31 +633,31 @@ When('each mandatory-variation is POSTed to {string}', async function(url) {
   }
 });
 
-Then('each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid', async function() {
+Then('each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid', async function () {
   for (const v of this.mandatoryVariations) {
     console.log(`Checking OperationOutcome response when missing property: ${v.property}`);
     // console.log(evaluate(v.outcome, 'issue.code or issue.details.coding.code'));
     this.attach(
-        `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+      `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
         <strong>Missing property:</strong> ${v.property}<br>
         <strong>HTTP Response Status:</strong> ${v.status}<br>
         <pre>Outccome: ${JSON.stringify(v.outcome, null, 2)}</pre>
       </div>`,
-        'text/html',
+      'text/html',
     );
     assert.ok(v.status >= 400, `Expected failure for mandatory property ${v.property}, got ${v.status}`);
     assert(
-        v.outcome.resourceType === 'OperationOutcome',
-        `Expected OperationOutcome when removing ${v.property}, but got ${JSON.stringify(v.outcome)}`,
+      v.outcome.resourceType === 'OperationOutcome',
+      `Expected OperationOutcome when removing ${v.property}, but got ${JSON.stringify(v.outcome)}`,
     );
     assert(
-        evaluate(v.outcome, 'issue.code').includes('invalid'),
-        `Expected issue code "invalid" when removing ${v.property}, but got ${JSON.stringify(v.outcome.issue.map((i) => i.code))}`,
+      evaluate(v.outcome, 'issue.code').includes('invalid'),
+      `Expected issue code "invalid" when removing ${v.property}, but got ${JSON.stringify(v.outcome.issue.map((i) => i.code))}`,
     );
   }
 });
 
-Given('a batch bundle payload containing {string} resources is created for NHI {string} at facility {string} with local ID {string}', async function(resources, nhi, facilityId, localResourceId) {
+Given('a batch bundle payload containing {string} resources is created for NHI {string} at facility {string} with local ID {string}', async function (resources, nhi, facilityId, localResourceId) {
   resources = resources.split(' ').map((r) => r.trim().toLowerCase());
   this.payload = {
     resourceType: 'Bundle',
@@ -675,42 +675,42 @@ Given('a batch bundle payload containing {string} resources is created for NHI {
     switch (r) {
       case 'condition':
         rid = `cond-${Date.now()}`;
-        const cp = {id: rid, fullUrl: `urn:uuid:${rid}`};
+        const cp = { id: rid, fullUrl: `urn:uuid:${rid}` };
         cp.resource = setupStandardConditionResource(nhi,
-            null,
-            facilityId,
-            localResourceId);
-        cp.request = {method: 'POST', url: 'Condition'};
+          null,
+          facilityId,
+          localResourceId);
+        cp.request = { method: 'POST', url: 'Condition' };
         this.payload.entry.push(cp);
         break;
       case 'allergyintolerance':
         rid = `alle-${Date.now()}`;
-        const ap = {id: rid, fullUrl: `urn:uuid:${rid}`};
+        const ap = { id: rid, fullUrl: `urn:uuid:${rid}` };
         ap.resource = setupStandardAllergyIntoleranceResource(nhi,
-            null,
-            facilityId,
-            localResourceId);
-        ap.request = {method: 'POST', url: 'AllergyIntolerance'};
+          null,
+          facilityId,
+          localResourceId);
+        ap.request = { method: 'POST', url: 'AllergyIntolerance' };
         this.payload.entry.push(ap);
         break;
       case 'encounter':
         rid = `enc-${Date.now()}`;
-        const ep = {id: rid, fullUrl: `urn:uuid:${rid}`};
+        const ep = { id: rid, fullUrl: `urn:uuid:${rid}` };
         ep.resource = setupStandardEncounterResource(nhi,
-            null,
-            facilityId,
-            localResourceId);
-        ep.request = {method: 'POST', url: 'Encounter'};
+          null,
+          facilityId,
+          localResourceId);
+        ep.request = { method: 'POST', url: 'Encounter' };
         this.payload.entry.push(ep);
         break;
       case 'observation':
         rid = `obs-${Date.now()}`;
-        const op = {id: rid, fullUrl: `urn:uuid:${rid}`};
+        const op = { id: rid, fullUrl: `urn:uuid:${rid}` };
         op.resource = setupStandardObservationResource(nhi,
-            null,
-            facilityId,
-            localResourceId);
-        op.request = {method: 'POST', url: 'Observation'};
+          null,
+          facilityId,
+          localResourceId);
+        op.request = { method: 'POST', url: 'Observation' };
         this.payload.entry.push(op);
         break;
       default:
@@ -719,7 +719,7 @@ Given('a batch bundle payload containing {string} resources is created for NHI {
   }
 });
 
-function  deletePropertyByPath(obj, path) {
+function deletePropertyByPath(obj, path) {
   const parts = path.split('.');
   let target = obj;
 
@@ -738,14 +738,14 @@ function  deletePropertyByPath(obj, path) {
       target.forEach((el) => {
         if (el && typeof el === 'object') {
           Object.keys(el)
-              .filter((k) => k.startsWith(base) && k.length > base.length)
-              .forEach((k) => delete el[k]);
+            .filter((k) => k.startsWith(base) && k.length > base.length)
+            .forEach((k) => delete el[k]);
         }
       });
     } else if (target && typeof target === 'object') {
       Object.keys(target)
-          .filter((k) => k.startsWith(base) && k.length > base.length)
-          .forEach((k) => delete target[k]);
+        .filter((k) => k.startsWith(base) && k.length > base.length)
+        .forEach((k) => delete target[k]);
     }
   } else {
     // Normal property deletion
@@ -811,10 +811,11 @@ function violateConstraint(clone, constraint) {
     };
   }
 
-  // Set verificationStatus to 'entered-in-error' and clinicalStatus to active to violate constraint
-  // if (/verificationStatus\.coding\.where\(system='[^']+' and code = 'entered-in-error'\)\.empty\(\) or clinicalStatus\.empty\(\)/.test(expr)) {
-  if (/verificationStatus\.coding\.where\(system='[^']+' and code='entered-in-error'\)\.empty\(\) or clinicalStatus\.empty\(\)/.test(expr)) {
-    // clone.verificationStatus;
+  // "key": "ait-1",
+  // "expr": "verificationStatus.coding.where(system = 'http://terminology.hl7.org/CodeSystem/allergyintolerance-verification' and code = 'entered-in-error').exists() or clinicalStatus.exists()",
+  // "human": "AllergyIntolerance.clinicalStatus SHALL be present if verificationStatus is not entered-in-error.",
+  // "path": "AllergyIntolerance",
+  if (/verificationStatus\.coding\.where\(system = '[^']+' and code = 'entered-in-error'\)\.exists\(\) or clinicalStatus\.exists\(\)/) {
     clone.verificationStatus = {
       coding: [{
         system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
@@ -825,6 +826,19 @@ function violateConstraint(clone, constraint) {
       coding: [{
         system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
         code: 'active',
+      }],
+    };
+  }
+
+  // "key": "ait-2",
+  // "expr": "verificationStatus.coding.where(system = 'http://terminology.hl7.org/CodeSystem/allergyintolerance-verification' and code = 'entered-in-error').empty() or clinicalStatus.empty()",
+  // "human": "AllergyIntolerance.clinicalStatus SHALL NOT be present if verification Status is entered-in-error",
+  // "path": "AllergyIntolerance",
+  if (/verificationStatus\.coding\.where\(system = '[^']+' and code = 'entered-in-error'\)\.empty\(\) or clinicalStatus\.empty\(\)/) {
+    clone.verificationStatus = {
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+        code: 'entered-in-error',
       }],
     };
   }

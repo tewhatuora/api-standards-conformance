@@ -59,8 +59,7 @@
         }
       ],
       "description": "Patient developed a rash after taking penicillin.",
-      "onset": "2023-11-26T10:03:26+13:00",
-      "severity": "moderate"
+      "onset": "2023-11-26T10:03:26+13:00"
     }
   ]
 }
