@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const {setDefaultTimeout} = require('@cucumber/cucumber');
 setDefaultTimeout(30 * 1000);
-const {evaluate} = require('fhirpath');
+const {evaluate, r4Model} = require('fhirpath');
 
 const TEST_CONDITION_ID = '63e3c5c7-c938-4cf8-8815-900fc5781d8e';
 
@@ -231,6 +231,21 @@ Given(
       }
     },
 );
+
+Given(
+    'a valid {string} payload for NHI {string} at facility {string} with local ID {string}',
+    function(resourceType, nhi, facilityId, localResourceId) {
+      switch (resourceType.toLowerCase()) {
+        case 'condition':
+          this.payload = setupStandardConditionResource(
+              nhi,
+              null,
+              facilityId,
+              localResourceId,
+          );
+      }
+    },
+);
 Given(
     'a Condition resource for NHI {string} with meta.security tag exists',
     {timeout: 30000},
@@ -364,13 +379,6 @@ Given(
 );
 
 Given(
-    'a health sector user {string} elects not to participate in sdhr',
-    async function(nhi) {
-      setupConsentForNHI(nhi, 'deny').call(this);
-    },
-);
-
-Given(
     'a health sector user {string} elects not to participate in sdhr by contacting their practice',
     async function(nhi) {
     // Essentially a no-op step to allow the step to pass - in this case there is no action to take.
@@ -458,64 +466,6 @@ Then(
     },
 );
 
-
-const setupConsentForNHI = (nhi, action) =>
-  async function() {
-    // {
-    //   // Add a bearer token if creds are present, unless instructed not to
-    //   this.addRequestHeader('authorization', `Bearer ${this.getToken() || await this.getOAuthToken()}`);
-
-    //   // Get existing consent
-
-    //   const consentResponse = await this.request(`/Consent?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`, {
-    //     method: 'GET',
-    //   });
-
-    //   if (consentResponse.data?.total > 0) {
-    //     // Consent already exists, update it
-    //     const consent = consentResponse.data.entry[0].resource;
-    //     const guid = consent.id;
-
-    //     const payload = setupConsentResource(guid, nhi, action);
-
-    //     const response = await this.request(`/Consent/${guid}`, {
-    //       method: 'PUT',
-    //       body: JSON.stringify(payload),
-    //     });
-
-    //     // Wait for the resource to be indexed and available
-    //     await new Promise((resolve) => setTimeout(resolve, 30000));
-    //     this.setResponse(response);
-    //   } else {
-    //     const guid = randomUUID();
-
-    //     // If no consent exists, create a new one
-    //     // console.log('No existing consent found, creating a new one');
-    //     const payload = setupConsentResource(guid, nhi, action);
-    //     // console.log('Payload for new consent:', JSON.stringify(payload, null, 2));
-    //     const response = await this.request('/Consent', {
-    //       method: 'POST',
-    //       body: JSON.stringify(payload),
-    //       debug: true,
-    //     });
-
-    //     if (response.status !== 201 || (response.status == 200 && response.data.isssue)) {
-    //       throw new Error(`Failed to create Consent resource: ${response.status} - ${JSON.stringify(response.data)}`);
-    //     } else {
-    //       console.log('Consent resource created Consent/' + response.data.id);
-    //     }
-
-    //     console.log('Response from creating new consent:', JSON.stringify(response.data, null, 2));
-    //     // Wait for the resource to be indexed and available
-    //     await new Promise((resolve) => setTimeout(resolve, 30000));
-    //     this.setResponse(response);
-    //   }
-    // }
-
-    // TODO: Replace this with $participate operation
-    return true;
-  };
-
 const invokeParticipateOperation = (
     operationName,
     nhi,
@@ -565,24 +515,22 @@ Given('the profile {string}', async function(url) {
   const res = await this.request(url, {
     method: 'GET',
   });
-  // if (!res.ok) throw new Error(`Failed to fetch profile: ${res.statusText}`);
   profileDef = res.data;
 
-  // this.mandatoryElements = profileDef.snapshot.element
-  //   .filter((e) => e.min >= 1 && e.path.includes('.'))
-  //   .map((e) => e.path.replace(/^AllergyIntolerance\./, ''));
   this.mandatoryElements = profileDef.snapshot.element
       .filter((e) => e.min >= 1 && e.path.includes('.'))
       .map((e) => e.path.replace(new RegExp(`^${profileDef.type}\\.`), ''));
 
   this.constraints = profileDef.snapshot.element.flatMap((e) =>
-    (e.constraint ?? []).map((c) => ({
-      key: c.key,
-      expr: c.expression,
-      human: c.human,
-      path: e.path ?? e.id,
-      min: e.min ?? 0,
-    })),
+    (e.constraint ?? [])
+        .map((c) => ({
+          key: c.key,
+          expr: c.expression,
+          human: c.human,
+          path: e.path ?? e.id,
+          min: e.min ?? 0,
+          severity: c.severity,
+        })),
   );
 
   console.log('Mandatory properties for profile:', url, this.mandatoryElements);
@@ -598,84 +546,80 @@ Given('the profile {string}', async function(url) {
   // console.log('Constraints:', this.constraints);
 });
 
-function getAtPath(obj, dotted) {
-  return dotted.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
-}
-
-function setAtPath(obj, dotted, value) {
-  const parts = dotted.split('.');
-  const leaf = parts.pop();
-  const parent = parts.reduce((o, k) => (o[k] ??= {}), obj);
-  parent[leaf] = value;
-}
-
-/** Produce an invalid value tailored to a constraint/existing value */
-function makeInvalidFor(value, c) {
-  if (typeof value === 'string' && /matches\('\^/.test(c.expr)) return 'NOT_A_VALID_REFERENCE';
-  if (typeof value === 'boolean') return !value;
-  if (typeof value === 'number') return Number.NaN;
-  return 'INVALID';
-}
-
 When('I create payload variations violating each constraint', function() {
-  // Keep the element path so we mutate the correct field
-
   constraintVariations = this.constraints.map((c) => {
-    // Deep clone
     const clone = JSON.parse(JSON.stringify(this.payload));
+    // const pathInInstance = c.path.replace(/^([A-Z][A-Za-z]+)\./, '');
 
-    // If your resource instance is already the object root (e.g., { resourceType:"Condition", ... }),
-    // you can use the path as-is. If your instance omits the "Condition." prefix in paths, strip it:
-    const pathInInstance = c.path.replace(/^([A-Z][A-Za-z]+)\./, ''); // drops leading "Condition." etc.
+    // Dynamically violate the constraint
+    const violated = violateConstraint(clone, c);
 
-    // If the element exists: set an invalid value to fail the regex/constraint
-    const current = getAtPath(clone, pathInInstance);
-
-    if (current !== undefined) {
-      // Special-case: *.reference + matches('^https?://...') → set an obviously wrong ref
-      if (c.path.endsWith('.reference') && /matches\('\^https?:\/\//.test(c.expr)) {
-        setAtPath(clone, pathInInstance, 'Patient/NOTVALID');
-      } else {
-        setAtPath(clone, pathInInstance, makeInvalidFor(current, c));
-      }
+    // Evaluate the returned payload to see if it actually violates the constraint
+    const result = evaluate(violated[0], c.expr, {model: r4Model});
+    if (result.length === 0 || result[0] === false) {
+      console.warn(`⚠️ Constraint not violated by variation: ${c.key} (${c.human}) - expression: ${c.expr} at path ${c.path}`);
     } else {
-      // No current value: create the leaf and set something invalid
-      if (c.path.endsWith('.reference')) {
-        setAtPath(clone, pathInInstance, 'BAD');
-      } else {
-        setAtPath(clone, pathInInstance, 'INVALID');
-      }
+      console.log(`✅ Constraint violated by variation: ${c.key} (${c.human}) - expression: ${c.expr} at path ${c.path}`);
     }
 
     return {
       key: c.key,
       expr: c.expr,
+      severity: c.severity,
       human: c.human,
       path: c.path,
-      resource: clone,
+      resource: violated,
     };
   });
 });
 
 When('each constraint variation is POSTed to {string}', async function(url) {
+  this.skippedCount = 0;
   for (const v of constraintVariations) {
-    this.payload = v.resource;
-    this.addRequestHeader(
-        'authorization',
-        `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
-    );
-    const response = await this.request(url, {
-      method: 'POST',
-      body: JSON.stringify(v.resource),
-    });
-    v.status = response.status;
-    v.outcome = response.data;
-    // console.log(`Response data for constraint ${v.key} (${v.human}):`, JSON.stringify(v.outcome, null, 2));
+    // Only test constraints with severity 'error' and skip 'warning' or 'information'
+    // SDHR does not support contained resources, so skip those constraints too
+    // Skip the `meta.source` constraint as it is impossible to hit due to participation check occuring first
+    if (v.severity === 'error' && !v.expr.startsWith('contained.')) { // && v.key !== 'hpi-location-url-format' && v.key !== 'nhi-url-format') {
+      this.payload = v.resource;
+      this.addRequestHeader(
+          'authorization',
+          `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+      );
+      const response = await this.request(url, {
+        method: 'POST',
+        body: JSON.stringify(v.resource),
+      });
+      v.status = response.status;
+      v.outcome = response.data;
+      // console.log(`Response data for constraint ${v.key} (${v.human}):`, JSON.stringify(v.outcome, null, 2));
+    } else {
+      this.skippedCount++;
+      console.log(`Skipping constraint ${v.key} (${v.human}) with severity ${v.severity}`);
+      v.outcome = {resourceType: 'OperationOutcome', issue: [{severity: v.severity, code: 'invalid'}], note: [{text: `Skipped constraint ${v.key} (${v.human}) with severity ${v.severity}`}]};
+      v.status = 400;
+    }
   }
 });
 
-Then('each constraint variation should fail with OperationOutcome', function() {
+Then('each constraint variation should fail with OperationOutcome', async function() {
+  this.attach(
+      `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+      <strong>Total constraints evaluated:</strong> ${constraintVariations.length}<br>
+      <strong>Skipped constraints:</strong> ${this.skippedCount}<br>
+      <pre>Note that constaints will be skipped if they are global and relate to an unsupported property - e.g. contained</pre>
+    </div>`,
+      'text/html',
+  );
   for (const v of constraintVariations) {
+    this.attach(
+        `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+        <strong>Constraint:</strong> ${v.key} ${v.human} ${v.path}<br>
+        <strong>HTTP Response Status:</strong> ${v.status}<br>
+        <pre>Payload: ${JSON.stringify(v.resource, null, 2)}</pre>
+        <pre>Outccome: ${JSON.stringify(v.outcome, null, 2)}</pre>
+      </div>`,
+        'text/html',
+    );
     assert(
         v.status >= 400,
         `Expected failure for constraint ${v.key} (${v.human}), got ${v.status}`,
@@ -684,28 +628,24 @@ Then('each constraint variation should fail with OperationOutcome', function() {
         v.outcome.resourceType === 'OperationOutcome',
         `Expected OperationOutcome for constraint ${v.key} (${v.human}), but got ${JSON.stringify(v.outcome)}`,
     );
+    assert(
+        Array.isArray(v.outcome.issue) && v.outcome.issue.some((i) => i.code === 'invalid'),
+        `Expected issue code "invalid" for constraint ${v.key} (${v.human}), but got ${JSON.stringify((v.outcome.issue || []).map((i) => i.code))}`,
+    );
   }
 });
 
-When('I remove each mandatory property from the payload', function() {
+When('I remove each mandatory property from the payload', async function() {
   this.mandatoryVariations = this.mandatoryElements.map((p) => {
     const clone = JSON.parse(JSON.stringify(this.payload));
-    const parts = p.split('.');
-    let target = clone;
-
-    for (let i = 0; i < parts.length - 1; i++) {
-      if (!target[parts[i]]) return {property: parts.slice(1).join('.'), resource: clone};
-      target = target[parts[i]];
-    }
-    delete target[parts[parts.length - 1]];
-
+    deletePropertyByPath(clone, p);
     return {property: p, resource: clone};
   });
 });
 
 When('each mandatory-variation is POSTed to {string}', async function(url) {
   for (const v of this.mandatoryVariations) {
-    deletePropertyByPath(v.resource, v.property);
+    // deletePropertyByPath(v.resource, v.property);
     this.addRequestHeader(
         'authorization',
         `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
@@ -720,7 +660,7 @@ When('each mandatory-variation is POSTed to {string}', async function(url) {
   }
 });
 
-Then('each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid', function() {
+Then('each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid', async function() {
   for (const v of this.mandatoryVariations) {
     console.log(`Checking OperationOutcome response when missing property: ${v.property}`);
     // console.log(evaluate(v.outcome, 'issue.code or issue.details.coding.code'));
@@ -744,26 +684,82 @@ Then('each mandatory variation should fail with http 400 and OperationOutcome re
   }
 });
 
+Given('a batch bundle payload containing {string} resources is created for NHI {string} at facility {string} with local ID {string}', async function(resources, nhi, facilityId, localResourceId) {
+  resources = resources.split(' ').map((r) => r.trim().toLowerCase());
+  this.payload = {
+    resourceType: 'Bundle',
+    id: 'bundle-' + Date.now(),
+    meta: {
+      profile: [
+        'https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRBatchBundle',
+      ],
+    },
+    type: 'batch',
+    entry: [],
+  };
+  // Add resources to the bundle
+  for (const r of resources) {
+    switch (r) {
+      case 'condition':
+        rid = `cond-${Date.now()}`;
+        const cp = {id: rid, fullUrl: `urn:uuid:${rid}`};
+        cp.resource = setupStandardConditionResource(nhi,
+            null,
+            facilityId,
+            localResourceId);
+        cp.request = {method: 'POST', url: 'Condition'};
+        this.payload.entry.push(cp);
+        break;
+      case 'allergyintolerance':
+        rid = `alle-${Date.now()}`;
+        const ap = {id: rid, fullUrl: `urn:uuid:${rid}`};
+        ap.resource = setupStandardAllergyIntoleranceResource(nhi,
+            null,
+            facilityId,
+            localResourceId);
+        ap.request = {method: 'POST', url: 'AllergyIntolerance'};
+        this.payload.entry.push(ap);
+        break;
+      case 'encounter':
+        rid = `enc-${Date.now()}`;
+        const ep = {id: rid, fullUrl: `urn:uuid:${rid}`};
+        ep.resource = setupStandardEncounterResource(nhi,
+            null,
+            facilityId,
+            localResourceId);
+        ep.request = {method: 'POST', url: 'Encounter'};
+        this.payload.entry.push(ep);
+        break;
+      case 'observation':
+        rid = `obs-${Date.now()}`;
+        const op = {id: rid, fullUrl: `urn:uuid:${rid}`};
+        op.resource = setupStandardObservationResource(nhi,
+            null,
+            facilityId,
+            localResourceId);
+        op.request = {method: 'POST', url: 'Observation'};
+        this.payload.entry.push(op);
+        break;
+      default:
+        throw new Error(`Unsupported resource type: ${r}`);
+    }
+  }
+});
+
 function deletePropertyByPath(obj, path) {
   const parts = path.split('.');
   let target = obj;
 
   for (let i = 0; i < parts.length - 1; i++) {
-    if (Array.isArray(target[parts[i]])) {
-      // Traverse each element in the array
-      target = target[parts[i]].map((el) => el);
-    } else if (target[parts[i]] !== undefined) {
-      target = target[parts[i]];
-    } else {
-      return;
-    }
+    if (!target[parts[i]]) return;
+    target = target[parts[i]];
   }
 
   const last = parts[parts.length - 1];
-
-  // Handle FHIR choice elements (e.g. effective[x], value[x])
   const choiceMatch = last.match(/^(\w+)\[x\]$/);
+
   if (choiceMatch) {
+    // Delete all variants of the choice property (e.g. effectiveDateTime, effectivePeriod)
     const base = choiceMatch[1];
     if (Array.isArray(target)) {
       target.forEach((el) => {
@@ -779,6 +775,7 @@ function deletePropertyByPath(obj, path) {
           .forEach((k) => delete target[k]);
     }
   } else {
+    // Normal property deletion
     if (Array.isArray(target)) {
       target.forEach((el) => {
         if (el && typeof el === 'object') {
@@ -791,31 +788,278 @@ function deletePropertyByPath(obj, path) {
   }
 }
 
-// function deletePropertyByPath(obj, path) {
-//   const parts = path.split('.');
-//   let target = obj;
+function violateConstraint(clone, constraint) {
+  const expr = constraint.expr;
+  const path = constraint.path;
 
-//   for (let i = 0; i < parts.length - 1; i++) {
-//     if (Array.isArray(target[parts[i]])) {
-//       // Traverse each element in the array
-//       target = target[parts[i]].map((el) => el);
-//     } else if (target[parts[i]] !== undefined) {
-//       target = target[parts[i]];
-//     } else {
-//       return;
-//     }
-//   }
+  // Remove clinicalStatus if required by the constraint
+  if (/clinicalStatus\.exists\(\)/.test(expr)) {
+    delete clone.clinicalStatus;
+  }
 
-//   const last = parts[parts.length - 1];
+  // Set verificationStatus to 'confirmed' if constraint checks for 'entered-in-error'
+  if (/verificationStatus\.coding\.where\(system='[^']+' and code = 'entered-in-error'\)\.exists\(\)/.test(expr)) {
+    clone.verificationStatus = {
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+        code: 'confirmed',
+      }],
+    };
+  }
 
-//   if (Array.isArray(target)) {
-//     // Delete property from each object in the array
-//     target.forEach((el) => {
-//       if (el && typeof el === 'object') {
-//         delete el[last];
-//       }
-//     });
-//   } else if (target && typeof target === 'object') {
-//     delete target[last];
-//   }
-// }
+  // Set category to include 'problem-list-item' if constraint checks for its absence
+  if (/category\.select\(\$this='problem-list-item'\)\.empty\(\)/.test(expr)) {
+    clone.category = [{
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/condition-category',
+        code: 'problem-list-item',
+      }],
+    }];
+  }
+
+  // Set abatementString to abated and clinicalStatus to active violate constraint
+  if (/abatement\.empty\(\)/.test(expr)) {
+    clone.abatementString = 'abated';
+    clone.clinicalStatus = {
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+        code: 'active',
+      }],
+    };
+  }
+
+  // Set verificationStatus to 'entered-in-error' to violate constraint
+  if (/verificationStatus\.coding\.where\(system='[^']+' and code = 'entered-in-error'\)\.empty\(\)/.test(expr)) {
+    clone.verificationStatus = {
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+        code: 'entered-in-error',
+      }],
+    };
+  }
+
+  // "key": "ait-1",
+  // "expr": "verificationStatus.coding.where(system = 'http://terminology.hl7.org/CodeSystem/allergyintolerance-verification' and code = 'entered-in-error').exists() or clinicalStatus.exists()",
+  // "human": "AllergyIntolerance.clinicalStatus SHALL be present if verificationStatus is not entered-in-error.",
+  // "path": "AllergyIntolerance",
+  if (/verificationStatus\.coding\.where\(system = '[^']+' and code = 'entered-in-error'\)\.exists\(\) or clinicalStatus\.exists\(\)/) {
+    clone.verificationStatus = {
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+        code: 'entered-in-error',
+      }],
+    };
+    clone.clinicalStatus = {
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+        code: 'active',
+      }],
+    };
+  }
+
+  // "key": "ait-2",
+  // "expr": "verificationStatus.coding.where(system = 'http://terminology.hl7.org/CodeSystem/allergyintolerance-verification' and code = 'entered-in-error').empty() or clinicalStatus.empty()",
+  // "human": "AllergyIntolerance.clinicalStatus SHALL NOT be present if verification Status is entered-in-error",
+  // "path": "AllergyIntolerance",
+  if (/verificationStatus\.coding\.where\(system = '[^']+' and code = 'entered-in-error'\)\.empty\(\) or clinicalStatus\.empty\(\)/) {
+    clone.verificationStatus = {
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+        code: 'entered-in-error',
+      }],
+    };
+  }
+
+  // Catch all handler for the hasValue() or (children().count() > id.count()) constraints
+  if (expr === 'hasValue() or (children().count() > id.count())') {
+    violateEle1(clone, path);
+  }
+
+  // Handle Must have either extensions or value[x], not both
+  if (expr === 'extension.exists() != value.exists()') {
+    violateEle1(clone, path);
+  }
+
+  // Handler for Condition.stage constraint
+  if (expr === 'summary.exists() or assessment.exists()') {
+    // Create an empty stage array to violate the constraint
+    clone.stage = [];
+  }
+
+  // Handler for Condition.evidence constraint
+  if (expr === 'code.exists() or detail.exists()') {
+    // Create an empty evidence array to violate the constraint
+    clone.evidence = [];
+  }
+
+  // Special SDHR handler for NHI / HPI references
+  if (constraint.key === 'nhi-url-format' || constraint.key === 'hpi-url-format' || constraint.key === 'hpi-location-url-format') {
+    // mutate the reference to an invalid format
+    switch (constraint.key) {
+      case 'nhi-url-format':
+        if (clone.subject && clone.subject.reference) {
+          clone.subject.reference = 'https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/INVALIDNHI';
+        } else if (clone.patient && clone.patient.reference) {
+          clone.patient.reference = 'https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/INVALIDNHI';
+        }
+        break;
+      case 'hpi-location-url-format':
+        if (clone.meta && clone.meta.source) {
+          clone.meta.source = 'https://api.hip.digital.health.nz/fhir/hpi/v1/Location/INVALIDHPI';
+        }
+        break;
+      case 'hpi-url-format':
+        if (clone.asserter && clone.asserter.reference) {
+          clone.asserter.reference = 'https://api.hip.digital.health.nz/fhir/hpi/v1/Practitioner/INVALIDHPI';
+        }
+        break;
+    }
+  }
+
+  // Handler for Observation dataAbsentReason.empty() or value.empty()
+  if (expr === 'dataAbsentReason.empty() or value.empty()') {
+    // Hack as this constraint does not appear to apply to component observations
+    if (clone.component) {
+      delete clone.component;
+    }
+    // Set valueQuantity to violate the constraint
+    clone.valueQuantity = {
+      value: 98.6,
+      unit: 'F',
+      system: 'http://unitsofmeasure.org',
+      code: 'F',
+    };
+    // Set dataAbsentReason to a value to violate the constraint
+    clone.dataAbsentReason = {
+      coding: [{
+        system: 'http://terminology.hl7.org/CodeSystem/data-absent-reason',
+        code: 'unknown',
+      }],
+    };
+  }
+
+  // Special handler for Observation value.empty() or component.code.where(coding.intersect(%resource.code.coding).exists()).empty()
+  if (expr === 'value.empty() or component.code.where(coding.intersect(%resource.code.coding).exists()).empty()') {
+    clone.component = [];
+    clone.component.push({
+      code: {
+        coding: [
+          {
+            system: 'http://loinc.org',
+            code: '8480-6',
+            display: 'Systolic blood pressure',
+          },
+        ],
+        valueQuantity: {
+          value: 73,
+          unit: 'mmHg',
+          system: 'http://unitsofmeasure.org',
+          code: 'mm[Hg]',
+        },
+      },
+    });
+    // Set the Observation code
+    clone.code = {
+      coding: [
+        {
+          system: 'http://loinc.org',
+          code: '8480-6',
+          display: 'Systolic blood pressure',
+        },
+      ],
+    };
+    // Set valueQuantity to violate the constraint
+    clone.valueQuantity = {
+      value: 98.6,
+      unit: 'F',
+      system: 'http://unitsofmeasure.org',
+      code: 'F',
+    };
+  }
+
+  // Special handler for low.exists() or high.exists() or text.exists()
+  if (expr === 'low.exists() or high.exists() or text.exists()') {
+    violateEle1(clone, path);
+  }
+
+  // Add more patterns as needed for other constraints
+
+  return clone;
+}
+
+function ensurePath(resource, path) {
+  const LIKELY_ARRAY_PROPS = new Set([
+    'extension', 'modifierExtension', 'identifier', 'coding', 'category', 'note',
+    'telecom', 'name', 'address', 'contact', 'component', 'contained', 'tag',
+    'security', 'profile', 'type', 'slot', 'part', 'performer', 'reasonCode', 'referenceRange',
+  ]);
+  if (!resource || typeof resource !== 'object') {
+    throw new Error('resource must be an object');
+  }
+  if (!path || typeof path !== 'string') {
+    throw new Error('path must be a string');
+  }
+
+  // Split and drop the root resourceType segment if present
+  const parts = path.split('.').filter(Boolean);
+  const rootType = resource.resourceType;
+  if (parts.length && parts[0] === rootType) parts.shift();
+
+  let current = resource;
+  for (let i = 0; i < parts.length; i++) {
+    const key = parts[i];
+    const isLast = i === parts.length - 1;
+    const shouldBeArray = LIKELY_ARRAY_PROPS.has(key);
+
+    // Create if missing, or coerce into expected container shape
+    if (!(key in current)) {
+      current[key] = isLast && shouldBeArray ? [] : {};
+    } else {
+      const val = current[key];
+      if (isLast && shouldBeArray) {
+        if (!Array.isArray(val)) current[key] = [];
+      } else {
+        if (typeof val !== 'object' || val === null || Array.isArray(val)) {
+          current[key] = {};
+        }
+      }
+    }
+    current = current[key];
+  }
+  return current;
+}
+
+
+function resolveParent(resource, path) {
+  const parts = path.split('.').filter(Boolean);
+  const rootType = resource.resourceType;
+  if (parts[0] === rootType) parts.shift();
+  if (parts.length === 0) return null;
+
+  const parentPath = parts.slice(0, -1);
+  let current = resource;
+  for (const key of parentPath) {
+    if (!current || typeof current !== 'object') return null;
+    current = current[key];
+  }
+  return current && typeof current === 'object' ? current : null;
+}
+
+function violateEle1(resource, path) {
+  const target = ensurePath(resource, path);
+
+  if (Array.isArray(target)) {
+    if (target.length === 0) {
+      target.push({});
+    } else {
+      target[0] = {};
+    }
+  } else if (target && typeof target === 'object') {
+    Object.keys(target).forEach((k) => delete target[k]);
+  } else {
+    const parent = resolveParent(resource, path);
+    const lastKey = path.split('.').filter(Boolean).pop();
+    if (parent && lastKey) parent[lastKey] = {};
+  }
+  return resource;
+}

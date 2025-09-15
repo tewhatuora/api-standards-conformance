@@ -3,7 +3,7 @@
   "id" : "c41f3cc3-2746-43f1-901d-f82c04c9eddc",
   "meta" : {
     "lastUpdated" : "2024-01-26T10:03:26+13:00",
-    "source" : "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
+    "source" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-B",
     "profile" : ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRAllergyIntolerance"]
   },
   "identifier" : [{
@@ -29,20 +29,37 @@
   "category" : ["medication"],
   "code" : {
     "coding" : [{
-      "system" : "http://mims.co.nz",
+      "system" : "https://standards.digital.health.nz/fhir/ValueSet/nzf-nzmt",
       "code" : "m00286",
       "display" : "Penicillins",
       "userSelected" : true
     }]
   },
   "patient" : {
-    "reference" : "https://api.hip.digital.health.nz/fhir/Patient/ZMW0002",
+    "reference" : "https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW0002",
     "type" : "Patient",
     "display" : "Carrey Carrington"
   },
   "recorder" : {
-    "reference" : "https://api.hip.digital.health.nz/fhir/Practitioner/91ZZXN",
+    "reference" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Practitioner/91ZZXN",
     "type" : "Practitioner",
     "display" : "DR Julian Subatoi Bashir"
-  }
+  },
+  "reaction": [
+    {
+      "manifestation": [
+        {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "64144002",
+              "display": "Pruritic rash"
+            }
+          ]
+        }
+      ],
+      "description": "Patient developed a rash after taking penicillin.",
+      "onset": "2023-11-26T10:03:26+13:00"
+    }
+  ]
 }
