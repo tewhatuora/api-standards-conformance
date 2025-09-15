@@ -30,9 +30,11 @@ When('a GET request is made to {string} with the response body ID', {timeout: 10
   const responseBody = this.getResponse();
   const id = responseBody.data.id;
   const requestUrl = url + '/' + id;
+  console.log('Request URL:', requestUrl);
   const response = await this.request(requestUrl, {
     method: 'GET',
   });
+  console.log(response);
   this.setResponse(response);
 });
 

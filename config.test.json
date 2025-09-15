@@ -1,20 +1,16 @@
 {
   "oasFile": "resources/sdhr.yml",
-  "baseUrl": "https://api.test.sdhr.digital.health.nz/s2s",
+  "baseUrl": "https://sdhr.api-dev.digital.health.nz",
   "headers": {
     "accept": "application/fhir+json"
-  },
-  "oauth": {
-    "defaultScope": "test",
-    "tokenEndpoint": ""
   },
   "customHeaders": {},
   "logLevel": "debug",
   "oauth":  {
     "tokenEndpoint": "https://api.ppd.auth.digital.health.nz/realms/hnz-integration/protocol/openid-connect/token",
     "defaultScope": "system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation",
-    "clientId": "{your-client-id}",
-    "clientSecret": "{your-client-secret}"
+    "clientId": "aa6f6f35-3426-44df-aa35-e1adadc8c0e8",
+    "clientSecret": "k94PNWUNKmhs2Y3kem55xCTqacObhCsf"
   },
   "resources": {
     "^/Condition": "Condition.json",

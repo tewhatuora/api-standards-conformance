@@ -4,8 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const {setDefaultTimeout} = require('@cucumber/cucumber');
 setDefaultTimeout(30 * 1000);
-const {evaluate, r4Model} = require('fhirpath');
-const {start} = require('node:repl');
+const {evaluate} = require('fhirpath');
 
 const TEST_CONDITION_ID = '63e3c5c7-c938-4cf8-8815-900fc5781d8e';
 
@@ -238,11 +237,23 @@ Given(
     async function(nhi, security) {
       const parsedTag = JSON.parse(security);
 
-      const payload = setupStandardConditionResource(nhi, parsedTag);
+      // Ensure we have an auth token for this request
+      this.addRequestHeader(
+          'authorization',
+          `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+      );
+
+      const payload = setupStandardConditionResource(nhi, parsedTag, 'FZZ999-B');
+      payload.id = TEST_CONDITION_ID;
       const response = await this.request(`/Condition/${TEST_CONDITION_ID}`, {
         method: 'PUT',
         body: JSON.stringify(payload),
       });
+
+      // Some servers may not return a resource body with id on PUT; ensure id is available
+      if (!response?.data || !response?.data?.id) {
+        response.data = {...(response.data || {}), id: TEST_CONDITION_ID};
+      }
 
       this.setResponse(response);
 
