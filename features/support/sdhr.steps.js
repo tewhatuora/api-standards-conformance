@@ -233,20 +233,6 @@ Given(
 );
 
 Given(
-    'a valid {string} payload for NHI {string} at facility {string} with local ID {string}',
-    function(resourceType, nhi, facilityId, localResourceId) {
-      switch (resourceType.toLowerCase()) {
-        case 'condition':
-          this.payload = setupStandardConditionResource(
-              nhi,
-              null,
-              facilityId,
-              localResourceId,
-          );
-      }
-    },
-);
-Given(
     'a Condition resource for NHI {string} with meta.security tag exists',
     {timeout: 30000},
     async function(nhi, security) {
