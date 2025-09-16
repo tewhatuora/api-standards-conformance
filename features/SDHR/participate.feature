@@ -283,6 +283,19 @@ Feature: Participate operation
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
 
+  Scenario: 12. Requesting a resource with a confidential security tag returns 403
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
+    Given a Condition resource for NHI "ZMW6002" with meta.security tag exists
+      """
+      {"system":"http://terminology.hl7.org/CodeSystem/v3-Confidentiality","code":"R"}
+      """
+    When a GET request is made to "/Condition" with the response body ID
+    Then the response status code should be 403
+    And the response body should have property "resourceType" containing "OperationOutcome"
+    And the response body should have property "issue[0].severity" containing "error"
+    And the response body should have property "issue[0].code" containing "security"
+    And the response body should have property "issue[0].diagnostics" containing "Resource access is forbidden"
+
 #   Scenario: Patient records denied due to HNZ opt out
 #     Given a patient has opted out of SDHR participation via the HNZ channel
 #     When an API consumer attempts to POST a "Condition" resource
