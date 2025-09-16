@@ -521,16 +521,16 @@ Given('the profile {string}', async function(url) {
   );
 
   this.bindings = profileDef.snapshot.element.flatMap((e) =>
-  e.binding
-    ? [{
-        path: e.path ?? e.id,
-        strength: e.binding.strength,
-        description: e.binding.description,
-        valueSet: e.binding.valueSet,
-        extension: e.binding.extension ?? [] 
-      }]
-    : []
-);
+  e.binding ?
+    [{
+      path: e.path ?? e.id,
+      strength: e.binding.strength,
+      description: e.binding.description,
+      valueSet: e.binding.valueSet,
+      extension: e.binding.extension ?? [],
+    }] :
+    [],
+  );
 
   // this.bindings = profileDef.snapshot.element.flatMap((e) =>
   //   (e.binding ?? [])
@@ -697,67 +697,67 @@ Then('each mandatory variation should fail with http 400 and OperationOutcome re
 
 When('I create payload variations violating each required binding', function() {
   bindingVariations = this.bindings
-    .filter((b) => b.strength === 'required')
-    .map((b) => {
-      const clone = JSON.parse(JSON.stringify(this.payload));
+      .filter((b) => b.strength === 'required')
+      .map((b) => {
+        const clone = JSON.parse(JSON.stringify(this.payload));
 
-      // find the element definition for this binding, so we can see the type
-      const elDef = this.profileDef.snapshot.element.find((el) => el.path === b.path);
-      const typeCode = elDef?.type?.[0]?.code;
+        // find the element definition for this binding, so we can see the type
+        const elDef = this.profileDef.snapshot.element.find((el) => el.path === b.path);
+        const typeCode = elDef?.type?.[0]?.code;
 
-      // navigate into the payload
-      const pathParts = b.path.split('.');
-      let target = clone;
-      for (let i = 1; i < pathParts.length - 1; i++) {
-        if (!target[pathParts[i]]) {
-          target[pathParts[i]] = {};
+        // navigate into the payload
+        const pathParts = b.path.split('.');
+        let target = clone;
+        for (let i = 1; i < pathParts.length - 1; i++) {
+          if (!target[pathParts[i]]) {
+            target[pathParts[i]] = {};
+          }
+          target = target[pathParts[i]];
         }
-        target = target[pathParts[i]];
-      }
-      const last = pathParts[pathParts.length - 1];
+        const last = pathParts[pathParts.length - 1];
 
-      // Overwrite based on type
-      switch (typeCode) {
-        case 'code':
+        // Overwrite based on type
+        switch (typeCode) {
+          case 'code':
           // Example: identifier.use = "secondary"
-          target[last] = "not-in-valueset";
-          break;
+            target[last] = 'not-in-valueset';
+            break;
 
-        case 'Coding':
+          case 'Coding':
           // Example: meta.security
-          target[last] = {
-            system: "http://fhir.example.org/invalid-system",
-            code: "not-in-valueset",
-            display: "Not in valueset"
-          };
-          break;
+            target[last] = {
+              system: 'http://fhir.example.org/invalid-system',
+              code: 'not-in-valueset',
+              display: 'Not in valueset',
+            };
+            break;
 
-        case 'CodeableConcept':
+          case 'CodeableConcept':
           // Example: condition.clinicalStatus
-          target[last] = {
-            coding: [{
-              system: "http://fhir.example.org/invalid-system",
-              code: "not-in-valueset",
-              display: "Not in valueset"
-            }]
-          };
-          break;
+            target[last] = {
+              coding: [{
+                system: 'http://fhir.example.org/invalid-system',
+                code: 'not-in-valueset',
+                display: 'Not in valueset',
+              }],
+            };
+            break;
 
-        default:
-          console.warn(`⚠️ Skipping binding at ${b.path} (unsupported type: ${typeCode})`);
-      }
+          default:
+            console.warn(`⚠️ Skipping binding at ${b.path} (unsupported type: ${typeCode})`);
+        }
 
-      console.log(`✅ Violated required binding at ${b.path} (type=${typeCode}) valueSet=${b.valueSet}`);
+        console.log(`✅ Violated required binding at ${b.path} (type=${typeCode}) valueSet=${b.valueSet}`);
 
-      return {
-        path: b.path,
-        type: typeCode,
-        strength: b.strength,
-        valueSet: b.valueSet,
-        description: b.description,
-        resource: clone,
-      };
-    });
+        return {
+          path: b.path,
+          type: typeCode,
+          strength: b.strength,
+          valueSet: b.valueSet,
+          description: b.description,
+          resource: clone,
+        };
+      });
 });
 
 When('each mandatory binding variation is POSTed to {string}', async function(url) {
@@ -805,19 +805,6 @@ Then('each mandatory binding variation should fail with OperationOutcome', async
     );
   }
 });
-
-/**
- * Helper: produce a code guaranteed to NOT be in the required value set.
- */
-function makeInvalidCode(binding) {
-  // crude but effective: nonsense code + system
-  return {
-    system: "http://fhir.example.org/invalid-system",
-    code: "not-in-valueset",
-    display: "Not in valueset"
-  };
-}
-
 
 Given('a batch bundle payload containing {string} resources is created for NHI {string} at facility {string} with local ID {string}', async function(resources, nhi, facilityId, localResourceId) {
   resources = resources.split(' ').map((r) => r.trim().toLowerCase());
@@ -1009,7 +996,7 @@ function violateConstraint(clone, constraint) {
   // "human" : "The AllergyIntolerance resource must have at least one of 'code' or 'note'.",
   // "expr" : "(code.exists() or note.exists())"
   // "path" : "AllergyIntolerance"
-  if(/\(code\.exists\(\) or note\.exists\(\)\)/.test(expr)) {
+  if (/\(code\.exists\(\) or note\.exists\(\)\)/.test(expr)) {
     delete clone.code;
     delete clone.note;
   }
