@@ -19,6 +19,21 @@ Then(
     },
 );
 
+Then(
+  'each entry in the response body should have property {string} containing either {string} or {string}',
+  async function(jsonKey, jsonValue1, jsonValue2) {
+    const entries = this.getResponse().data.entry;
+    assert(entries && Array.isArray(entries), 'Response body does not contain an array of entries');
+    for (const entry of entries) {
+      const value = JSONPath({path: `$.${jsonKey}`, json: entry.response, wrap: false});
+      assert(
+        value === jsonValue1 || value === jsonValue2,
+        `Expected property "${jsonKey}" to be either "${jsonValue1}" or "${jsonValue2}", but got "${value}"`,
+      );
+    }
+  },
+);
+
 When('a GET request is made to {string}', {timeout: 100000}, async function(url) {
   const response = await this.request(url, {
     method: 'GET',
