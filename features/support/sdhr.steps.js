@@ -240,39 +240,7 @@ Given('the security tag {string} with display {string} is added to the payload',
     system: 'http://terminology.hl7.org/CodeSystem/v3-Confidentiality',
     display: display,
   });
-})
-
-
-// Given(
-//     'a Condition resource for NHI {string} with meta.security tag exists',
-//     {timeout: 30000},
-//     async function(nhi, security) {
-//       const parsedTag = JSON.parse(security);
-
-//       // Ensure we have an auth token for this request
-//       this.addRequestHeader(
-//           'authorization',
-//           `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
-//       );
-
-//       const payload = setupStandardConditionResource(nhi, parsedTag, 'FZZ999-B');
-//       payload.id = TEST_CONDITION_ID;
-//       const response = await this.request(`/Condition/${TEST_CONDITION_ID}`, {
-//         method: 'PUT',
-//         body: JSON.stringify(payload),
-//       });
-
-//       // Some servers may not return a resource body with id on PUT; ensure id is available
-//       if (!response?.data || !response?.data?.id) {
-//         response.data = {...(response.data || {}), id: TEST_CONDITION_ID};
-//       }
-
-//       this.setResponse(response);
-
-//       // Wait for the resource to be indexed and available
-//       await new Promise((resolve) => setTimeout(resolve, 5000));
-//     },
-// );
+});
 
 Given(
     'a valid {string} payload for NHI {string} at facility {string} with local ID {string}',
@@ -731,12 +699,12 @@ When('I create payload variations violating each required binding', function() {
         switch (typeCode) {
           case 'code':
           // Example: identifier.use = "secondary"
-          if(Array.isArray(target)){
-            target[0][last] = 'not-in-valueset';
-          }else{
-            target[last] = 'not-in-valueset';
-          }
-          break;
+            if (Array.isArray(target)) {
+              target[0][last] = 'not-in-valueset';
+            } else {
+              target[last] = 'not-in-valueset';
+            }
+            break;
 
           case 'Coding':
           // Example: meta.security
