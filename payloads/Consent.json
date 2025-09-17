@@ -1,7 +1,7 @@
 {
   "resourceType": "Consent",
   "meta": {
-    "profile": ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRConsent"]
+    "profile": ["https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition/SDHRConsent"]
   },
   "identifier": [
     {

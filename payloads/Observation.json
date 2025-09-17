@@ -3,7 +3,7 @@
   "id": "b1829cf7-d2b2-4e56-bbaf-2a826192a84b",
   "meta": {
     "source": "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
-    "profile": ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRObservation"]
+    "profile": ["https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition/SDHRObservation"]
   },
   "identifier": [
     {

@@ -3,14 +3,14 @@ Feature: Validate resources against SDHR profile
 
   Scenario: Participate operation for Setup
     Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRAllergyIntolerance.json"
-    And the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    And the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6602 | null       | true                   | null       | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
-    And the API Consumer requests a new client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    And the API Consumer requests a new client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6602 | F38006-B   | true                   | null       | null              | null         | null            |
@@ -47,7 +47,7 @@ Feature: Validate resources against SDHR profile
     Then each mandatory variation should fail with http 400 and OperationOutcome response containing issue.code equal to invalid
 
   Scenario: All mandatory Observation properties are enforced. This tests that all mandatory properties for the Observation resource are enforced. It uses the profile published in the IG to determine which properties are mandatory and then mkes a request to the API with a payload that is missing the mandatory parameter.
-    Given the profile "https://fhir-ig.digital.health.nz/sdhr/StructureDefinition-SDHRObservation.json"
+    Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRObservation.json"
     Given a valid "Observation" payload for NHI "ZMW6602" at facility "F38006-B" with local ID "null"
     When I remove each mandatory property from the payload
     And each mandatory-variation is POSTed to "/Observation"
