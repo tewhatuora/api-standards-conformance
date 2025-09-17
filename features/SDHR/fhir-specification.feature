@@ -86,7 +86,28 @@ Feature: Validate resources against SDHR profile
     Given a valid "Condition" payload for NHI "ZMW6602" at facility "F38006-B" with local ID "null"
     When I create payload variations violating each required binding
     And each mandatory binding variation is POSTed to "/Condition"
-    # Then each mandatory binding variation should fail with OperationOutcome
+    Then each mandatory binding variation should fail with OperationOutcome
+
+  Scenario: All mandatory bindings are enforced for AllergyIntolerance resource
+    Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRAllergyIntolerance.json"
+    Given a valid "AllergyIntolerance" payload for NHI "ZMW6602" at facility "F38006-B" with local ID "null"
+    When I create payload variations violating each required binding
+    And each mandatory binding variation is POSTed to "/AllergyIntolerance"
+    Then each mandatory binding variation should fail with OperationOutcome
+
+  Scenario: All mandatory bindings are enforced for Encounter resource
+    Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHREncounter.json"
+    Given a valid "Encounter" payload for NHI "ZMW6602" at facility "F38006-B" with local ID "null"
+    When I create payload variations violating each required binding
+    And each mandatory binding variation is POSTed to "/Encounter"
+    Then each mandatory binding variation should fail with OperationOutcome
+
+  Scenario: All mandatory bindings are enforced for Observation resource
+    Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRObservation.json"
+    Given a valid "Observation" payload for NHI "ZMW6602" at facility "F38006-B" with local ID "null"
+    When I create payload variations violating each required binding
+    And each mandatory binding variation is POSTed to "/Observation"
+    Then each mandatory binding variation should fail with OperationOutcome
 
   Scenario: Valid batch request with mixed resources is accepted. This scenario will test that a valid batch request containing a mix of Condition, Observation, AllergyIntolerance and Encounter resources can be processed successfully.
     Given a batch bundle payload containing "Condition Observation AllergyIntolerance Encounter" resources is created for NHI "ZMW6602" at facility "F38006-B" with local ID "null"

@@ -284,11 +284,18 @@ Feature: Participate operation
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
 
   Scenario: 12. Requesting a resource with a confidential security tag returns 403
-    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
-    Given a Condition resource for NHI "ZMW6002" with meta.security tag exists
-      """
-      {"system":"http://terminology.hl7.org/CodeSystem/v3-Confidentiality","code":"R"}
-      """
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Then the API consumer invokes the "$participate" operation with:
+    | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
+    | ZMW6006 | F38006-D   | true                  | null             | null              | null         | null            |
+    Then the response status code should be 200
+    And the response body should have property "resourceType" containing "OperationOutcome"
+    And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+    Given the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
+    And a valid "Condition" payload for NHI "ZMW6006" at facility "F38006-D" with local ID "null"
+    And the security tag "R" with display "Restricted" is added to the payload
+    When a POST request is made to "/Condition" with the payload
+    Then the response status code should be 201
     When a GET request is made to "/Condition" with the response body ID
     Then the response status code should be 403
     And the response body should have property "resourceType" containing "OperationOutcome"
