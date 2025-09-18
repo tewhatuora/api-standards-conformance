@@ -23,5 +23,5 @@ Feature: FHIR API Standards
     Given the API Consumer requests a client_credentials access token with scope "scope/cinc"
     And the request header "Authorization" contains a bearer token
     When a "GET" request to "/Questionnaire/2c18304e-6177-4df5-869b-f113efcd0c5e" is made
-    Then the response body should have property "url" containing "https://fhir-ig-uat.digital.health.nz/screening/Questionnaire/TermsOfUseOrgFacility"
+    Then the response body should have property "url" containing "https://fhir-ig.digital.health.nz/screening/Questionnaire/TermsOfUseOrgFacility"
 

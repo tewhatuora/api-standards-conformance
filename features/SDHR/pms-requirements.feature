@@ -2,7 +2,7 @@
 Feature: SDHR PMS Requirements
 
   Scenario: Setup participation
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Given the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6100 | F38006-D   | true                   | null       | null              | null         | null            |

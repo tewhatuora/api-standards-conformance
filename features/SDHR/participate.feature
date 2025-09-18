@@ -3,7 +3,7 @@ Feature: Participate operation
 
   Scenario: 1. Patient ZMW6001 opts out of SDHR participation using HNZ channel
     Given a patient "ZMW6001" notifies "HNZ" of participation "opt-off"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6001 | null   | false                  | null             | null              | null         | null            |
@@ -24,7 +24,7 @@ Feature: Participate operation
 
   Scenario: 2. Patient ZMW6002 opts out of SDHR participation at their enrolled practice F38006-C
     Given a patient "ZMW6002" notifies "their facility F38006-C" of participation "opt-off"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6002 | F38006-C   | false                  | null             | null              | null         | null            |
@@ -47,7 +47,7 @@ Feature: Participate operation
 
   Scenario: 3. Patient ZMW6008 opts in to SDHR participation using HNZ channel but no preferences for facility
     Given a patient "ZMW6008" notifies "HNZ" of participation "opt-in"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6008 | null   | true                   | null             | null              | null         | null            |
@@ -67,7 +67,7 @@ Feature: Participate operation
 
   Scenario: 4. Patient ZMW6002 opts in to SDHR participation at their enrolled practice F38006-C
     Given a patient "ZMW6002" notifies "their facility F38006-C" of participation "opt-in"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6002 | F38006-C   | true                   | null  | null        | null         | null            |
@@ -87,7 +87,7 @@ Feature: Participate operation
 
   Scenario: 5. Patient ZMW6003 opts in to SDHR participation at their enrolled practice F38006-D then marks a record as withheld
     Given a patient "ZMW6003" notifies "their facility F38006-D" of participation "opt-in"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6003 | F38006-D   | true                   | null  | null        | null         | null            |
@@ -106,7 +106,7 @@ Feature: Participate operation
     And the response body should have property "type" containing "searchset"
     And the response bundle should contain more than 0 entries
     Given a health practitioner sets "Condition" record "F38006-D-local-withheld-record2" record to "RESTRICTED"
-    And the API Consumer requests a new client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    And the API Consumer requests a new client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient          | facilityId       | participationIndicator | reasonCode           | reasonCodeDisplay | resourceType  | localResourceId                    |
       | ZMW6003          | F38006-D         | null                   | sdhr-record-withheld | Record withheld   | Condition     | F38006-D-local-withheld-record2     |
@@ -133,12 +133,12 @@ Feature: Participate operation
 
   Scenario: 6. Patient ZMW6004 opts in to SDHR participation at their enrolled practice F38006-E and opts out at HNZ
     # Opt-in at HNZ to remove any existing opt-out if any.
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Given the API consumer invokes the "$hnz-participate" operation with:
     | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
     | ZMW6004 | null   | true                  | null             | null              | null         | null            |
     Given a patient "ZMW6004" notifies "F38006-E" of participation "opt-in"
-    Given the API Consumer requests a new client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a new client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6004 | F38006-E   | true                   | null  | null        | null         | null            |
@@ -156,7 +156,7 @@ Feature: Participate operation
     And the response body should have property "type" containing "searchset"
     And the response bundle should contain more than 0 entries
     Given a patient "ZMW6004" notifies "HNZ" of participation "opt-off"
-    Given the API Consumer requests a new client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    Given the API Consumer requests a new client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6004 | null   | false                  | null             | null              | null         | null            |
@@ -172,7 +172,7 @@ Feature: Participate operation
   Scenario: 7. Patient ZMW6007 opts out of SDHR participation at practice F38006-C and opts in at practice F38006-D
     Given a patient "ZMW6007" notifies "their facility F38006-C" of participation "opt-out"
     # Operation is idempotent so previous call in Scenario 2 should be all good however this is confirming
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6007 | F38006-C   | false                   | null  | null        | null         | null            |
@@ -228,7 +228,7 @@ Feature: Participate operation
 
   Scenario: 9. Patient's previously withheld record is released
     Given a patient "ZMW6003" notifies "their facility F38006-D" of participation "opt-in"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode            | reasonCodeDisplay      | resourceType | localResourceId |
       | ZMW6003 | F38006-D   | true                   | null                  | null                   | null         | null            |
@@ -253,7 +253,7 @@ Feature: Participate operation
 
   Scenario: 10. The participate operation is idempotent
     Given a patient "ZMW6006" notifies "HNZ" of participation "opt-in"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6006 | F38006-D   | true                  | null             | null              | null         | null            |
@@ -269,7 +269,7 @@ Feature: Participate operation
 
   Scenario: 11. The hnz-participate operation is idempotent
     Given a patient "ZMW6006" notifies "HNZ" of participation "opt-in"
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6006 | null   | true                  | null             | null              | null         | null            |
@@ -284,7 +284,7 @@ Feature: Participate operation
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
 
   Scenario: 12. Requesting a resource with a confidential security tag returns 403
-    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
     | patient | facilityId | participationIndicator | reasonCode       | reasonCodeDisplay | resourceType | localResourceId |
     | ZMW6006 | F38006-D   | true                  | null             | null              | null         | null            |

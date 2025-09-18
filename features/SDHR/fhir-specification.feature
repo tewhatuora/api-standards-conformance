@@ -3,14 +3,14 @@ Feature: Validate resources against SDHR profile
 
   Scenario: Participate operation for Setup
     Given the profile "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition-SDHRAllergyIntolerance.json"
-    And the API Consumer requests a client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
+    And the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Then the API consumer invokes the "$hnz-participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6602 | null       | true                   | null       | null              | null         | null            |
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
-    And the API Consumer requests a new client_credentials access token with scope "https://fhir-ig-uat.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
+    And the API Consumer requests a new client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation"
     Then the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode | reasonCodeDisplay | resourceType | localResourceId |
       | ZMW6602 | F38006-B   | true                   | null       | null              | null         | null            |

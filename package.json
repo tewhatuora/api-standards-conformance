@@ -29,6 +29,7 @@
     "test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json report",
     "test:local": "ENV=local cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
     "test:test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
+    "test:uat": "ENV=uat cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
     "test:mock": "ENV=mock cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json"
   },
   "devDependencies": {
