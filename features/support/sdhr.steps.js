@@ -796,7 +796,7 @@ Given('a batch bundle payload containing {string} resources is created for NHI {
     id: 'bundle-' + Date.now(),
     meta: {
       profile: [
-        'https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition/SDHRBatchBundle',
+        'https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRBatchBundle',
       ],
     },
     type: 'batch',

@@ -4,7 +4,7 @@
   "meta" : {
     "lastUpdated" : "2024-01-26T10:03:26+13:00",
     "source" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-B",
-    "profile" : ["https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition/SDHRAllergyIntolerance"]
+    "profile" : ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRAllergyIntolerance"]
   },
   "identifier" : [{
     "use" : "secondary",

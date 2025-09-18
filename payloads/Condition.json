@@ -2,7 +2,7 @@
   "resourceType" : "Condition",
   "meta" : {
     "source" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-B",
-    "profile" : ["https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition/SDHRCondition"]
+    "profile" : ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRCondition"]
   },
   "extension" : [{
     "url" : "http://hl7.org.nz/fhir/StructureDefinition/long-term-condition",

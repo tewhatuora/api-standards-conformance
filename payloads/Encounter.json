@@ -46,7 +46,7 @@
     "meta": {
         "source": "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-B",
         "profile": [
-            "https://fhir-ig-uat.digital.health.nz/sdhr/StructureDefinition/SDHREncounter"
+            "https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHREncounter"
         ]
     },
     "class": {
