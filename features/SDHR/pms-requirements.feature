@@ -5,7 +5,7 @@ Feature: SDHR PMS Requirements
     Given the API Consumer requests a client_credentials access token with scope "https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation"
     Given the API consumer invokes the "$participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode | reasonCodeDisplay | resourceType | localResourceId |
-      | ZMW6100 | FZZ999-C   | true                   | null       | null              | null         | null            |
+      | ZMW6100 | F38006-D   | true                   | null       | null              | null         | null            |
     Then the response status code should be 200
     And the API consumer invokes the "$hnz-participate" operation with:
       | patient | facilityId | participationIndicator | reasonCode | reasonCodeDisplay | resourceType | localResourceId |
@@ -13,7 +13,7 @@ Feature: SDHR PMS Requirements
     Then the response status code should be 200
 
   Scenario: CON-10 An API Consumer can modify a Condition resource over time.
-    Given a valid Condition payload for NHI "ZMW6100" at facility "FZZ999-C" with local ID "guid"
+    Given a valid "Condition" payload for NHI "ZMW6100" at facility "F38006-D" with local ID "guid"
     And the property "clinicalStatus.coding[0].code" is set to "inactive"
     And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     When a POST request is made to "/Condition" with the payload
@@ -25,7 +25,7 @@ Feature: SDHR PMS Requirements
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "Condition"
     And the response body should have property id containing the saved ID
-    # API COnsumer updates the resource.
+    # API Consumer updates the resource.
     When the response body is updated with:
       | propertyName                      | value     |
       | clinicalStatus.coding[0].code     | active    |

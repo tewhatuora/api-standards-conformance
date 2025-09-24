@@ -1,6 +1,5 @@
 @sdhr @fhir
 Feature: FHIR Standards Capability Statement
-
   Scenario: Server supports all advertised searches
     # Note that the below search parameters have been defined to meet existing API requirements.
     # You can add additional search parameters as needed but do not remove any from this list.
@@ -18,7 +17,7 @@ Feature: FHIR Standards Capability Statement
       | encounter         | https://api.uat.sdhr.digital.health.nz/s2s/Encounter/1234567890       |
       | onset-date        |                                             2023-11-01T00:00:00+13:00 |
       | subject           | https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6100         |
-      | location          | https://api.hip.digital.health.nz/fhir/hpi/v1/Location/FZZ999-C       |
+      | location          | https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-D       |
       | status            | active                                                                |
       | date              |                                             2023-11-01T00:00:00+13:00 |
       | performer         | https://api.hip.digital.health.nz/fhir/hpi/v1/Practitioner/91ZZXN     |

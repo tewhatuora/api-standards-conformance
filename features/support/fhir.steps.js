@@ -4,17 +4,33 @@ const {JSONPath} = require('jsonpath-plus');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
 // const {set} = require('./helpers');
-const {set} = require('lodash');
+const {set, unset} = require('lodash');
 
 Then('the response status code should be {int}', async function(status) {
   // console.log('Response:', JSON.stringify(this.getResponse().data));
-  assert.strictEqual(this.getResponse().status, status);
+  assert.strictEqual(this.getResponse().status, status,
+      `Expected status code ${status}, but got ${this.getResponse().status}, response body: ${JSON.stringify(this.getResponse().data)}`);
 });
 
 Then(
     'the FHIR response body should contain {string} {string}',
     async function(jsonKey, jsonValue) {
       assert.strictEqual(this.getResponse().data[jsonKey], jsonValue);
+    },
+);
+
+Then(
+    'each entry in the response body should have property {string} containing either {string} or {string}',
+    async function(jsonKey, jsonValue1, jsonValue2) {
+      const entries = this.getResponse().data.entry;
+      assert(entries && Array.isArray(entries), 'Response body does not contain an array of entries');
+      for (const entry of entries) {
+        const value = JSONPath({path: `$.${jsonKey}`, json: entry.response, wrap: false});
+        assert(
+            value === jsonValue1 || value === jsonValue2,
+            `Expected property "${jsonKey}" to be either "${jsonValue1}" or "${jsonValue2}", but got "${value}"`,
+        );
+      }
     },
 );
 
@@ -30,9 +46,11 @@ When('a GET request is made to {string} with the response body ID', {timeout: 10
   const responseBody = this.getResponse();
   const id = responseBody.data.id;
   const requestUrl = url + '/' + id;
+  console.log('Request URL:', requestUrl);
   const response = await this.request(requestUrl, {
     method: 'GET',
   });
+  console.log(response);
   this.setResponse(response);
 });
 
@@ -78,6 +96,7 @@ When('a POST request is made to {string} with the payload', async function(url) 
     body: JSON.stringify(this.payload),
   });
   this.setResponse(response);
+  // console.log('Response:', JSON.stringify(this.getResponse().data, null, 2));
   // Wait for indexing
   await new Promise((resolve) => setTimeout(resolve, 5000));
 });
@@ -93,6 +112,21 @@ When(
       const response = await this.request(url, {
         method: 'PUT',
         body: JSON.stringify(this.payload),
+      });
+      this.setResponse(response);
+    },
+);
+
+
+When(
+    'a GET request is made to {string} with the saved ID',
+    async function(url) {
+      if (!this.savedId) {
+        throw new Error('No saved ID found. Please ensure the response has been saved before making a GET request.');
+      }
+      url = `${url}/${this.savedId}`;
+      const response = await this.request(url, {
+        method: 'GET',
       });
       this.setResponse(response);
     },
@@ -163,6 +197,94 @@ Given('the request header {string} set to {string}', function(headerName, header
 
 Given('the request header {string} not set', function(headerName) {
   this.removeRequestHeader(headerName);
+});
+
+function coerceRequestContextValue(rawValue, rawType) {
+  const value = rawValue?.trim?.() ?? rawValue;
+  const type = rawType?.toLowerCase?.();
+
+  if (type === 'delete' || type === 'remove') {
+    return {isRemoval: true};
+  }
+
+  if (!value && value !== 0) {
+    return {parsed: value};
+  }
+
+  if (type === 'json') {
+    return {parsed: JSON.parse(value)};
+  }
+
+  if (type === 'boolean') {
+    return {parsed: value === 'true'};
+  }
+
+  if (type === 'number') {
+    return {parsed: Number(value)};
+  }
+
+  if (type === 'array') {
+    if (value.startsWith('[') && value.endsWith(']')) {
+      return {parsed: JSON.parse(value)};
+    }
+    return {parsed: value.split(',').map((item) => item.trim()).filter((item) => item.length > 0)};
+  }
+
+  if (type === 'string') {
+    return {parsed: value};
+  }
+
+  const lowered = String(value).toLowerCase();
+  if (lowered === 'null') {
+    return {parsed: null};
+  }
+  if (lowered === 'true' || lowered === 'false') {
+    return {parsed: lowered === 'true'};
+  }
+
+  const numberPattern = /^-?\d+(?:\.\d+)?$/;
+  if (numberPattern.test(value)) {
+    return {parsed: Number(value)};
+  }
+
+  if ((value.startsWith('{') && value.endsWith('}')) || (value.startsWith('[') && value.endsWith(']'))) {
+    try {
+      return {parsed: JSON.parse(value)};
+    } catch (err) {
+      console.warn(`Unable to parse request context value as JSON: ${value}`, err);
+    }
+  }
+
+  if (value.includes(',')) {
+    return {parsed: value.split(',').map((item) => item.trim()).filter((item) => item.length > 0)};
+  }
+
+  return {parsed: value};
+}
+
+Given('the request context includes features:', function(dataTable) {
+  if (!this.requestContext || Object.keys(this.requestContext).length === 0) {
+    this.resetRequestContext?.();
+    if (!this.requestContext) {
+      this.requestContext = {};
+    }
+  }
+
+  for (const row of dataTable.hashes()) {
+    const featurePath = row.feature?.replace(/\[(\d+)\]/g, '.$1');
+    if (!featurePath) {
+      continue;
+    }
+
+    const {parsed, isRemoval} = coerceRequestContextValue(row.value, row.type);
+
+    if (isRemoval) {
+      unset(this.requestContext, featurePath);
+      continue;
+    }
+
+    set(this.requestContext, featurePath, parsed);
+  }
 });
 
 Given('the API Consumer requests a client_credentials access token', async function() {

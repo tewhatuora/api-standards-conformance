@@ -3,8 +3,8 @@ const {Given, When, Then} = require('@cucumber/cucumber');
 const config = require('./config');
 
 const capabilityStatementUrl = (config.has && config.has('capabilityStatementUrl')) ?
-    config.get('capabilityStatementUrl') :
-    '/metadata';
+  config.get('capabilityStatementUrl') :
+  '/metadata';
 
 When('the FHIR CapabilityStatement is retrieved', async function() {
   const response = await this.request(capabilityStatementUrl, {method: 'GET'});
@@ -25,7 +25,7 @@ function getResourceSearchParams(capabilityStatement) {
   return capabilityStatement.data.rest
       ?.flatMap((rest) => rest.resource)
       ?.map((r) => {
-        // Find all mandatory search params from the resource-level extensions
+      // Find all mandatory search params from the resource-level extensions
         const mandatoryParams = new Set();
 
         (r.extension || []).forEach((ext) => {
@@ -86,6 +86,14 @@ Then('all CapabilityStatement search parameters should be testable', async funct
         const response = await this.request(url, {method: 'GET'});
         assert.equal(response.status, 200, `Expected 200 for ${url}`);
         assert.equal(response.data.resourceType, 'Bundle', `Expected Bundle for ${url}`);
+        this.attach(
+            `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+      <strong>Search Parameter:</strong>${sp.name} on resouece ${res.type}<br>
+      <pre>${response.status}</pre>
+      <pre>${JSON.stringify(response.data, null, 2)}</pre>
+    </div>`,
+            'text/html',
+        );
       }
       continue;
     }
@@ -109,6 +117,14 @@ Then('all CapabilityStatement search parameters should be testable', async funct
 
       assert.equal(response.status, 200, `Expected 200 for ${url}`);
       assert.equal(response.data.resourceType, 'Bundle', `Expected Bundle for ${url}`);
+      this.attach(
+          `<div style="padding:8px;border:1px solid #eee;margin-bottom:8px;">
+          <strong>Search Parameter:</strong>${sp.name} on resouece ${res.type}<br>
+          <pre>${response.status}</pre>
+          <pre>${JSON.stringify(response.data, null, 2)}</pre>
+        </div>`,
+          'text/html',
+      );
     }
   }
 });

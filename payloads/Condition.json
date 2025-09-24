@@ -1,7 +1,7 @@
 {
   "resourceType" : "Condition",
   "meta" : {
-    "source" : "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
+    "source" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-B",
     "profile" : ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRCondition"]
   },
   "extension" : [{
@@ -19,6 +19,18 @@
       "code" : "active"
     }]
   },
+    "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "problem-list-item",
+          "display": "Problem list item"
+        }
+      ],
+      "text": "Diagnosis"
+    }
+  ],
   "verificationStatus" : {
     "coding" : [{
       "system" : "http://terminology.hl7.org/CodeSystem/condition-ver-status",
@@ -34,7 +46,7 @@
     "text" : "Hypertension"
   },
   "subject" : {
-    "reference" : "https://api.hip.digital.health.nz/fhir/Patient/ZKC7284",
+    "reference" : "https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZKC7284",
     "type" : "Patient",
     "display" : "Sage Westbrook"
   },

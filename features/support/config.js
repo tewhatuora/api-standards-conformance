@@ -46,6 +46,11 @@ const config = convict({
     format: Object,
     default: {},
   },
+  requestContext: {
+    doc: 'Default request-context payload to encode into the header for SDHR requests',
+    format: 'anyObject',
+    default: {},
+  },
   fhir: {
     knownResourcePath: {
       doc: 'The path to a FHIR Resource available on the server, e.g. /Patient/1234 which should return a 200',

@@ -11,8 +11,11 @@ function lowercaseKeys(obj) {
   const result = {};
 
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      result[key.toLowerCase()] = obj[key];
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const value = obj[key];
+      if (value !== '__DELETE__' && value !== undefined && value !== null) {
+        result[key.toLowerCase()] = value;
+      }
     }
   }
 
@@ -26,7 +29,7 @@ async function getOAuthToken(scope) {
     client_id: config.get('oauth.clientId'), // process.env['OAUTH_CLIENT_ID'],
     client_secret: config.get('oauth.clientSecret'), // process.env['OAUTH_CLIENT_SECRET'],
     grant_type: 'client_credentials',
-    scope: scope || config.get('oauth.defaultScope'), // 'system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus system/Consent.crus',
+    scope: scope || config.get('oauth.defaultScope'),
   };
 
   // Prepare the body of the POST request
@@ -80,14 +83,24 @@ async function request(
     this.addRequestHeader('x-api-key', process.env['API_KEY']);
   }
 
-  // Add request context if present, unless instructed not to
-  // eslint-disable-next-line
-  this.addRequestHeader('request-context', 'eyJ1c2VySWRlbnRpZmllciI6IkFBQkJDQyIsInVzZXJSb2xlIjoiUFJPViIsInNlY29uZGFyeUlkZW50aWZpZXIiOnsidXNlIjoiYWRtaW4iLCJzeXN0ZW0iOiJodHRwczovL3N0YW5kYXJkcy5kaWdpdGFsLmhlYWx0aC5uei5ucy9ocGktcGVyc29uLWlkIiwidmFsdWUiOiIxMjM0NTY3OCJ9LCJwdXJwb3NlT2ZVc2UiOlsiVFJFQVQiLCJQVUJITFRIIl0sInVzZXJGdWxsTmFtZSI6IkRyLiBKYW5lIERvZSIsIm9yZ0lkZW50aWZpZXIiOiJPMTIzNDUiLCJmYWNpbGl0eUlkZW50aWZpZXIiOiJGMTIzNDUifQ==');
+  const defaultRequestContext = this.defaultRequestContext || config.get('requestContext') || {};
+  const activeRequestContext = (this.requestContext && Object.keys(this.requestContext).length > 0) ?
+    this.requestContext :
+    defaultRequestContext;
+
+  console.log('Request-Context JSON payload:', JSON.stringify(activeRequestContext));
+
+  const contextHeader = Object.keys(activeRequestContext).length > 0 ?
+    Buffer.from(JSON.stringify(activeRequestContext)).toString('base64') :
+    null;
+
+  const requestContextHeader = contextHeader ? {'request-context': contextHeader} : {};
 
   const headers = lowercaseKeys({
     ...requestHeaders,
     ...config.get('customHeaders'),
     ...config.get('headers'),
+    ...requestContextHeader,
     ...this.getRequestHeaders(),
   });
 

@@ -5,6 +5,21 @@
     "accept": "application/fhir+json"
   },
   "customHeaders": {},
+  "requestContext": {
+    "userIdentifier": "test-client",
+    "userRole": "110150",
+    "secondaryIdentifier": {
+      "use": "official",
+      "system": "https://standards.digital.health.nz/ns/hpi-person-id",
+      "value": "AAABBB"
+    },
+    "purposeOfUse": [
+      "RECORDMGT"
+    ],
+    "userFullName": "SDHR Test Harness",
+    "orgIdentifier": "G00001-G",
+    "facilityIdentifier": "FZZ999-B"
+  },
   "logLevel": "debug",
   "oauth":  {
     "tokenEndpoint": "https://api.ppd.auth.digital.health.nz/realms/hnz-integration/protocol/openid-connect/token",
