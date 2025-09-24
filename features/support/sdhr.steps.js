@@ -414,8 +414,6 @@ Then(
 
       const response = this.getResponse();
 
-      console.log(JSON.stringify(response.data, null, 2));
-
       assert.ok(
           response.status === 200,
           `Expected response status 200, but got ${response.status}`,
