@@ -11,8 +11,11 @@ function lowercaseKeys(obj) {
   const result = {};
 
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      result[key.toLowerCase()] = obj[key];
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const value = obj[key];
+      if (value !== '__DELETE__' && value !== undefined && value !== null) {
+        result[key.toLowerCase()] = value;
+      }
     }
   }
 
@@ -80,14 +83,21 @@ async function request(
     this.addRequestHeader('x-api-key', process.env['API_KEY']);
   }
 
-  // Add request context if present, unless instructed not to
-  // eslint-disable-next-line
-  this.addRequestHeader('request-context', 'eyJ1c2VySWRlbnRpZmllciI6IkNocmlzIFRlc3QiLCJ1c2VyUm9sZSI6IjExMDE1MCIsInNlY29uZGFyeUlkZW50aWZpZXIiOnsidXNlIjoib2ZmaWNpYWwiLCJzeXN0ZW0iOiJodHRwczovL3N0YW5kYXJkcy5kaWdpdGFsLmhlYWx0aC5uei9ucy9ocGktcGVyc29uLWlkIiwidmFsdWUiOiJBQUFCQkIifSwicHVycG9zZU9mVXNlIjpbIlJFQ09SRE1HVCJdLCJ1c2VyRnVsbE5hbWUiOiJTd2l0aGluIEZvb3RlIiwib3JnSWRlbnRpZmllciI6IkcwMDAwMS1HIiwiZmFjaWxpdHlJZGVudGlmaWVyIjoiRlpaOTk5LUIifQ');
+  if (this.requestContext && Object.keys(this.requestContext).length > 0) {
+    console.log('Request-Context JSON payload:', JSON.stringify(this.requestContext));
+  }
+
+  const contextHeader = (this.requestContext && Object.keys(this.requestContext).length > 0) ?
+    Buffer.from(JSON.stringify(this.requestContext)).toString('base64') :
+    null;
+
+  const requestContextHeader = contextHeader ? {'request-context': contextHeader} : {};
 
   const headers = lowercaseKeys({
     ...requestHeaders,
     ...config.get('customHeaders'),
     ...config.get('headers'),
+    ...requestContextHeader,
     ...this.getRequestHeaders(),
   });
 

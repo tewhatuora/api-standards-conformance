@@ -13,6 +13,8 @@ class ApiStandardsWorld extends World {
     this.testStartMs = Date.now();
     this.config = config;
     this.token = null;
+    this.defaultRequestContext = JSON.parse(JSON.stringify(config.get('requestContext') || {}));
+    this.requestContext = JSON.parse(JSON.stringify(this.defaultRequestContext));
 
     this.logger = getModuleLogger('api-standards-conformance', this.scenarioId);
 
@@ -63,6 +65,17 @@ class ApiStandardsWorld extends World {
   removeRequestHeader(name) {
     this.requestHeaders[name] = '__DELETE__';
   }
+
+  resetRequestContext() {
+    this.requestContext = JSON.parse(JSON.stringify(this.defaultRequestContext || {}));
+  }
+
+  setRequestContext(updates) {
+    this.requestContext = {
+      ...JSON.parse(JSON.stringify(this.defaultRequestContext || {})),
+      ...updates,
+    };
+  }
 }
 
 setWorldConstructor(ApiStandardsWorld);
@@ -79,4 +92,7 @@ try {
 Before(function() {
   // Ensure each scenario can access the parsed data through the world object
   this.oasData = oasData;
+  if (this.resetRequestContext) {
+    this.resetRequestContext();
+  }
 });

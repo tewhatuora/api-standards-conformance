@@ -118,3 +118,43 @@ Feature: Validate resources against SDHR profile
     And the response body should have property "type" containing "batch-response"
     And each entry in the response body should have property "status" containing either "201 Created" or "200 OK"
 
+  Scenario Outline: Request context variations are accepted for Condition search. This scenario focuses on ensuring the Request-Context header permutations are honoured before any resource lookup occurs.
+    Given the request context includes features:
+      | feature             | value                                  | type                          |
+      | userIdentifier      | <userIdentifier>                       | <userIdentifierType>          |
+      | secondaryIdentifier | <secondaryIdentifier>                  | <secondaryIdentifierType>     |
+      | purposeOfUse        | <purposeOfUse>                         | <purposeOfUseType>            |
+      | userFullName        | <userFullName>                         | <userFullNameType>            |
+      | userRole            | <userRole>                             | <userRoleType>                |
+      | orgIdentifier       | <orgIdentifier>                        | <orgIdentifierType>           |
+      | facilityIdentifier  | <facilityIdentifier>                   | <facilityType>                |
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
+    When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6602"
+    Then the response status code should be 200
+    And the response body should have property "resourceType" containing "Bundle"
+
+    Examples:
+      | description             | userIdentifier                        | userIdentifierType | secondaryIdentifier                                                                 | secondaryIdentifierType | purposeOfUse  | purposeOfUseType | userFullName                       | userFullNameType | userRole | userRoleType | orgIdentifier | orgIdentifierType | facilityIdentifier | facilityType |
+      | clinical json and array | pms-id-123                            |                    | {"use":"official","system":"https://standards.digital.health.nz/ns/hpi-person-id","value":"99ZZZS"} | json                    | PATRQT, TREAT        |             | Beverly Crusher                    |                 | PROV     |              | G00001-G      |                  | F38006-B           |              |
+      | system context cleanup  | 1b8200d7-3a8c-4fb6-8e5c-cec4540999d5 |                    |                                                          | delete                  | ["SYSDEV"]   | json             | Sample PMS Integration Application |                 | 110150   |  string             | G00001-G      |                  | FZZ999-B           |              |
+      | clinical comma parsing  | clinician-22                          |                    | {"use":"official","system":"https://standards.digital.health.nz/ns/hpi-person-id","value":"88YYYD"} | json                    | POPHLTH, TREAT |                 | Jean-Luc Picard                   |                 | PROV     |              | G00001-G      |                  | F38006-B           |              |
+
+  Scenario Outline: Request context violations are rejected before Condition search is processed. These examples assert the mandatory fields and value sets are enforced.
+    Given the request context includes features:
+      | feature             | value                  | type                      |
+      | userIdentifier      | <userIdentifier>       | <userIdentifierType>      |
+      | secondaryIdentifier | <secondaryIdentifier>  | <secondaryIdentifierType> |
+      | purposeOfUse        | <purposeOfUse>         | <purposeOfUseType>        |
+      | userFullName        | <userFullName>         | <userFullNameType>        |
+      | userRole            | <userRole>             | <userRoleType>            |
+      | orgIdentifier       | <orgIdentifier>        | <orgIdentifierType>       |
+      | facilityIdentifier  | <facilityIdentifier>   | <facilityType>            |
+    And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
+    When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6602"
+    Then the response status code should be 400
+    And the response body should have property "resourceType" containing "OperationOutcome"
+
+    Examples:
+      | description           | userIdentifier | userIdentifierType | secondaryIdentifier | secondaryIdentifierType | purposeOfUse    | purposeOfUseType | userFullName     | userFullNameType | userRole | userRoleType | orgIdentifier | orgIdentifierType | facilityIdentifier | facilityType |
+      | missing user id       |                | delete             |                     | delete                  | RECORDMGT       | array            | SDHR Spec Bot    |                  | PROV     |              | G00001-G      |                  | F38006-B           |              |
+      | invalid purpose value | system-client  |                    |                     | delete                  | ["INVALID"]     | json             | SDHR Spec Bot    |                  | 110150   | string             | G00001-G      |                  | F38006-B           |              |

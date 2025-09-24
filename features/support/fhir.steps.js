@@ -4,7 +4,7 @@ const {JSONPath} = require('jsonpath-plus');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
 // const {set} = require('./helpers');
-const {set} = require('lodash');
+const {set, unset} = require('lodash');
 
 Then('the response status code should be {int}', async function(status) {
   // console.log('Response:', JSON.stringify(this.getResponse().data));
@@ -182,6 +182,94 @@ Given('the request header {string} set to {string}', function(headerName, header
 
 Given('the request header {string} not set', function(headerName) {
   this.removeRequestHeader(headerName);
+});
+
+function coerceRequestContextValue(rawValue, rawType) {
+  const value = rawValue?.trim?.() ?? rawValue;
+  const type = rawType?.toLowerCase?.();
+
+  if (type === 'delete' || type === 'remove') {
+    return {isRemoval: true};
+  }
+
+  if (!value && value !== 0) {
+    return {parsed: value};
+  }
+
+  if (type === 'json') {
+    return {parsed: JSON.parse(value)};
+  }
+
+  if (type === 'boolean') {
+    return {parsed: value === 'true'};
+  }
+
+  if (type === 'number') {
+    return {parsed: Number(value)};
+  }
+
+  if (type === 'array') {
+    if (value.startsWith('[') && value.endsWith(']')) {
+      return {parsed: JSON.parse(value)};
+    }
+    return {parsed: value.split(',').map((item) => item.trim()).filter((item) => item.length > 0)};
+  }
+
+  if (type === 'string') {
+    return {parsed: value};
+  }
+
+  const lowered = String(value).toLowerCase();
+  if (lowered === 'null') {
+    return {parsed: null};
+  }
+  if (lowered === 'true' || lowered === 'false') {
+    return {parsed: lowered === 'true'};
+  }
+
+  const numberPattern = /^-?\d+(?:\.\d+)?$/;
+  if (numberPattern.test(value)) {
+    return {parsed: Number(value)};
+  }
+
+  if ((value.startsWith('{') && value.endsWith('}')) || (value.startsWith('[') && value.endsWith(']'))) {
+    try {
+      return {parsed: JSON.parse(value)};
+    } catch (err) {
+      console.warn(`Unable to parse request context value as JSON: ${value}`, err);
+    }
+  }
+
+  if (value.includes(',')) {
+    return {parsed: value.split(',').map((item) => item.trim()).filter((item) => item.length > 0)};
+  }
+
+  return {parsed: value};
+}
+
+Given('the request context includes features:', function(dataTable) {
+  if (!this.requestContext || Object.keys(this.requestContext).length === 0) {
+    this.resetRequestContext?.();
+    if (!this.requestContext) {
+      this.requestContext = {};
+    }
+  }
+
+  for (const row of dataTable.hashes()) {
+    const featurePath = row.feature?.replace(/\[(\d+)\]/g, '.$1');
+    if (!featurePath) {
+      continue;
+    }
+
+    const {parsed, isRemoval} = coerceRequestContextValue(row.value, row.type);
+
+    if (isRemoval) {
+      unset(this.requestContext, featurePath);
+      continue;
+    }
+
+    set(this.requestContext, featurePath, parsed);
+  }
 });
 
 Given('the API Consumer requests a client_credentials access token', async function() {
