@@ -6,7 +6,7 @@
   },
   "customHeaders": {},
   "requestContext": {
-    "userIdentifier": "Chris Test",
+    "userIdentifier": "test-client",
     "userRole": "110150",
     "secondaryIdentifier": {
       "use": "official",
@@ -16,7 +16,7 @@
     "purposeOfUse": [
       "RECORDMGT"
     ],
-    "userFullName": "Swithin Foote",
+    "userFullName": "SDHR Test Harness",
     "orgIdentifier": "G00001-G",
     "facilityIdentifier": "FZZ999-B"
   },
