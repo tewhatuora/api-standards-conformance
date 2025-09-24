@@ -117,6 +117,21 @@ When(
     },
 );
 
+
+When(
+    'a GET request is made to {string} with the saved ID',
+    async function(url) {
+      if (!this.savedId) {
+        throw new Error('No saved ID found. Please ensure the response has been saved before making a GET request.');
+      }
+      url = `${url}/${this.savedId}`;
+      const response = await this.request(url, {
+        method: 'GET',
+      });
+      this.setResponse(response);
+    },
+);
+
 Given(
     'the property {string} is set to {string}',
     async function(propertyName, value) {

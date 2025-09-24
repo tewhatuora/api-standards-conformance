@@ -83,12 +83,15 @@ async function request(
     this.addRequestHeader('x-api-key', process.env['API_KEY']);
   }
 
-  if (this.requestContext && Object.keys(this.requestContext).length > 0) {
-    console.log('Request-Context JSON payload:', JSON.stringify(this.requestContext));
-  }
+  const defaultRequestContext = this.defaultRequestContext || config.get('requestContext') || {};
+  const activeRequestContext = (this.requestContext && Object.keys(this.requestContext).length > 0) ?
+    this.requestContext :
+    defaultRequestContext;
 
-  const contextHeader = (this.requestContext && Object.keys(this.requestContext).length > 0) ?
-    Buffer.from(JSON.stringify(this.requestContext)).toString('base64') :
+  console.log('Request-Context JSON payload:', JSON.stringify(activeRequestContext));
+
+  const contextHeader = Object.keys(activeRequestContext).length > 0 ?
+    Buffer.from(JSON.stringify(activeRequestContext)).toString('base64') :
     null;
 
   const requestContextHeader = contextHeader ? {'request-context': contextHeader} : {};

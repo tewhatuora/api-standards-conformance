@@ -412,11 +412,15 @@ Then(
           localResourceId,
       ).call(this);
 
-      assert.ok(
-          this.getResponse().status === 200,
-          `Expected response status 200, but got ${this.getResponse().status}`,
-      );
       const response = this.getResponse();
+
+      console.log(JSON.stringify(response.data, null, 2));
+
+      assert.ok(
+          response.status === 200,
+          `Expected response status 200, but got ${response.status}`,
+      );
+
       // const outcomeCode = response.data.issue[0].details.coding[0].code;
       assert.strictEqual(
           response.data.resourceType,
