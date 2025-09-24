@@ -88,8 +88,6 @@ async function request(
     this.requestContext :
     defaultRequestContext;
 
-  console.log('Request-Context JSON payload:', JSON.stringify(activeRequestContext));
-
   const contextHeader = Object.keys(activeRequestContext).length > 0 ?
     Buffer.from(JSON.stringify(activeRequestContext)).toString('base64') :
     null;
