@@ -29,7 +29,7 @@ async function getOAuthToken(scope) {
     client_id: config.get('oauth.clientId'), // process.env['OAUTH_CLIENT_ID'],
     client_secret: config.get('oauth.clientSecret'), // process.env['OAUTH_CLIENT_SECRET'],
     grant_type: 'client_credentials',
-    scope: scope || config.get('oauth.defaultScope'), // 'system/Condition.crus system/Observation.crus system/Encounter.crus system/AllergyIntolerance.crus system/Consent.crus',
+    scope: scope || config.get('oauth.defaultScope'),
   };
 
   // Prepare the body of the POST request
