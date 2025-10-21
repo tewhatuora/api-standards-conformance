@@ -573,7 +573,7 @@ When('each constraint variation is POSTed to {string}', async function(url) {
     // Only test constraints with severity 'error' and skip 'warning' or 'information'
     // SDHR does not support contained resources, so skip those constraints too
     // Skip the `meta.source` constraint as it is impossible to hit due to participation check occuring first
-    if (v.severity === 'error' && !v.expr.startsWith('contained.')) { // && v.key !== 'hpi-location-url-format' && v.key !== 'nhi-url-format') {
+    if (v.severity === 'error' && !v.expr.startsWith('contained.') && v.key !== 'hpi-location-url-format') { // && v.key !== 'nhi-url-format') {
       this.payload = v.resource;
       this.addRequestHeader(
           'authorization',
@@ -900,6 +900,8 @@ function deletePropertyByPath(obj, path) {
 function violateConstraint(clone, constraint) {
   const expr = constraint.expr;
   const path = constraint.path;
+  const facilityId = 'F38006-B';
+  const nhi = 'ZMW0002';
 
   // Remove clinicalStatus if required by the constraint
   if (/clinicalStatus\.exists\(\)/.test(expr)) {
@@ -1016,14 +1018,14 @@ function violateConstraint(clone, constraint) {
     switch (constraint.key) {
       case 'nhi-url-format':
         if (clone.subject && clone.subject.reference) {
-          clone.subject.reference = 'https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/INVALIDNHI';
+          clone.subject.reference = `https://invalid.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
         } else if (clone.patient && clone.patient.reference) {
-          clone.patient.reference = 'https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/INVALIDNHI';
+          clone.patient.reference = `https://invalid.hip.digital.health.nz/fhir/nhi/v1/Patient/${nhi}`;
         }
         break;
       case 'hpi-location-url-format':
         if (clone.meta && clone.meta.source) {
-          clone.meta.source = 'https://api.hip.digital.health.nz/fhir/hpi/v1/Location/INVALIDHPI';
+          clone.meta.source = `https://invalid.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`;
         }
         break;
       case 'hpi-url-format':
