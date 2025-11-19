@@ -68,6 +68,25 @@ Run the container locally (report):
 
 `yarn test:report`
 
+# Working with Docker
+
+In order to test new features or fixes alongside projects that run the conformance suite, you may want to update and publish development versions of the docker image that can be used implementing APIs.
+
+After making changes to the code base, You will first need authenticate your machine to github, using PAT from github with package and repo permissions.
+
+Then login with it
+
+`export GHCR_PAT="ghp_abc123yourtoken"`
+`echo "$GHCR_PAT" | docker login ghcr.io -u cameronrichards --password-stdin`
+
+Then push build and push multi arch image with a dev tag to the container register
+
+`docker buildx create --use`                                                              
+`docker buildx build --platform linux/amd64,linux/arm64 --push -t ghcr.io/tewhatuora/api-standards-conformance:dev .`
+
+
+
+
 ## Configuration
 
 Configuration for the tool is via a `config.json` file. When running in Docker, this file on the host should be mounted to `/usr/src/app/config.json` (see below). When running locally, the config.json must be present at the root of the project.
