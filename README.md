@@ -68,7 +68,7 @@ Run the container locally (report):
 
 `yarn test:report`
 
-# Working with Docker
+### Working with Docker
 
 In order to test new features or fixes alongside projects that run the conformance suite, you may want to update and publish development versions of the docker image that can be used implementing APIs.
 
