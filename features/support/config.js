@@ -10,6 +10,7 @@ const CONFIG_FILENAME = ENV ? 'config.'+ENV+'.json' : 'config.json';
 console.log(`Using configuration file: ${CONFIG_FILENAME}`);
 const CONFIG_PATH = path.join(__dirname, `../../${CONFIG_FILENAME}`);
 
+
 convict.addFormat({
   name: 'anyObject',
   validate: function(val) {
@@ -48,7 +49,7 @@ const config = convict({
   },
   requestContext: {
     doc: 'Default request-context payload to encode into the header for SDHR requests',
-    format: 'anyObject',
+    format: Object,
     default: {},
   },
   fhir: {
