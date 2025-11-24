@@ -31,6 +31,7 @@ Feature: Participate operation
     Then the response status code should be 200
     And the response body should have property "resourceType" containing "OperationOutcome"
     And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-operation-success"
+    Then wait for a extract to be performed, and the patient to be unlocked
     # Should not be able to create any resource for this patient
     And the API Consumer requests a new client_credentials access token with scope "system/Condition.crus"
     Given a valid "Condition" payload for NHI "ZMW6002" at facility "F38006-C" with local ID "null"

@@ -433,6 +433,15 @@ Then(
     },
 );
 
+Then(
+    'wait for a extract to be performed, and the patient to be unlocked',
+    {timeout: 30000},
+    async function() {
+      // simple wait
+      await new Promise((resolve) => setTimeout(resolve, 20000)); // 20 seconds
+    },
+);
+
 const invokeParticipateOperation = (
     operationName,
     nhi,
