@@ -5,6 +5,12 @@
     "source": "https://api.hip.digital.health.nz/fhir/Location/F38006-B",
     "profile": ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRObservation"]
   },
+  "extension": [
+    {
+      "url": "https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/hnz-sdhr-client-last-updated-extension",
+      "valueDateTime": "2024-12-12T04:22:55.965Z"
+    }
+  ],
   "identifier": [
     {
       "system": "https://standards.digital.health.nz/ns/health-record-key-id",
@@ -32,7 +38,7 @@
     ]
   },
   "subject": {
-    "reference": "https://api.hip.digital.health.nz/fhir/Patient/ZMW0002",
+    "reference": "https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW0002",
     "type": "Patient",
     "display": "Carrey Carrington"
   },

@@ -27,10 +27,12 @@
     "run:report": "./run_tests.sh",
     "test:docker": "docker run -it -v $(pwd)/config.json:/usr/src/app/config.json api-standards-conformance test",
     "test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json report",
-    "test:local": "ENV=local cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
-    "test:test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
-    "test:uat": "ENV=uat cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
-    "test:mock": "ENV=mock cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json"
+    "test:sdhr": "ENV=test cucumber-js --tags \"not @not-implemented,@sdhr\" --format progress --format json:cucumber_report.json",
+    "test:sdhr:dev": "ENV=dev cucumber-js \"features/SDHR/*.feature\" --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json",
+    "test:local": "ENV=local cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json report",
+    "test:test": "ENV=test cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json report",
+    "test:uat": "ENV=uat cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json report",
+    "test:mock": "ENV=mock cucumber-js --tags \"not @not-implemented\" --format progress --format json:cucumber_report.json report"
   },
   "devDependencies": {
     "eslint": ">=5.16.0",

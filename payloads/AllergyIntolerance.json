@@ -6,6 +6,10 @@
     "source" : "https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-B",
     "profile" : ["https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRAllergyIntolerance"]
   },
+  "extension" : [{
+    "url" : "https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/hnz-sdhr-client-last-updated-extension",
+    "valueDateTime" : "2024-01-26T10:03:26+13:00"
+  }],
   "identifier" : [{
     "use" : "secondary",
     "system" : "https://fhir.examplepms.co.nz",

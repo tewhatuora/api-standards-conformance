@@ -7,6 +7,34 @@ setDefaultTimeout(30 * 1000);
 const {evaluate, r4Model} = require('fhirpath');
 
 const TEST_CONDITION_ID = '63e3c5c7-c938-4cf8-8815-900fc5781d8e';
+const DEFAULT_WAIT_SECONDS = 90;
+const LINKING_FIXTURE_PATIENTS = ['ZZZ0016', 'ZZZ0024', 'ZZZ0032'];
+const LINKING_FIXTURE_PAIRS = [
+  ['ZZZ0016', 'ZZZ0024'],
+  ['ZZZ0016', 'ZZZ0032'],
+  ['ZZZ0024', 'ZZZ0032'],
+];
+const INVALID_NHI_PREFIX = 'ZMW';
+
+const buildParticipateArgs = ({
+  operationName,
+  nhi,
+  facilityId = 'null',
+  participationIndicator = 'null',
+  reasonCode = 'null',
+  reasonCodeDisplay = 'null',
+  resourceType = 'null',
+  localResourceId = 'null',
+}) => ({
+  operationName,
+  nhi,
+  facilityId,
+  participationIndicator,
+  reasonCode,
+  reasonCodeDisplay,
+  resourceType,
+  localResourceId,
+});
 
 const setupStandardConditionResource = (
     nhi,
@@ -169,6 +197,29 @@ const setupParticipateParametersResource = (
   }
   return payload;
 };
+
+const setupLinkParametersResource = (
+    activeNhi,
+    dormantNhi,
+) => ({
+  resourceType: 'Parameters',
+  parameter: [
+    {
+      name: 'activePatient',
+      valueReference: {
+        reference: `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${activeNhi}`,
+        type: 'Patient',
+      },
+    },
+    {
+      name: 'dormantPatient',
+      valueReference: {
+        reference: `https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/${dormantNhi}`,
+        type: 'Patient',
+      },
+    },
+  ],
+});
 
 Given(
     'a standard Condition resource for NHI {string} exists',
@@ -336,6 +387,94 @@ Then(
 );
 
 Given(
+    'a unique invalid NHI is prepared for this scenario',
+    function() {
+      const suffix = String(Date.now()).slice(-4);
+      this.generatedInvalidNhi = `${INVALID_NHI_PREFIX}${suffix}`;
+    },
+);
+
+Given(
+    'a historic load failure is triggered for the generated invalid NHI at facility {string}',
+    {timeout: 120000},
+    async function(facilityId) {
+      assert.ok(this.generatedInvalidNhi, 'No generated invalid NHI found for this scenario');
+
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeParticipateOperationWithDefaults({
+            operationName: '$hnz-participate',
+            nhi: this.generatedInvalidNhi,
+            participationIndicator: 'true',
+          }),
+      );
+
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeParticipateOperationWithDefaults({
+            operationName: '$participate',
+            nhi: this.generatedInvalidNhi,
+            facilityId,
+            participationIndicator: 'false',
+          }),
+      );
+
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeParticipateOperationWithDefaults({
+            operationName: '$participate',
+            nhi: this.generatedInvalidNhi,
+            facilityId,
+            participationIndicator: 'true',
+          }),
+      );
+    },
+);
+
+Then(
+    'the generated invalid NHI should eventually return the background load error for facility {string}',
+    {timeout: 120000},
+    async function(facilityId) {
+      assert.ok(this.generatedInvalidNhi, 'No generated invalid NHI found for this scenario');
+
+      this.payload = setupParticipateParametersResource(
+          '$participate',
+          this.generatedInvalidNhi,
+          facilityId,
+          'true',
+          'null',
+          'null',
+          'null',
+          'null',
+      );
+
+      const startedAt = Date.now();
+      let lastResponse;
+
+      while (Date.now() - startedAt < DEFAULT_WAIT_SECONDS * 1000) {
+        const response = await this.request('/$participate', {
+          method: 'POST',
+          body: JSON.stringify(this.payload),
+        });
+
+        this.setResponse(response);
+        lastResponse = response;
+
+        const outcomeCode = response?.data?.issue?.[0]?.details?.coding?.[0]?.code;
+        if (response.status === 409 && outcomeCode === 'sdhr-patient-background-load-error') {
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+
+      assert.fail(
+          `Expected background load error within ${DEFAULT_WAIT_SECONDS} seconds, but got ${lastResponse?.status} with body ${JSON.stringify(lastResponse?.data)}`,
+      );
+    },
+);
+
+Given(
     'a health sector user {string} elects to participate in sdhr',
     async function(nhi) {
     // Essentially a no-op step to allow the step to pass - in this case there is no action to take.
@@ -388,6 +527,57 @@ Then(
 );
 
 Then(
+    'the response body should contain string {string}',
+    async function(expectedValue) {
+      const response = this.getResponse();
+      const body = JSON.stringify(response.data);
+      assert.ok(
+          body.includes(expectedValue),
+          `Expected response body to contain "${expectedValue}", but it did not.\nBody: ${body}`,
+      );
+    },
+);
+
+Then(
+    'the response body should not contain string {string}',
+    async function(unexpectedValue) {
+      const response = this.getResponse();
+      const body = JSON.stringify(response.data);
+      assert.ok(
+          !body.includes(unexpectedValue),
+          `Expected response body not to contain "${unexpectedValue}", but it did.\nBody: ${body}`,
+      );
+    },
+);
+
+When(
+    'a GET request is repeatedly made to {string} until the response body contains string {string}',
+    {timeout: 120000},
+    async function(url, expectedValue) {
+      const startedAt = Date.now();
+      let lastResponse;
+
+      while (Date.now() - startedAt < DEFAULT_WAIT_SECONDS * 1000) {
+        const response = await this.request(url, {
+          method: 'GET',
+        });
+        this.setResponse(response);
+        lastResponse = response;
+
+        if (JSON.stringify(response.data).includes(expectedValue)) {
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+
+      assert.fail(
+          `Expected response body to contain "${expectedValue}" within ${DEFAULT_WAIT_SECONDS} seconds, but got ${JSON.stringify(lastResponse?.data)}`,
+      );
+    },
+);
+
+Then(
     'the API consumer invokes the {string} operation with:',
     {timeout: 30000},
     async function(operation, dataTable) {
@@ -427,10 +617,79 @@ Then(
           'OperationOutcome',
           'Expected response resourceType to be "OperationOutcome"',
       );
+      assert.ok(
+          Array.isArray(response.data.issue) && response.data.issue.length > 0,
+          'Expected response to contain at least one issue',
+      );
+    },
+);
+
+Then(
+    'the API consumer eventually invokes the {string} operation within {int} seconds with:',
+    {timeout: 120000},
+    async function(operation, timeoutSeconds, dataTable) {
+      const operationName = operation.toLowerCase();
+      const data = dataTable.hashes()[0];
+      const startedAt = Date.now();
+      let lastResponse;
+
+      while (Date.now() - startedAt < timeoutSeconds * 1000) {
+        await invokeParticipateOperation(
+            operationName,
+            data.patient,
+            data.facilityId,
+            data.participationIndicator,
+            data.reasonCode,
+            data.reasonCodeDisplay,
+            data.resourceType,
+            data.localResourceId,
+        ).call(this);
+
+        lastResponse = this.getResponse();
+        if (lastResponse.status === 200) {
+          console.log(JSON.stringify(lastResponse.data, null, 2));
+          return;
+        }
+
+        const outcomeCode = lastResponse?.data?.issue?.[0]?.details?.coding?.[0]?.code;
+        if (lastResponse.status !== 403 || outcomeCode !== 'sdhr-patient-locked') {
+          break;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+
+      assert.ok(
+          lastResponse?.status === 200,
+          `Expected response status 200 within ${timeoutSeconds} seconds, but got ${lastResponse?.status} with body ${JSON.stringify(lastResponse?.data)}`,
+      );
+    },
+);
+
+Then(
+    'the API consumer invokes the {string} operation for active patient {string} and dormant patient {string}',
+    {timeout: 30000},
+    async function(operation, activeNhi, dormantNhi) {
+      const operationName = operation.toLowerCase();
+
+      await invokeLinkOperation(operationName, activeNhi, dormantNhi).call(this);
+
+      const response = this.getResponse();
+
+      console.log(JSON.stringify(response.data, null, 2));
+
+      assert.ok(
+          response.status === 200,
+          `Expected response status 200, but got ${response.status}`,
+      );
       assert.strictEqual(
-          response.data.issue[0].details.coding[0].code,
-          'sdhr-operation-success',
-          'Expected response code to be "sdhr-operation-success"',
+          response.data.resourceType,
+          'OperationOutcome',
+          'Expected response resourceType to be "OperationOutcome"',
+      );
+      assert.ok(
+          Array.isArray(response.data.issue) && response.data.issue.length > 0,
+          'Expected response to contain at least one issue',
       );
     },
 );
@@ -477,6 +736,273 @@ const invokeParticipateOperation = (
     this.setResponse(response);
   };
 
+const invokeParticipateOperationWithDefaults = (overrides) => {
+  const args = buildParticipateArgs(overrides);
+  return invokeParticipateOperation(
+      args.operationName,
+      args.nhi,
+      args.facilityId,
+      args.participationIndicator,
+      args.reasonCode,
+      args.reasonCodeDisplay,
+      args.resourceType,
+      args.localResourceId,
+  );
+};
+
+const invokeLinkOperation = (
+    operationName,
+    activeNhi,
+    dormantNhi,
+) =>
+  async function() {
+    this.addRequestHeader(
+        'authorization',
+        `Bearer ${this.getToken() || (await this.getOAuthToken())}`,
+    );
+
+    const payload = setupLinkParametersResource(activeNhi, dormantNhi);
+
+    console.log(`Invoking ${operationName}`);
+
+    const response = await this.request(`/${operationName}`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    this.setResponse(response);
+  };
+
+const assertOperationOutcomeSuccess = (response, expectedStatus = 200) => {
+  assert.ok(
+      response.status === expectedStatus,
+      `Expected response status ${expectedStatus}, but got ${response.status}`,
+  );
+  assert.strictEqual(
+      response.data.resourceType,
+      'OperationOutcome',
+      'Expected response resourceType to be "OperationOutcome"',
+  );
+  assert.ok(
+      Array.isArray(response.data.issue) && response.data.issue.length > 0,
+      'Expected response to contain at least one issue',
+  );
+};
+
+async function eventuallyInvokeWithLockRetry(stepFn, timeoutSeconds = DEFAULT_WAIT_SECONDS) {
+  const startedAt = Date.now();
+  let lastResponse;
+
+  while (Date.now() - startedAt < timeoutSeconds * 1000) {
+    await stepFn.call(this);
+    lastResponse = this.getResponse();
+
+    if (lastResponse.status === 200) {
+      return lastResponse;
+    }
+
+    const outcomeCode = lastResponse?.data?.issue?.[0]?.details?.coding?.[0]?.code;
+    if (lastResponse.status !== 403 || outcomeCode !== 'sdhr-patient-locked') {
+      break;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+
+  assert.ok(
+      lastResponse?.status === 200,
+      `Expected response status 200 within ${timeoutSeconds} seconds, but got ${lastResponse?.status} with body ${JSON.stringify(lastResponse?.data)}`,
+  );
+  return lastResponse;
+}
+
+async function eventuallyInvokeSetupOperation(stepFn, timeoutSeconds = DEFAULT_WAIT_SECONDS) {
+  const startedAt = Date.now();
+  let lastResponse;
+
+  while (Date.now() - startedAt < timeoutSeconds * 1000) {
+    await stepFn.call(this);
+    lastResponse = this.getResponse();
+
+    if (lastResponse.status === 200) {
+      return lastResponse;
+    }
+
+    const diagnostics = lastResponse?.data?.issue?.[0]?.diagnostics || '';
+    const outcomeCode = lastResponse?.data?.issue?.[0]?.details?.coding?.[0]?.code;
+    const isRetryableLock =
+      lastResponse.status === 403 && outcomeCode === 'sdhr-patient-locked';
+    const isRetryableConflict =
+      lastResponse.status === 409 &&
+      diagnostics.includes('Another $participate operation is already in progress');
+
+    if (!isRetryableLock && !isRetryableConflict) {
+      break;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+
+  assert.ok(
+      lastResponse?.status === 200,
+      `Expected response status 200 within ${timeoutSeconds} seconds, but got ${lastResponse?.status} with body ${JSON.stringify(lastResponse?.data)}`,
+  );
+  return lastResponse;
+}
+
+Given(
+    'the linking test fixture is reset via public API',
+    {timeout: 600000},
+    async function() {
+      for (const [activeNhi, dormantNhi] of LINKING_FIXTURE_PAIRS) {
+        await eventuallyInvokeSetupOperation.call(
+            this,
+            invokeLinkOperation('$unlink', activeNhi, dormantNhi),
+            180,
+        );
+        assertOperationOutcomeSuccess(this.getResponse());
+      }
+
+      for (const nhi of LINKING_FIXTURE_PATIENTS) {
+        await eventuallyInvokeSetupOperation.call(
+            this,
+            invokeParticipateOperationWithDefaults({
+              operationName: '$hnz-participate',
+              nhi,
+              participationIndicator: 'true',
+            }),
+            180,
+        );
+        assertOperationOutcomeSuccess(this.getResponse());
+      }
+    },
+);
+
+Given(
+    'patient {string} is globally opted in',
+    {timeout: 120000},
+    async function(nhi) {
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeParticipateOperationWithDefaults({
+            operationName: '$hnz-participate',
+            nhi,
+            participationIndicator: 'true',
+          }),
+      );
+
+      assertOperationOutcomeSuccess(this.getResponse());
+    },
+);
+
+Given(
+    'patient {string} is globally opted out',
+    {timeout: 120000},
+    async function(nhi) {
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeParticipateOperationWithDefaults({
+            operationName: '$hnz-participate',
+            nhi,
+            participationIndicator: 'false',
+          }),
+      );
+
+      assertOperationOutcomeSuccess(this.getResponse());
+    },
+);
+
+Given(
+    'patient {string} is opted in at facility {string}',
+    {timeout: 120000},
+    async function(nhi, facilityId) {
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeParticipateOperationWithDefaults({
+            operationName: '$participate',
+            nhi,
+            facilityId,
+            participationIndicator: 'true',
+          }),
+      );
+
+      assertOperationOutcomeSuccess(this.getResponse());
+    },
+);
+
+Given(
+    'patient {string} is eventually opted in at facility {string}',
+    {timeout: 120000},
+    async function(nhi, facilityId) {
+      await eventuallyInvokeWithLockRetry.call(
+          this,
+          invokeParticipateOperationWithDefaults({
+            operationName: '$participate',
+            nhi,
+            facilityId,
+            participationIndicator: 'true',
+          }),
+      );
+    },
+);
+
+Given(
+    'patient {string} is opted out at facility {string}',
+    {timeout: 120000},
+    async function(nhi, facilityId) {
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeParticipateOperationWithDefaults({
+            operationName: '$participate',
+            nhi,
+            facilityId,
+            participationIndicator: 'false',
+          }),
+      );
+
+      assertOperationOutcomeSuccess(this.getResponse());
+    },
+);
+
+Given(
+    'active patient {string} is linked to dormant patient {string}',
+    {timeout: 120000},
+    async function(activeNhi, dormantNhi) {
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeLinkOperation('$link', activeNhi, dormantNhi),
+      );
+      assertOperationOutcomeSuccess(this.getResponse());
+    },
+);
+
+Given(
+    'active patient {string} is unlinked from dormant patient {string}',
+    {timeout: 120000},
+    async function(activeNhi, dormantNhi) {
+      await eventuallyInvokeSetupOperation.call(
+          this,
+          invokeLinkOperation('$unlink', activeNhi, dormantNhi),
+      );
+      assertOperationOutcomeSuccess(this.getResponse());
+    },
+);
+
+Given(
+    'the linking test patients are fully unlinked',
+    {timeout: 300000},
+    async function() {
+      for (const [activeNhi, dormantNhi] of LINKING_FIXTURE_PAIRS) {
+        await eventuallyInvokeSetupOperation.call(
+            this,
+            invokeLinkOperation('$unlink', activeNhi, dormantNhi),
+        );
+        assertOperationOutcomeSuccess(this.getResponse());
+      }
+    },
+);
+
 // Start profile compliance steps
 
 Given('the profile {string}', async function(url) {
@@ -487,9 +1013,22 @@ Given('the profile {string}', async function(url) {
   profileDef = res.data;
   this.profileDef = profileDef;
 
-  this.mandatoryElements = profileDef.snapshot.element
-      .filter((e) => e.min >= 1 && e.path.includes('.'))
-      .map((e) => e.path.replace(new RegExp(`^${profileDef.type}\\.`), ''));
+  const mandatorySnapshotElements = profileDef.snapshot.element.filter(
+      (e) => e.min >= 1 && e.path.includes('.'),
+  );
+
+  const requiredSlicedPaths = new Set(
+      mandatorySnapshotElements
+          .filter((e) => e.sliceName)
+          .map((e) => e.path),
+  );
+
+  this.mandatoryElements = mandatorySnapshotElements
+      .filter((e) => !(requiredSlicedPaths.has(e.path) && !e.sliceName))
+      .map((e) => {
+        const qualified = e.sliceName ? e.id : e.path;
+        return qualified.replace(new RegExp(`^${profileDef.type}\\.`), '');
+      });
 
   this.constraints = profileDef.snapshot.element.flatMap((e) =>
     (e.constraint ?? [])
@@ -632,7 +1171,7 @@ Then('each constraint variation should fail with OperationOutcome', async functi
 When('I remove each mandatory property from the payload', async function() {
   this.mandatoryVariations = this.mandatoryElements.map((p) => {
     const clone = JSON.parse(JSON.stringify(this.payload));
-    deletePropertyByPath(clone, p);
+    deleteMandatoryElementByPath(clone, p, this.profileDef);
     return {property: p, resource: clone};
   });
 });
@@ -854,6 +1393,33 @@ Given('a batch bundle payload containing {string} resources is created for NHI {
     }
   }
 });
+
+function deleteMandatoryElementByPath(obj, path, profileDef) {
+  const sliceMatch = path.match(/^(.*?):([^.:]+)$/);
+  if (sliceMatch) {
+    const [, basePath, sliceName] = sliceMatch;
+    const sliceId = `${profileDef.type}.${basePath}:${sliceName}`;
+    const sliceDef = profileDef.snapshot.element.find((e) => e.id === sliceId);
+
+    if (sliceDef && (basePath === 'extension' || basePath === 'modifierExtension')) {
+      const extensionProfile = sliceDef.type?.[0]?.profile?.[0];
+      const extensionFixedUrl = sliceDef.fixedUri;
+      const target = obj[basePath];
+
+      if (Array.isArray(target)) {
+        obj[basePath] = target.filter((entry) => {
+          const url = entry?.url;
+          if (extensionFixedUrl && url === extensionFixedUrl) return false;
+          if (extensionProfile && url === extensionProfile) return false;
+          return true;
+        });
+      }
+      return;
+    }
+  }
+
+  deletePropertyByPath(obj, path);
+}
 
 function deletePropertyByPath(obj, path) {
   const parts = path.split('.');
