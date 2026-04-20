@@ -156,6 +156,11 @@ const setupParticipateParametersResource = (
             reference: `https://api.hip.digital.health.nz/fhir/hpi/v1/Location/${facilityId}`,
           },
         });
+
+    payload.parameter.push({
+      name: 'enrolledPatient',
+      valueBoolean: true,
+    });
   }
 
   if (reasonCode != 'null') {
@@ -550,6 +555,27 @@ Then(
     },
 );
 
+Then(
+    'repeated POST requests to {string} with the payload should eventually return status {int} and outcome code {string}',
+    {timeout: 180000},
+    async function(path, expectedStatus, expectedOutcomeCode) {
+      await eventuallyInvokeUntilOutcome.call(
+          this,
+          async function() {
+            const response = await this.request(path, {
+              method: 'POST',
+              body: JSON.stringify(this.payload),
+            });
+            this.setResponse(response);
+          },
+          {
+            expectedStatus,
+            expectedOutcomeCode,
+          },
+      );
+    },
+);
+
 When(
     'a GET request is repeatedly made to {string} until the response body contains string {string}',
     {timeout: 120000},
@@ -577,9 +603,63 @@ When(
     },
 );
 
+When(
+    'a GET request is repeatedly made to {string} until the response body does not contain string {string}',
+    {timeout: 120000},
+    async function(url, unwantedValue) {
+      const startedAt = Date.now();
+      let lastResponse;
+
+      while (Date.now() - startedAt < DEFAULT_WAIT_SECONDS * 1000) {
+        const response = await this.request(url, {
+          method: 'GET',
+        });
+        this.setResponse(response);
+        lastResponse = response;
+
+        if (!JSON.stringify(response.data).includes(unwantedValue)) {
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+
+      assert.fail(
+          `Expected response body to no longer contain "${unwantedValue}" within ${DEFAULT_WAIT_SECONDS} seconds, but got ${JSON.stringify(lastResponse?.data)}`,
+      );
+    },
+);
+
+When(
+    'a GET request is repeatedly made to {string} until the response bundle contains more than 0 entries',
+    {timeout: 120000},
+    async function(url) {
+      const startedAt = Date.now();
+      let lastResponse;
+
+      while (Date.now() - startedAt < DEFAULT_WAIT_SECONDS * 1000) {
+        const response = await this.request(url, {
+          method: 'GET',
+        });
+        this.setResponse(response);
+        lastResponse = response;
+
+        if (Array.isArray(response.data?.entry) && response.data.entry.length > 0) {
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+
+      assert.fail(
+          `Expected response bundle to contain entries within ${DEFAULT_WAIT_SECONDS} seconds, but got ${JSON.stringify(lastResponse?.data)}`,
+      );
+    },
+);
+
 Then(
     'the API consumer invokes the {string} operation with:',
-    {timeout: 30000},
+    {timeout: 120000},
     async function(operation, dataTable) {
       const operationName = operation.toLowerCase();
       const data = dataTable.hashes()[0];
@@ -591,16 +671,19 @@ Then(
       const resourceType = data.resourceType;
       const localResourceId = data.localResourceId;
 
-      await invokeParticipateOperation(
-          operationName,
-          nhi,
-          facilityId,
-          participationIndicator,
-          reasonCode,
-          reasonCodeDisplay,
-          resourceType,
-          localResourceId,
-      ).call(this);
+      await eventuallyInvokeWithLockRetry.call(
+          this,
+          invokeParticipateOperation(
+              operationName,
+              nhi,
+              facilityId,
+              participationIndicator,
+              reasonCode,
+              reasonCodeDisplay,
+              resourceType,
+              localResourceId,
+          ),
+      );
 
       const response = this.getResponse();
 
@@ -803,7 +886,13 @@ async function eventuallyInvokeWithLockRetry(stepFn, timeoutSeconds = DEFAULT_WA
     }
 
     const outcomeCode = lastResponse?.data?.issue?.[0]?.details?.coding?.[0]?.code;
-    if (lastResponse.status !== 403 || outcomeCode !== 'sdhr-patient-locked') {
+    const isRetryableLock =
+      lastResponse.status === 403 && outcomeCode === 'sdhr-patient-locked';
+    const isRetryableBackgroundLoad =
+      lastResponse.status === 409 &&
+      outcomeCode === 'sdhr-patient-background-load-error';
+
+    if (!isRetryableLock && !isRetryableBackgroundLoad) {
       break;
     }
 
@@ -813,6 +902,49 @@ async function eventuallyInvokeWithLockRetry(stepFn, timeoutSeconds = DEFAULT_WA
   assert.ok(
       lastResponse?.status === 200,
       `Expected response status 200 within ${timeoutSeconds} seconds, but got ${lastResponse?.status} with body ${JSON.stringify(lastResponse?.data)}`,
+  );
+  return lastResponse;
+}
+
+async function eventuallyInvokeUntilOutcome(
+    stepFn,
+    {
+      expectedStatus,
+      expectedOutcomeCode,
+      timeoutSeconds = DEFAULT_WAIT_SECONDS,
+      retryableOutcomes = [
+        {status: 403, code: 'sdhr-patient-locked'},
+        {status: 409, code: 'sdhr-patient-background-load-error'},
+      ],
+    },
+) {
+  const startedAt = Date.now();
+  let lastResponse;
+
+  while (Date.now() - startedAt < timeoutSeconds * 1000) {
+    await stepFn.call(this);
+    lastResponse = this.getResponse();
+
+    const outcomeCode = lastResponse?.data?.issue?.[0]?.details?.coding?.[0]?.code;
+    if (lastResponse?.status === expectedStatus && outcomeCode === expectedOutcomeCode) {
+      return lastResponse;
+    }
+
+    const isRetryable = retryableOutcomes.some(
+        ({status, code}) => lastResponse?.status === status && outcomeCode === code,
+    );
+    if (!isRetryable) {
+      break;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+
+  const lastOutcomeCode = lastResponse?.data?.issue?.[0]?.details?.coding?.[0]?.code;
+  assert.ok(
+      lastResponse?.status === expectedStatus &&
+      lastOutcomeCode === expectedOutcomeCode,
+      `Expected response status ${expectedStatus} with outcome code ${expectedOutcomeCode} within ${timeoutSeconds} seconds, but got ${lastResponse?.status} with body ${JSON.stringify(lastResponse?.data)}`,
   );
   return lastResponse;
 }

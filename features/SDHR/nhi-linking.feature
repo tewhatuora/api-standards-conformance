@@ -54,15 +54,15 @@ Feature: NHI linking
       Then the response status code should be 403
       And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"
 
-    # Unlinking a subgroup out of a denied group should rehydrate that subgroup,
-    # so writes stay blocked while the historic load is in progress.
+    # Unlinking a subgroup out of a denied group should restore writes for the
+    # released subgroup once rehydrate completes, while the denied subgroup
+    # remains denied.
     Scenario: 6. Unlinking from a denied group triggers rehydrate for the released subgroup
       Given active patient "ZZZ0016" is unlinked from dormant patient "ZZZ0032"
       And a valid "Condition" payload for NHI "ZZZ0016" at facility "F2N060-E" with local ID "nhi-linking-unlink-restored"
       And the API Consumer requests a client_credentials access token
-      When a POST request is repeatedly made to "/Condition" with the payload until the response body has property "issue[0].details.coding[0].code" containing "sdhr-patient-locked"
-      Then the response status code should be 403
-      And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-patient-locked"
+      When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201
+      Then the response status code should be 201
       And the API Consumer requests a client_credentials access token
       When a GET request is made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0032"
       Then the response status code should be 403
