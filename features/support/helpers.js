@@ -88,8 +88,6 @@ async function request(
     this.requestContext :
     defaultRequestContext;
 
-  console.log('Request-Context JSON payload:', JSON.stringify(activeRequestContext));
-
   const contextHeader = Object.keys(activeRequestContext).length > 0 ?
     Buffer.from(JSON.stringify(activeRequestContext)).toString('base64') :
     null;
@@ -112,20 +110,16 @@ async function request(
   };
 
   const fetchUrl = url.match(/^http/) ? url : `${config.get('baseUrl')}${processEndpoint(url, this)}`;
+  const logUrl = url.match(/^http/) ? new URL(fetchUrl).pathname + new URL(fetchUrl).search : processEndpoint(url, this);
 
-  console.log(`Making request to ${fetchUrl} with method ${method}`);// and headers:`, headers);
+  console.log(`${method} ${logUrl}`);
   // console.log(`Request body:`, body);
 
   if (options.debug) {
     this.logger.debug('Making request', {
       fetchUrl,
       headers,
-    });
-  }
-  if (options.debug) {
-    this.logger.debug('Making request', {
-      fetchUrl,
-      headers,
+      hasRequestContext: Boolean(contextHeader),
     });
   }
 

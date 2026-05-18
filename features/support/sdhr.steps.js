@@ -657,6 +657,33 @@ When(
     },
 );
 
+When(
+    'a GET request is repeatedly made to {string} until the response status code is {int}',
+    {timeout: 120000},
+    async function(url, expectedStatus) {
+      const startedAt = Date.now();
+      let lastResponse;
+
+      while (Date.now() - startedAt < DEFAULT_WAIT_SECONDS * 1000) {
+        const response = await this.request(url, {
+          method: 'GET',
+        });
+        this.setResponse(response);
+        lastResponse = response;
+
+        if (response.status === expectedStatus) {
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+
+      assert.fail(
+          `Expected response status ${expectedStatus} within ${DEFAULT_WAIT_SECONDS} seconds, but got ${lastResponse?.status} with body ${JSON.stringify(lastResponse?.data)}`,
+      );
+    },
+);
+
 Then(
     'the API consumer invokes the {string} operation with:',
     {timeout: 120000},
@@ -1065,7 +1092,7 @@ Given(
 
 Given(
     'patient {string} is eventually opted in at facility {string}',
-    {timeout: 120000},
+    {timeout: 240000},
     async function(nhi, facilityId) {
       await eventuallyInvokeWithLockRetry.call(
           this,
@@ -1075,6 +1102,7 @@ Given(
             facilityId,
             participationIndicator: 'true',
           }),
+          180,
       );
     },
 );

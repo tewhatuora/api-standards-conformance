@@ -92,3 +92,29 @@ Feature: Linked NHI group access resolution
       And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied-facility"
       # Teardown: opt off to archive records (ZZZ0024 already opted out in setup)
       Given patient "ZZZ0016" is opted out at facility "F2N060-E"
+
+    @expanded-group-archive
+    Scenario: Linking a globally opted-out NHI into an opted-in pair denies the existing pair
+      Given the linking test fixture is reset via public API
+      And patient "ZZZ0016" is eventually opted in at facility "F2N060-E"
+      And patient "ZZZ0024" is eventually opted in at facility "F2N060-E"
+      And active patient "ZZZ0016" is linked to dormant patient "ZZZ0024"
+      And a valid "Condition" payload for NHI "ZZZ0016" at facility "F2N060-E" with local ID "nhi-linking-expanded-deny-active"
+      And the API Consumer requests a client_credentials access token
+      When a POST request is made to "/Condition" with the payload
+      Then the response status code should be 201
+      Given a valid "Condition" payload for NHI "ZZZ0024" at facility "F2N060-E" with local ID "nhi-linking-expanded-deny-dormant"
+      When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201
+      Then the response status code should be 201
+      When a GET request is repeatedly made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0016" until the response body contains string "nhi-linking-expanded-deny-active"
+      Then the response status code should be 200
+      When a GET request is repeatedly made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0024" until the response body contains string "nhi-linking-expanded-deny-dormant"
+      Then the response status code should be 200
+      Given patient "ZZZ0032" is globally opted out
+      And active patient "ZZZ0016" is linked to dormant patient "ZZZ0032"
+      When a GET request is repeatedly made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0016" until the response status code is 403
+      Then the response status code should be 403
+      And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"
+      When a GET request is repeatedly made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0024" until the response status code is 403
+      Then the response status code should be 403
+      And the response body should have property "issue[0].details.coding[0].code" containing "sdhr-participation-status-denied"

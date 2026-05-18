@@ -29,6 +29,7 @@
     "test": "ENV=test cucumber-js --tags \"not @not-implemented and not @manual-clean\" --format progress --format json:cucumber_report.json report",
     "test:sdhr": "ENV=test cucumber-js --tags \"@sdhr and not @not-implemented and not @manual-clean\" --format progress --format json:cucumber_report.json",
     "test:sdhr:dev": "ENV=dev cucumber-js \"features/SDHR/*.feature\" --tags \"not @not-implemented and not @manual-clean\" --format progress --format json:cucumber_report.json",
+    "test:sdhr:dev:no-fhir-spec": "ENV=dev cucumber-js $(find features/SDHR -name '*.feature' ! -name 'fhir-specification.feature' | sort) --tags \"not @not-implemented and not @manual-clean\" --format progress --format json:cucumber_report.json",
     "test:sdhr:manual-clean": "ENV=test cucumber-js \"features/SDHR/participate-manual-clean.feature\" --format progress --format json:cucumber_report.json",
     "test:sdhr:manual-clean:dev": "ENV=dev cucumber-js \"features/SDHR/participate-manual-clean.feature\" --format progress --format json:cucumber_report.json",
     "test:local": "ENV=local cucumber-js --tags \"not @not-implemented and not @manual-clean\" --format progress --format json:cucumber_report.json report",
