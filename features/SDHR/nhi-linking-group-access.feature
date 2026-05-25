@@ -19,7 +19,7 @@ Feature: Linked NHI group access resolution
       And active patient "ZZZ0016" is linked to dormant patient "ZZZ0024"
       And a valid "Condition" payload for NHI "ZZZ0016" at facility "F2N060-E" with local ID "nhi-linking-group-read-active"
       And the API Consumer requests a client_credentials access token
-      When a POST request is made to "/Condition" with the payload
+      When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201
       Then the response status code should be 201
       Given a valid "Condition" payload for NHI "ZZZ0024" at facility "F2N060-E" with local ID "nhi-linking-group-read-dormant"
       When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201
@@ -45,10 +45,10 @@ Feature: Linked NHI group access resolution
       And active patient "ZZZ0016" is linked to dormant patient "ZZZ0024"
       And a valid "Condition" payload for NHI "ZZZ0016" at facility "F2N060-E" with local ID "nhi-linking-partial-read-active"
       And the API Consumer requests a client_credentials access token
-      When a POST request is made to "/Condition" with the payload
+      When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201
       Then the response status code should be 201
       Given a valid "Condition" payload for NHI "ZZZ0024" at facility "F2N060-E" with local ID "nhi-linking-partial-read-dormant"
-      When a POST request is made to "/Condition" with the payload
+      When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201
       Then the response status code should be 201
       When a GET request is repeatedly made to "/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0016" until the response body contains string "nhi-linking-partial-read-active"
       Then the response status code should be 200
@@ -73,7 +73,7 @@ Feature: Linked NHI group access resolution
       And patient "ZZZ0024" is opted out at facility "F2N060-E"
       And a valid "Condition" payload for NHI "ZZZ0016" at facility "F2N060-E" with local ID "nhi-linking-target-write-active-allowed"
       And the API Consumer requests a client_credentials access token
-      When a POST request is made to "/Condition" with the payload
+      When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201
       Then the response status code should be 201
       And the response body should have property "resourceType" containing "Condition"
       # Teardown: opt off to archive records (ZZZ0024 already opted out in setup)
@@ -101,7 +101,7 @@ Feature: Linked NHI group access resolution
       And active patient "ZZZ0016" is linked to dormant patient "ZZZ0024"
       And a valid "Condition" payload for NHI "ZZZ0016" at facility "F2N060-E" with local ID "nhi-linking-expanded-deny-active"
       And the API Consumer requests a client_credentials access token
-      When a POST request is made to "/Condition" with the payload
+      When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201
       Then the response status code should be 201
       Given a valid "Condition" payload for NHI "ZZZ0024" at facility "F2N060-E" with local ID "nhi-linking-expanded-deny-dormant"
       When a POST request is repeatedly made to "/Condition" with the payload until the response status code is 201

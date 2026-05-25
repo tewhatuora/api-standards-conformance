@@ -23,6 +23,8 @@
     "prettier": "prettier --write .",
     "report": "node reporting/index.js",
     "report:docker": "docker run -it -v $(pwd)/reports:/usr/src/app/reports api-standards-conformance report",
+    "clear:sdhr-locks": "node scripts/clear-sdhr-test-locks.js",
+    "clear:sdhr-locks:dev": "node scripts/clear-sdhr-test-locks.js --env dev",
     "run": "cucumber-js --format progress --format json:cucumber_report.json",
     "run:report": "./run_tests.sh",
     "test:docker": "docker run -it -v $(pwd)/config.json:/usr/src/app/config.json api-standards-conformance test",
