@@ -1,0 +1,5610 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "participate-operation;1.-patient-zmw6001-opts-out-of-sdhr-participation-using-hnz-channel",
+        "keyword": "Scenario",
+        "line": 4,
+        "name": "1. Patient ZMW6001 opts out of SDHR participation using HNZ channel",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 186125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 5,
+            "name": "a patient \"ZMW6001\" notifies \"HNZ\" of participation \"opt-off\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 386625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 6,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 588629791
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6001",
+                      "null",
+                      "false",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 7,
+            "name": "the API consumer invokes the \"$hnz-participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12736752833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 10,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 111499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1379791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 172875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 13,
+            "name": "a valid \"Condition\" payload for NHI \"ZMW6001\" at facility \"F38006-C\" with local ID \"null\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3322416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 193876207
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 15,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7021054000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 17,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 177666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 232583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 19,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 108083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 20,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6001\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2249681417
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 21,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 69792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 22,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 86499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 23,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48750
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;2.-patient-zzz0067-opts-out-of-sdhr-participation-at-their-enrolled-practice-f38006-c",
+        "keyword": "Scenario",
+        "line": 25,
+        "name": "2. Patient ZZZ0067 opts out of SDHR participation at their enrolled practice F38006-C",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 20583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 26,
+            "name": "a patient \"ZZZ0067\" notifies \"their facility F38006-C\" of participation \"opt-off\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 60916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 27,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 288675750
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZZZ0067",
+                      "F38006-C",
+                      "false",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 28,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5816210542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 31,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 140292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 32,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 382333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 33,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 145708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 35,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 225524874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 36,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0067\" at facility \"F38006-C\" with local ID \"null\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 287292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 37,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5984777583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 38,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4137083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 39,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 409207
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 40,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied-facility\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 404374
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 41,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0067\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 621271042
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 42,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 91000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 43,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 88833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 44,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 428209
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 45,
+            "name": "the search response body should have entry with property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 275083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 46,
+            "name": "the search response body should have entry with property \"issue[0].details.coding[0].code\" containing \"sdhr-records-withheld-at-source\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 186957
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;4.-patient-zzz0075-opts-in-to-sdhr-participation-at-their-enrolled-practice-f38006-c",
+        "keyword": "Scenario",
+        "line": 48,
+        "name": "4. Patient ZZZ0075 opts in to SDHR participation at their enrolled practice F38006-C",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 14291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 49,
+            "name": "a patient \"ZZZ0075\" notifies \"their facility F38006-C\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 59291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 50,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 243029249
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZZZ0075",
+                      "F38006-C",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 51,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5698881499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 54,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 263874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 55,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 242125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 56,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 158042
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 57,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 242184291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 58,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0075\" at facility \"F38006-C\" with local ID \"null\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 917291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 59,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6092192917
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 60,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 173625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 61,
+            "name": "the response body should have property \"resourceType\" containing \"Condition\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 289291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 62,
+            "name": "a GET request is repeatedly made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0075\" until the response bundle contains more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:633"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61501962749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 63,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 289915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 64,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 190957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 65,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 110583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 66,
+            "name": "the response bundle should contain more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:351"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 482375
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;5.-patient-zmw6003-opts-in-to-sdhr-participation-at-their-enrolled-practice-f38006-d-then-marks-a-record-as-withheld",
+        "keyword": "Scenario",
+        "line": 68,
+        "name": "5. Patient ZMW6003 opts in to SDHR participation at their enrolled practice F38006-D then marks a record as withheld",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 52041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 69,
+            "name": "a patient \"ZMW6003\" notifies \"HNZ\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 175541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 70,
+            "name": "a patient \"ZMW6003\" notifies \"their facility F38006-D\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 71,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 394942083
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6003",
+                      "F38006-D",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 72,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5860648000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 75,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 91417
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 76,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 82291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 77,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 34749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 78,
+            "name": "a valid \"Condition\" payload for NHI \"ZMW6003\" at facility \"F38006-D\" with local ID \"F38006-D-local-withheld-record2\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1403791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 79,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 231554166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 80,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6177071916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 81,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 81166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 82,
+            "name": "the response body should have property \"resourceType\" containing \"Condition\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 84249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 83,
+            "name": "the response body should have property \"identifier[0].value\" containing \"F38006-D-local-withheld-record2\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 87916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 84,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6003\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 552710208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 85,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 63083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 86,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 71540
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 87,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31084
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 88,
+            "name": "the response bundle should contain more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:351"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 89,
+            "name": "a health practitioner sets \"Condition\" record \"F38006-D-local-withheld-record2\" record to \"RESTRICTED\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:514"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 301999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 90,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 221193333
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6003",
+                      "F38006-D",
+                      "null",
+                      "sdhr-record-withheld",
+                      "Record withheld",
+                      "Condition",
+                      "F38006-D-local-withheld-record2"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 91,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67009162874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 94,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 443666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 95,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 217040
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 96,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 183791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 97,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 450485417
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 98,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6003&&_source=https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-D&identifier=F38006-D-local-withheld-record2\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 925672541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 99,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 100875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 100,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 165625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 101,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 277040
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 102,
+            "name": "the search response body should have entry with property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 124542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 103,
+            "name": "the search response body should have entry with property \"issue[0].details.coding[0].code\" containing \"sdhr-records-withheld-at-source\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 59707
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 105,
+            "name": "a valid \"Condition\" payload for NHI \"ZMW6003\" at facility \"F38006-D\" with local ID \"randomIdentifier\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1463665
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 106,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5973545582
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 107,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 78708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 108,
+            "name": "the response body should have property \"resourceType\" containing \"Condition\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 82333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 109,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6003\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 613975708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 110,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 71542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 111,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 81082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 112,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 113,
+            "name": "the response bundle should contain more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:351"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 27624
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;5a.-scenario-5,-where-the-pms-fails-to-mark-the-record-as-restricted",
+        "keyword": "Scenario",
+        "line": 115,
+        "name": "5a. Scenario 5, where the PMS fails to mark the record as restricted",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 116,
+            "name": "a patient \"ZMW6003\" notifies \"HNZ\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 113832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 117,
+            "name": "a patient \"ZMW6003\" notifies \"their facility F38006-D\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 38750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 118,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 234032833
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6003",
+                      "F38006-D",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 119,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5388506374
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 122,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 83500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 123,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 75958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 124,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 43541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 125,
+            "name": "a valid \"Condition\" payload for NHI \"ZMW6003\" at facility \"F38006-D\" with local ID \"F38006-D-local-withheld-record2\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1408332
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 126,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 199689833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 127,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5905324749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 128,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 76375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 129,
+            "name": "the response body should have property \"resourceType\" containing \"Condition\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 70915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 130,
+            "name": "the response body should have property \"identifier[0].value\" containing \"F38006-D-local-withheld-record2\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31332
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 131,
+            "name": "the API Consumer saves the response id",
+            "match": {
+              "location": "features/support/fhir.steps.js:422"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 114542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 132,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6003\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 594606291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 133,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 96542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 134,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 104624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 135,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 46791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 136,
+            "name": "the response bundle should contain more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:351"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 34749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 137,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 197008542
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6003",
+                      "F38006-D",
+                      "null",
+                      "sdhr-record-withheld",
+                      "Record withheld",
+                      "Condition",
+                      "F38006-D-local-withheld-record2"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 138,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5400255334
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 141,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4440750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 142,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 276666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 143,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 126750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 144,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 308946458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 145,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6003&&_source=https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-D&identifier=F38006-D-local-withheld-record2\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 608531583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 146,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 108083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 147,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 148,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 76958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 149,
+            "name": "the search response body should have entry with property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 127416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 150,
+            "name": "the search response body should have entry with property \"issue[0].details.coding[0].code\" containing \"sdhr-records-withheld-at-source\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 105834
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 152,
+            "name": "a GET request is made to \"/Condition\" with the saved ID",
+            "match": {
+              "location": "features/support/fhir.steps.js:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 558077707
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 153,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 129791
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;6.-patient-zzz0091-opts-in-to-sdhr-participation-at-their-enrolled-practice-f38006-e-and-opts-out-at-hnz",
+        "keyword": "Scenario",
+        "line": 156,
+        "name": "6. Patient ZZZ0091 opts in to SDHR participation at their enrolled practice F38006-E and opts out at HNZ",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 65583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 158,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 139691583
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZZZ0091",
+                      "null",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Given ",
+            "line": 159,
+            "name": "the API consumer invokes the \"$hnz-participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5740651167
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 162,
+            "name": "a patient \"ZZZ0091\" notifies \"F38006-E\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 74083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 163,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 187026624
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZZZ0091",
+                      "F38006-E",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 164,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6012948582
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 167,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 83666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 168,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 169,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 31667
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 170,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0091\" at facility \"F38006-E\" with local ID \"null\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 781250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 171,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 223605750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 172,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5730392459
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 173,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 175250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 174,
+            "name": "the response body should have property \"resourceType\" containing \"Condition\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 99915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 175,
+            "name": "a GET request is repeatedly made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0091\" until the response bundle contains more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:633"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 582209666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 176,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 66166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 177,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 91415
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 178,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 32416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 179,
+            "name": "the response bundle should contain more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:351"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 180,
+            "name": "a patient \"ZZZ0091\" notifies \"HNZ\" of participation \"opt-off\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 181,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 182678500
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZZZ0091",
+                      "null",
+                      "false",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 182,
+            "name": "the API consumer invokes the \"$hnz-participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6144289500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 185,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 127291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 186,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 167541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 187,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 222542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 188,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 191944167
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 189,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0091\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 606512916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 190,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 57583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 191,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 75042
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 192,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 35708
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;7.-patient-zmw6007-opts-out-of-sdhr-participation-at-practice-f38006-c-and-opts-in-at-practice-f38006-d",
+        "keyword": "Scenario",
+        "line": 194,
+        "name": "7. Patient ZMW6007 opts out of SDHR participation at practice F38006-C and opts in at practice F38006-D",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 9832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 195,
+            "name": "a patient \"ZMW6007\" notifies \"their facility F38006-C\" of participation \"opt-out\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 197,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 116744416
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6007",
+                      "F38006-C",
+                      "false",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 198,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5408164332
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 201,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 62459
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 202,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 68708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 203,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 33791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 204,
+            "name": "a patient \"ZMW6007\" notifies \"their facility F38006-D\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25374
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6007",
+                      "F38006-D",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 205,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5504177916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 208,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 209,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 210,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 37500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 211,
+            "name": "a valid \"Condition\" payload for NHI \"ZMW6007\" at facility \"F38006-D\" with local ID \"null\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1204999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 212,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 180221166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 213,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5833814083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 214,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 83833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 215,
+            "name": "the response body should have property \"resourceType\" containing \"Condition\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 75375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 216,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6007\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 572460666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 217,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 78792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 219,
+            "name": "a valid \"Condition\" payload for NHI \"ZMW6007\" at facility \"F38006-C\" with local ID \"null\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 634375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 220,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5690517124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 221,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 152249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 222,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 174457
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 223,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied-facility\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 85874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 226,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6007\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 629347333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 227,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 70499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 228,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 101124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 229,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 43000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 230,
+            "name": "the response bundle should contain more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:351"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 231,
+            "name": "the search response body should have entry with property \"resourceType\" containing \"Condition\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 160291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 232,
+            "name": "the search response body should have entry with property \"meta.source\" containing \"https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-D\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 134667
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 233,
+            "name": "the search response body should have entry with property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 234,
+            "name": "the search response body should have entry with property \"issue[0].details.coding[0].code\" containing \"sdhr-records-withheld-at-source\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 62124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 236,
+            "name": "the search response body should not have any entry with property \"meta.source\" containing \"https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-C\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:400"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 361040
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;9.-patient's-previously-withheld-record-is-released",
+        "keyword": "Scenario",
+        "line": 238,
+        "name": "9. Patient's previously withheld record is released",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 11292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 239,
+            "name": "a patient \"ZMW6003\" notifies \"their facility F38006-D\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 240,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 184630917
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6003",
+                      "F38006-D",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 241,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5413701958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 244,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 69625
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 245,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 103707
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 246,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 37624
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 248,
+            "name": "a health practitioner sets \"Condition\" record \"F38006-D-local-withheld-record2\" record to \"UNRESTRICTED\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:514"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 236374
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6003",
+                      "F38006-D",
+                      "null",
+                      "sdhr-record-released",
+                      "Record released",
+                      "Condition",
+                      "F38006-D-local-withheld-record2"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 249,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6174112708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 252,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 114041
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 253,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 79124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 254,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 32249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 255,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 241647834
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 256,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZMW6003&&_source=https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F38006-D&identifier=F38006-D-local-withheld-record2\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 765948499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 257,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 117334
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 258,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 173124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 259,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 79790
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 260,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 99541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 261,
+            "name": "the response bundle should contain more than 0 entries",
+            "match": {
+              "location": "features/support/sdhr.steps.js:351"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 54707
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;10.-the-participate-operation-is-idempotent",
+        "keyword": "Scenario",
+        "line": 263,
+        "name": "10. The participate operation is idempotent",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 30000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 264,
+            "name": "a patient \"ZMW6006\" notifies \"HNZ\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 63874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 265,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 74524042
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6006",
+                      "F38006-D",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 266,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5451646375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 269,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1974374
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 270,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 935333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 271,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 118707
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6006",
+                      "F38006-D",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 272,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5615816292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 275,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 103125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 276,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77084
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 277,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 321374
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;11.-the-hnz-participate-operation-is-idempotent",
+        "keyword": "Scenario",
+        "line": 279,
+        "name": "11. The hnz-participate operation is idempotent",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 26249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 280,
+            "name": "a patient \"ZMW6006\" notifies \"HNZ\" of participation \"opt-in\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:498"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 135750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 281,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRHNZParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 260472333
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6006",
+                      "null",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 282,
+            "name": "the API consumer invokes the \"$hnz-participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5872462166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 285,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 163291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 286,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 177750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 287,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 102833
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6006",
+                      "null",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 288,
+            "name": "the API consumer invokes the \"$hnz-participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5886797208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 291,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 145874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 292,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 195874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 293,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 120541
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "participate-operation;12.-requesting-a-resource-with-a-confidential-security-tag-returns-403",
+        "keyword": "Scenario",
+        "line": 295,
+        "name": "12. Requesting a resource with a confidential security tag returns 403",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15707
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 296,
+            "name": "the API Consumer requests a client_credentials access token with scope \"https://fhir-ig.digital.health.nz/sdhr/OperationDefinition/SDHRParticipateOperation\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:360"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 207098416
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "patient",
+                      "facilityId",
+                      "participationIndicator",
+                      "reasonCode",
+                      "reasonCodeDisplay",
+                      "resourceType",
+                      "localResourceId"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "ZMW6006",
+                      "F38006-D",
+                      "true",
+                      "null",
+                      "null",
+                      "null",
+                      "null"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 297,
+            "name": "the API consumer invokes the \"$participate\" operation with:",
+            "match": {
+              "location": "features/support/sdhr.steps.js:660"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5570391874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 300,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 80792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 301,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 86833
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 302,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-operation-success\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 60457
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 303,
+            "name": "the API Consumer requests a new client_credentials access token with scope \"system/Condition.crus\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:364"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 202586458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 304,
+            "name": "a valid \"Condition\" payload for NHI \"ZMW6006\" at facility \"F38006-D\" with local ID \"null\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1521124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 305,
+            "name": "the security tag \"R\" with display \"Restricted\" is added to the payload",
+            "match": {
+              "location": "features/support/sdhr.steps.js:291"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 205209
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 306,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5835410499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 307,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 76791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 308,
+            "name": "a GET request is made to \"/Condition\" with the response body ID",
+            "match": {
+              "location": "features/support/fhir.steps.js:45"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 540630292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 309,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 51458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 310,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 66875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 311,
+            "name": "the response body should have property \"issue[0].severity\" containing \"error\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 84541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 312,
+            "name": "the response body should have property \"issue[0].code\" containing \"security\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 39166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 313,
+            "name": "the response body should have property \"issue[0].diagnostics\" containing \"Resource access is forbidden\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 45541
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "participate-operation",
+    "line": 2,
+    "keyword": "Feature",
+    "name": "Participate operation",
+    "tags": [
+      {
+        "name": "@sdhr",
+        "line": 1
+      }
+    ],
+    "uri": "features/SDHR/participate.feature"
+  },
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "nhi-linking;linked-nhi-rules-over-a-stateful-public-api-flow;1.-fully-opted-in-linked-pairs-allow-writes",
+        "keyword": "Scenario",
+        "line": 12,
+        "name": "1. Fully opted-in linked pairs allow writes",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 9665
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 13,
+            "name": "the linking test fixture is reset via public API",
+            "match": {
+              "location": "features/support/sdhr.steps.js:986"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5469653832,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected response status 200 within 180 seconds, but got 401 with body {\"resourceType\":\"OperationOutcome\",\"issue\":[{\"severity\":\"error\",\"code\":\"security\",\"text\":\"Scope validation failed.\"}]}\n    + expected - actual\n\n    -false\n    +true\n\n    at ApiStandardsWorld.eventuallyInvokeSetupOperation (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:979:10)\n    at async ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:991:9)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "patient \"ZZZ0016\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 15,
+            "name": "active patient \"ZZZ0016\" is linked to dormant patient \"ZZZ0024\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1100"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 16,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0016\" at facility \"F2N060-E\" with local ID \"nhi-linking-write-allow-0016\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 18,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "nhi-linking;linked-nhi-rules-over-a-stateful-public-api-flow;2.-unlinking-a-fully-opted-in-pair-does-not-trigger-rehydrate",
+        "keyword": "Scenario",
+        "line": 22,
+        "name": "2. Unlinking a fully opted-in pair does not trigger rehydrate",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 12583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 23,
+            "name": "active patient \"ZZZ0016\" is unlinked from dormant patient \"ZZZ0024\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1112"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5601746125,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected response status 200 within 90 seconds, but got 401 with body {\"resourceType\":\"OperationOutcome\",\"issue\":[{\"severity\":\"error\",\"code\":\"security\",\"text\":\"Scope validation failed.\"}]}\n    + expected - actual\n\n    -false\n    +true\n\n    at ApiStandardsWorld.eventuallyInvokeSetupOperation (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:979:10)\n    at async ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:1116:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 24,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0016\" at facility \"F2N060-E\" with local ID \"nhi-linking-unlink-no-rehydrate\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 25,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 26,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 27,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "nhi-linking;linked-nhi-rules-over-a-stateful-public-api-flow;3.-linking-an-opted-out-singleton-denies-the-expanded-group",
+        "keyword": "Scenario",
+        "line": 31,
+        "name": "3. Linking an opted-out singleton denies the expanded group",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 10999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 32,
+            "name": "active patient \"ZZZ0016\" is linked to dormant patient \"ZZZ0024\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1100"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5642419542,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected response status 200 within 90 seconds, but got 401 with body {\"resourceType\":\"OperationOutcome\",\"issue\":[{\"severity\":\"error\",\"code\":\"security\",\"text\":\"Scope validation failed.\"}]}\n    + expected - actual\n\n    -false\n    +true\n\n    at ApiStandardsWorld.eventuallyInvokeSetupOperation (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:979:10)\n    at async ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:1104:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 33,
+            "name": "patient \"ZZZ0032\" is globally opted out",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1031"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 34,
+            "name": "active patient \"ZZZ0016\" is linked to dormant patient \"ZZZ0032\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1100"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 35,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 36,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0024\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 37,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 38,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "nhi-linking;linked-nhi-rules-over-a-stateful-public-api-flow;4.-reads-through-a-denied-linked-group-are-blocked",
+        "keyword": "Scenario",
+        "line": 42,
+        "name": "4. Reads through a denied linked group are blocked",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 58750
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 43,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 184555167
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 44,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0024\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 804789916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 45,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 136165
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 46,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 1612958,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected property at path \"function JSONPath(opts, expr, obj, callback, otherTypeCallback) {\n  // eslint-disable-next-line no-restricted-syntax\n  if (!(this instanceof JSONPath)) {\n    try {\n      return new JSONPath(opts, expr, obj, callback, otherTypeCallback);\n    } catch (e) {\n      if (!e.avoidNew) {\n        throw e;\n      }\n      return e.value;\n    }\n  }\n  if (typeof opts === 'string') {\n    otherTypeCallback = callback;\n    callback = obj;\n    obj = expr;\n    expr = opts;\n    opts = null;\n  }\n  const optObj = opts && typeof opts === 'object';\n  opts = opts || {};\n  this.json = opts.json || obj;\n  this.path = opts.path || expr;\n  this.resultType = opts.resultType || 'value';\n  this.flatten = opts.flatten || false;\n  this.wrap = hasOwnProp.call(opts, 'wrap') ? opts.wrap : true;\n  this.sandbox = opts.sandbox || {};\n  this.preventEval = opts.preventEval || false;\n  this.parent = opts.parent || null;\n  this.parentProperty = opts.parentProperty || null;\n  this.callback = opts.callback || callback || null;\n  this.otherTypeCallback = opts.otherTypeCallback || otherTypeCallback || function () {\n    throw new TypeError('You must supply an otherTypeCallback callback option ' + 'with the @other() operator.');\n  };\n  if (opts.autostart !== false) {\n    const args = {\n      path: optObj ? opts.path : expr\n    };\n    if (!optObj) {\n      args.json = obj;\n    } else if ('json' in opts) {\n      args.json = opts.json;\n    }\n    const ret = this.evaluate(args);\n    if (!ret || typeof ret !== 'object') {\n      throw new NewError(ret);\n    }\n    return ret;\n  }\n}\" to be \"sdhr-participation-status-denied\", but got \"sdhr-participation-status-unknown\"\n+ actual - expected\n\n+ 'sdhr-participation-status-unknown'\n- 'sdhr-participation-status-denied'\n                             ^\n\n    + expected - actual\n\n    -sdhr-participation-status-unknown\n    +sdhr-participation-status-denied\n\n    at ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/fhir.steps.js:380:14)"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "nhi-linking;linked-nhi-rules-over-a-stateful-public-api-flow;5.-writes-through-a-denied-linked-group-are-blocked",
+        "keyword": "Scenario",
+        "line": 50,
+        "name": "5. Writes through a denied linked group are blocked",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 410124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 51,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0016\" at facility \"F2N060-E\" with local ID \"nhi-linking-write-denied-by-group\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1088999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 52,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 74872541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 53,
+            "name": "a POST request is repeatedly made to \"/Condition\" with the payload until the response body has property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:104"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 92157161250,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected property at path \"$.issue[0].details.coding[0].code\" to become \"sdhr-participation-status-denied\" within 90 seconds, but got \"undefined\" with body {\"resourceType\":\"Condition\",\"meta\":{\"source\":\"https://api.hip.digital.health.nz/fhir/hpi/v1/Location/F2N060-E\",\"profile\":[\"https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/SDHRCondition\"],\"versionId\":\"1\",\"lastUpdated\":\"2026-04-21T00:17:27.632Z\"},\"extension\":[{\"url\":\"http://hl7.org.nz/fhir/StructureDefinition/long-term-condition\",\"valueBoolean\":true},{\"url\":\"https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/hnz-sdhr-client-last-updated-extension\",\"valueDateTime\":\"2024-03-26T10:13:26+13:00\"}],\"identifier\":[{\"use\":\"secondary\",\"system\":\"https://fhir.examplepms.co.nz\",\"value\":\"nhi-linking-write-denied-by-group\"}],\"clinicalStatus\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/condition-clinical\",\"code\":\"active\"}]},\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/condition-category\",\"code\":\"problem-list-item\",\"display\":\"Problem list item\"}],\"text\":\"Diagnosis\"}],\"verificationStatus\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/condition-ver-status\",\"code\":\"confirmed\"}]},\"code\":{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"38341003\",\"display\":\"HT - Hypertension\"}],\"text\":\"Hypertension\"},\"subject\":{\"reference\":\"https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0016\",\"type\":\"Patient\",\"display\":\"Sage Westbrook\"},\"onsetDateTime\":\"2011-02-05T00:00:00+13:00\",\"recordedDate\":\"2023-11-26T10:02:45+13:00\",\"recorder\":{\"reference\":\"https://api.hip.digital.health.nz/fhir/hpi/v1/Practitioner/99ZZZZ\",\"type\":\"Practitioner\",\"display\":\"Dottie McStuffins\"},\"asserter\":{\"reference\":\"https://api.hip.digital.health.nz/fhir/hpi/v1/Practitioner/91ZZXN\",\"type\":\"Practitioner\",\"display\":\"DR Julian Subatoi Bashir\"},\"id\":\"fe7d76bf-621e-4fd4-8ff9-5eb5ba0e1e40\"}\n    at ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/fhir.steps.js:130:14)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 54,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 55,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "nhi-linking;linked-nhi-rules-over-a-stateful-public-api-flow;6.-unlinking-from-a-denied-group-triggers-rehydrate-for-the-released-subgroup",
+        "keyword": "Scenario",
+        "line": 60,
+        "name": "6. Unlinking from a denied group triggers rehydrate for the released subgroup",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 24875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 61,
+            "name": "active patient \"ZZZ0016\" is unlinked from dormant patient \"ZZZ0032\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1112"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5895780917,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected response status 200 within 90 seconds, but got 401 with body {\"resourceType\":\"OperationOutcome\",\"issue\":[{\"severity\":\"error\",\"code\":\"security\",\"text\":\"Scope validation failed.\"}]}\n    + expected - actual\n\n    -false\n    +true\n\n    at ApiStandardsWorld.eventuallyInvokeSetupOperation (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:979:10)\n    at async ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:1116:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 62,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0016\" at facility \"F2N060-E\" with local ID \"nhi-linking-unlink-restored\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 63,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 64,
+            "name": "a POST request is repeatedly made to \"/Condition\" with the payload until the response status code is 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:136"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 65,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 66,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 67,
+            "name": "a GET request is made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0032\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:37"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 68,
+            "name": "the response status code should be 403",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 69,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "nhi-linking",
+    "line": 2,
+    "keyword": "Feature",
+    "name": "NHI linking",
+    "tags": [
+      {
+        "name": "@sdhr",
+        "line": 1
+      },
+      {
+        "name": "@nhi-linking",
+        "line": 1
+      }
+    ],
+    "uri": "features/SDHR/nhi-linking.feature"
+  },
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "linked-nhi-group-access-resolution;reads-and-writes-evaluate-the-full-linked-group-while-applying-target-specific-restrictions;reads-through-a-dormant-nhi-return-records-from-the-full-opted-in-linked-group",
+        "keyword": "Scenario",
+        "line": 15,
+        "name": "Reads through a dormant NHI return records from the full opted-in linked group",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 11583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 16,
+            "name": "the linking test fixture is reset via public API",
+            "match": {
+              "location": "features/support/sdhr.steps.js:986"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5580990292,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected response status 200 within 180 seconds, but got 401 with body {\"resourceType\":\"OperationOutcome\",\"issue\":[{\"severity\":\"error\",\"code\":\"security\",\"text\":\"Scope validation failed.\"}]}\n    + expected - actual\n\n    -false\n    +true\n\n    at ApiStandardsWorld.eventuallyInvokeSetupOperation (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:979:10)\n    at async ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:991:9)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "patient \"ZZZ0016\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "patient \"ZZZ0024\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 19,
+            "name": "active patient \"ZZZ0016\" is linked to dormant patient \"ZZZ0024\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1100"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 20,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0016\" at facility \"F2N060-E\" with local ID \"nhi-linking-group-read-active\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 21,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 22,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 23,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 24,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0024\" at facility \"F2N060-E\" with local ID \"nhi-linking-group-read-dormant\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 25,
+            "name": "a POST request is repeatedly made to \"/Condition\" with the payload until the response status code is 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:136"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 26,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 27,
+            "name": "a GET request is repeatedly made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0016\" until the response body contains string \"nhi-linking-group-read-active\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:579"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 28,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 29,
+            "name": "a GET request is repeatedly made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0024\" until the response body contains string \"nhi-linking-group-read-dormant\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:579"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 30,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 31,
+            "name": "a GET request is repeatedly made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0024\" until the response body contains string \"nhi-linking-group-read-active\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:579"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 32,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 33,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 34,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 35,
+            "name": "the search response body should have entry with property \"identifier[0].value\" containing \"nhi-linking-group-read-active\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 36,
+            "name": "the search response body should have entry with property \"identifier[0].value\" containing \"nhi-linking-group-read-dormant\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 38,
+            "name": "patient \"ZZZ0016\" is opted out at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1082"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 39,
+            "name": "patient \"ZZZ0024\" is opted out at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1082"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "linked-nhi-group-access-resolution;reads-and-writes-evaluate-the-full-linked-group-while-applying-target-specific-restrictions;a-facility-restriction-on-the-dormant-member-yields-a-partial-linked-group-read",
+        "keyword": "Scenario",
+        "line": 41,
+        "name": "A facility restriction on the dormant member yields a partial linked-group read",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 13541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 42,
+            "name": "the linking test fixture is reset via public API",
+            "match": {
+              "location": "features/support/sdhr.steps.js:986"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5595879083,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected response status 200 within 180 seconds, but got 401 with body {\"resourceType\":\"OperationOutcome\",\"issue\":[{\"severity\":\"error\",\"code\":\"security\",\"text\":\"Scope validation failed.\"}]}\n    + expected - actual\n\n    -false\n    +true\n\n    at ApiStandardsWorld.eventuallyInvokeSetupOperation (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:979:10)\n    at async ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:991:9)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 43,
+            "name": "patient \"ZZZ0016\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 44,
+            "name": "patient \"ZZZ0024\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 45,
+            "name": "active patient \"ZZZ0016\" is linked to dormant patient \"ZZZ0024\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1100"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 46,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0016\" at facility \"F2N060-E\" with local ID \"nhi-linking-partial-read-active\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 47,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 48,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 49,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 50,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0024\" at facility \"F2N060-E\" with local ID \"nhi-linking-partial-read-dormant\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 51,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 52,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 53,
+            "name": "a GET request is repeatedly made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0016\" until the response body contains string \"nhi-linking-partial-read-active\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:579"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 54,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 55,
+            "name": "a GET request is repeatedly made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0024\" until the response body contains string \"nhi-linking-partial-read-dormant\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:579"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 56,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 57,
+            "name": "patient \"ZZZ0024\" is opted out at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1082"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 58,
+            "name": "a GET request is repeatedly made to \"/Condition?patient=https://api.hip.digital.health.nz/fhir/nhi/v1/Patient/ZZZ0016\" until the response body does not contain string \"nhi-linking-partial-read-dormant\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:606"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 59,
+            "name": "the response status code should be 200",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 60,
+            "name": "the response body should have property \"resourceType\" containing \"Bundle\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 61,
+            "name": "the response body should have property \"type\" containing \"searchset\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 62,
+            "name": "the search response body should have entry with property \"identifier[0].value\" containing \"nhi-linking-partial-read-active\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 63,
+            "name": "the search response body should not have any entry with property \"identifier[0].value\" containing \"nhi-linking-partial-read-dormant\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:400"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 64,
+            "name": "the search response body should have entry with property \"issue[0].details.coding[0].code\" containing \"sdhr-records-withheld-at-source\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:387"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 66,
+            "name": "patient \"ZZZ0016\" is opted out at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1082"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "linked-nhi-group-access-resolution;reads-and-writes-evaluate-the-full-linked-group-while-applying-target-specific-restrictions;writes-to-the-unrestricted-active-member-succeed-even-when-the-dormant-member-is-facility-restricted",
+        "keyword": "Scenario",
+        "line": 68,
+        "name": "Writes to the unrestricted active member succeed even when the dormant member is facility restricted",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15084
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 69,
+            "name": "the linking test fixture is reset via public API",
+            "match": {
+              "location": "features/support/sdhr.steps.js:986"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5693932083,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected response status 200 within 180 seconds, but got 401 with body {\"resourceType\":\"OperationOutcome\",\"issue\":[{\"severity\":\"error\",\"code\":\"security\",\"text\":\"Scope validation failed.\"}]}\n    + expected - actual\n\n    -false\n    +true\n\n    at ApiStandardsWorld.eventuallyInvokeSetupOperation (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:979:10)\n    at async ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:991:9)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 70,
+            "name": "patient \"ZZZ0016\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 71,
+            "name": "patient \"ZZZ0024\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 72,
+            "name": "active patient \"ZZZ0016\" is linked to dormant patient \"ZZZ0024\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1100"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 73,
+            "name": "patient \"ZZZ0024\" is opted out at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1082"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 74,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0016\" at facility \"F2N060-E\" with local ID \"nhi-linking-target-write-active-allowed\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 75,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 76,
+            "name": "a POST request is made to \"/Condition\" with the payload",
+            "match": {
+              "location": "features/support/fhir.steps.js:92"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 77,
+            "name": "the response status code should be 201",
+            "match": {
+              "location": "features/support/fhir.steps.js:9"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 78,
+            "name": "the response body should have property \"resourceType\" containing \"Condition\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 80,
+            "name": "patient \"ZZZ0016\" is opted out at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1082"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "linked-nhi-group-access-resolution;reads-and-writes-evaluate-the-full-linked-group-while-applying-target-specific-restrictions;writes-to-the-facility-restricted-dormant-member-are-blocked-even-when-the-active-member-is-allowed",
+        "keyword": "Scenario",
+        "line": 82,
+        "name": "Writes to the facility-restricted dormant member are blocked even when the active member is allowed",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 21458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 83,
+            "name": "the linking test fixture is reset via public API",
+            "match": {
+              "location": "features/support/sdhr.steps.js:986"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5563247000,
+              "error_message": "AssertionError [ERR_ASSERTION]: Expected response status 200 within 180 seconds, but got 401 with body {\"resourceType\":\"OperationOutcome\",\"issue\":[{\"severity\":\"error\",\"code\":\"security\",\"text\":\"Scope validation failed.\"}]}\n    + expected - actual\n\n    -false\n    +true\n\n    at ApiStandardsWorld.eventuallyInvokeSetupOperation (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:979:10)\n    at async ApiStandardsWorld.<anonymous> (/Users/jeremywarne/dev/api-standards-conformance/features/support/sdhr.steps.js:991:9)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 84,
+            "name": "patient \"ZZZ0016\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 85,
+            "name": "patient \"ZZZ0024\" is eventually opted in at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1066"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 86,
+            "name": "active patient \"ZZZ0016\" is linked to dormant patient \"ZZZ0024\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1100"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 87,
+            "name": "patient \"ZZZ0024\" is opted out at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1082"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 88,
+            "name": "a valid \"Condition\" payload for NHI \"ZZZ0024\" at facility \"F2N060-E\" with local ID \"nhi-linking-target-write-dormant-denied\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:301"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 89,
+            "name": "the API Consumer requests a client_credentials access token",
+            "match": {
+              "location": "features/support/fhir.steps.js:355"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 90,
+            "name": "repeated POST requests to \"/Condition\" with the payload should eventually return status 403 and outcome code \"sdhr-participation-status-denied-facility\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:558"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 91,
+            "name": "the response body should have property \"resourceType\" containing \"OperationOutcome\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 92,
+            "name": "the response body should have property \"issue[0].details.coding[0].code\" containing \"sdhr-participation-status-denied-facility\"",
+            "match": {
+              "location": "features/support/fhir.steps.js:375"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 94,
+            "name": "patient \"ZZZ0016\" is opted out at facility \"F2N060-E\"",
+            "match": {
+              "location": "features/support/sdhr.steps.js:1082"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@sdhr",
+            "line": 1
+          },
+          {
+            "name": "@nhi-linking",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "linked-nhi-group-access-resolution",
+    "line": 2,
+    "keyword": "Feature",
+    "name": "Linked NHI group access resolution",
+    "tags": [
+      {
+        "name": "@sdhr",
+        "line": 1
+      },
+      {
+        "name": "@nhi-linking",
+        "line": 1
+      }
+    ],
+    "uri": "features/SDHR/nhi-linking-group-access.feature"
+  }
+]

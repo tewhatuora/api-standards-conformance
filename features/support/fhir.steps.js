@@ -102,6 +102,67 @@ When('a POST request is made to {string} with the payload', async function(url) 
 });
 
 When(
+    'a POST request is repeatedly made to {string} with the payload until the response body has property {string} containing {string}',
+    {timeout: 120000},
+    async function(url, jsonPath, expectedValue) {
+      const startedAt = Date.now();
+      let lastResponse;
+      const path = jsonPath.startsWith('$') ? jsonPath : `$.${jsonPath}`;
+
+      while (Date.now() - startedAt < 90 * 1000) {
+        const response = await this.request(url, {
+          method: 'POST',
+          body: JSON.stringify(this.payload),
+        });
+
+        this.setResponse(response);
+        lastResponse = response;
+
+        const actualValue = JSONPath({path, json: response.data, wrap: false});
+        if (String(actualValue) === expectedValue) {
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+
+      const actualValue = JSONPath({path, json: lastResponse?.data, wrap: false});
+      assert.fail(
+          `Expected property at path "${path}" to become "${expectedValue}" within 90 seconds, but got "${actualValue}" with body ${JSON.stringify(lastResponse?.data)}`,
+      );
+    },
+);
+
+When(
+    'a POST request is repeatedly made to {string} with the payload until the response status code is {int}',
+    {timeout: 120000},
+    async function(url, expectedStatus) {
+      const startedAt = Date.now();
+      let lastResponse;
+
+      while (Date.now() - startedAt < 90 * 1000) {
+        const response = await this.request(url, {
+          method: 'POST',
+          body: JSON.stringify(this.payload),
+        });
+
+        this.setResponse(response);
+        lastResponse = response;
+
+        if (response.status === expectedStatus) {
+          return;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+
+      assert.fail(
+          `Expected response status ${expectedStatus} within 90 seconds, but got ${lastResponse?.status} with body ${JSON.stringify(lastResponse?.data)}`,
+      );
+    },
+);
+
+When(
     'a PUT request is made to {string} with the saved ID and the payload',
     async function(url) {
       if (!this.savedId) {
@@ -178,6 +239,10 @@ When('a {string} request is made to the FHIR API', async function(method) {
   });
 
   this.setResponse(response);
+});
+
+Given('I wait {int} seconds', async function(seconds) {
+  await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 });
 
 Then('the response status should be {int}', async function(statusCode) {

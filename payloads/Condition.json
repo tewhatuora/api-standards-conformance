@@ -7,6 +7,10 @@
   "extension" : [{
     "url" : "http://hl7.org.nz/fhir/StructureDefinition/long-term-condition",
     "valueBoolean" : true
+  },
+  {
+    "url" : "https://fhir-ig.digital.health.nz/sdhr/StructureDefinition/hnz-sdhr-client-last-updated-extension",
+    "valueDateTime" : "2024-03-26T10:13:26+13:00"
   }],
   "identifier" : [{
     "use" : "secondary",
